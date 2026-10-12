@@ -40,9 +40,9 @@ touch** and the **pkg install path**.
   first in-engine cutscene at 30 fps, and the add-on is found at boot.
 * ☐ Check the DLC missions appear in play (mission board, after the
   tutorial).
-* ◐ Repository: `git init` done; `git status` shows only docs, tools,
-  README, CLAUDE.md and `.gitignore`. The first commit waits for the
-  owner.
+* ☑ Repository: branch `main`, first commit `393f883` (docs and tools
+  only). The commit identity is the owner's GitHub no-reply address
+  ([D6](decisions.md)), set in this repo's local git config.
 * ☐ Audio baseline: run with sound on and reproduce the SFX dropout (2–3
   missions, or sprinting over corpses). Record how long it takes and what
   the NGS log says when it happens.
