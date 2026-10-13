@@ -312,8 +312,17 @@ that the repo builds from a fresh clone.
   zRIF-like base64, `work.bin`/`.rif` contents, personal paths and
   addresses. A script (`tools/leak-scan.py`), also usable as a pre-commit
   hook. Rewrite the history if anything is found, before the first push.
-* ☐ Docs made public-ready: repo-relative paths, a build guide from a fresh
-  clone, "bring your own dump" install steps, known issues.
+* ☑ Docs made public-ready (2026-10-13), in this repo and ss-delta:
+  repo-relative paths, relative submodule URLs (`../vita3k`), READMEs with
+  requirements, a build guide from a fresh clone, "bring your own dump"
+  install steps and known issues. The owner's local details moved to the
+  private notes, imported through a git-ignored `CLAUDE.local.md`.
+* ☑ History scrubbed in this repo and ss-delta: no host name, local paths
+  or user folders in any commit or message (`C:\...` project paths became
+  `<utakata>`, `<ss-delta>`, `<git>`); force-pushed to the private remote.
+  The fork's and vita-recomp-kit's histories had nothing to scrub. One old
+  doc line still quotes the former placeholder email (a reserved
+  `home.arpa` address, nothing personal).
 * ☐ A GitHub Actions build of the fork and the recompiler tests (no game
   data needed).
 * ☐ Release binaries only from a public tag of the fork.
