@@ -64,8 +64,9 @@ the measurements and a recorded SFX-dropout repro. **Met** (2026-10-13).
 
 ## Phase 1 — Shared repos, fork branch and front end (M) ☑
 
-Steps marked **(ss-delta)** change `<ss-delta>`; the owner OKed Phase 1
-(2026-10-13). The hub repos are in `<git>\` until publishing (D4, D6).
+Steps marked **(ss-delta)** change the ss-delta repo; the owner OKed
+Phase 1 (2026-10-13). The repos were in local stand-in hubs until they
+moved to the owner's private remote (D4, D6).
 
 * ☑ **Recompiler repo** `vita-recomp` (D4 item 2), extracted from a copy
   of ss-delta's history (`git filter-repo`; ss-delta itself untouched):
@@ -84,7 +85,7 @@ Steps marked **(ss-delta)** change `<ss-delta>`; the owner OKed Phase 1
 * ☑ **Fork**: branch `shinobido-2` from `4704fc6c`, built here in 12 min
   (`build/vita3k`).
 * ◐ **Scripts in Python** in `vita-recomp/tools`: `build-vita3k.py`
-  (MSVC found with vswhere, Qt found in `C:\Qt`), `install-game.py`,
+  (MSVC found with vswhere, Qt found in its default folder), `install-game.py`,
   `make-dist.py`, read from the project's `game.json`. ss-delta's old
   PowerShell build/install/dist scripts are gone; its map sweep and RTX
   4090 package stay PowerShell (SSD-specific, used rarely).
@@ -120,7 +121,7 @@ Steps marked **(ss-delta)** change `<ss-delta>`; the owner OKed Phase 1
   on native code.
 * ☑ ss-delta switched to the submodules and the Python scripts, docs
   updated, its D17 **(ss-delta)**; its `master` is at the switch, pushed
-  to `<git>\ss-delta.git`.
+  to its hub.
 * ☑ One integration branch, `games`, builds both exes; both game repos
   track it **(ss-delta)**.
 
@@ -130,7 +131,7 @@ Steps marked **(ss-delta)** change `<ss-delta>`; the owner OKed Phase 1
 ss-delta still builds and plays (title → a quest), so the shared changes
 broke nothing.
 **Met** (2026-10-13): a `--recurse-submodules` clone of
-`<git>\shinobido-2.git` configured and built from scratch in 9 min (after
+this repo's hub configured and built from scratch in 9 min (after
 two fixes to `build-vita3k.py` it found: Boost's bootstrap and Qt), and its
 `shinobido2.exe` booted to the title at 30 fps. `dist/shinobido2-test`
 (installed from the pkg files) played a mission. ss-delta played a quest.
@@ -300,10 +301,10 @@ that the repo builds from a fresh clone.
 
 * ☑ Licences: MIT for this repo, ss-delta (its Vita3K patches stay GPL)
   and vita-recomp-kit; the fork GPL-2.0-or-later.
-* ☑ Private Forgejo as `origin` for all four repos, private notes in a
-  separate `port-notes` repo (D6 update).
+* ☑ A private remote as `origin` for all four repos, private notes in a
+  separate repo (D6 update).
 * ◐ History: our commits rewritten to the no-reply address in all four
-  repos (fork: ours only), pushed to Forgejo. Scans so far: no D2 file
+  repos (fork: ours only), pushed to the private remote. Scans so far: no D2 file
   types, no blobs over 1 MB, no personal email (the three gmail hits in
   ss-delta are the Vita3K-Plus author's public attributions). The
   `leak-scan.py` hook is still to write.

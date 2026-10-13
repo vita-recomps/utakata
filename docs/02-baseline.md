@@ -8,7 +8,7 @@ PCSA00152 only, so the run uses a copy of it with a shim file system:
 * `build/ssd-shim/`: `ss-delta.exe` (ss-delta fork `1f100891`,
   RelWithDebInfo, with dynarmic) plus its DLLs, `data/` and
   `shaders-builtin/`. Its own `ss-delta.ini`: `vita_fs =
-  <utakata>/build/shimfs`, `[recompiled] enabled = false` (everything
+  <repo>/build/shimfs`, `[recompiled] enabled = false` (everything
   on the JIT), scale 1, volume 0.
 * `build/shimfs/`: junctions to `extracted/vita3k/fs/{os0,sa0,vs0}` and
   `ux0/{addcont,license}`, and `ux0/app/PCSA00152` → our
@@ -21,7 +21,7 @@ PCSA00152 only, so the run uses a copy of it with a shim file system:
   Both only log a warning.
 * Fixed settings, as ss-delta (D4 update 4): Vulkan, `high-accuracy`,
   surface sync on, `memory-mapping: double-buffer`, offline mode.
-* Machine: the mini PC (Radeon 760M), Windows 11.
+* Machine: the AMD Radeon 760M test PC, Windows 11.
 
 **ELF dump** (`--dump-elfs 45`): bootimage, sysmodule, libc, libfios2,
 libSceFt2, libpvf and libscemp4 come out decrypted and relocated
@@ -175,9 +175,9 @@ add-on itself is found at boot.
 ## How to re-run
 
 ```
-python -I <ss-delta>\tools\v3kdrive.py build/ssd-shim start
-python -I <ss-delta>\tools\v3kdrive.py build/ssd-shim run "wait 30000,start,wait 3500,hold:down:250,wait 1200,cross,..." build/baseline/fps.csv
-python -I <ss-delta>\tools\v3kdrive.py build/ssd-shim close
+python -I third_party/recomp/tools/v3kdrive.py build/ssd-shim start
+python -I third_party/recomp/tools/v3kdrive.py build/ssd-shim run "wait 30000,start,wait 3500,hold:down:250,wait 1200,cross,..." build/baseline/fps.csv
+python -I third_party/recomp/tools/v3kdrive.py build/ssd-shim close
 ```
 
 The window title still says "Soul Sacrifice Delta" (it is the shim's exe).

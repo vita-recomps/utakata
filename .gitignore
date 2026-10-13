@@ -45,3 +45,9 @@ __pycache__/
 /*.log
 # Vita3K fork: a nested clone or worktree with its own history (D4)
 /third_party/vita-headers/
+
+# Machine-specific notes for Claude Code (they import the private notes repo)
+CLAUDE.local.md
+
+# Update pkgs fetched by fetch-update.py
+downloads/

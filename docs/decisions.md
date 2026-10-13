@@ -109,16 +109,15 @@ build independently. Disk space is not a constraint.
 * Starting from upstream Vita3K: it would redo Phases 1–6 of ss-delta for
   nothing.
 
-**Needs the owner's OK at the time:** each change inside `<ss-delta>`
+**Needs the owner's OK at the time:** each change inside ss-delta
 (extracting `recomp/`, the submodule switch, the merged branch). The names
 of the new repos are the owner's choice.
 
 **Done (Phase 1, 2026-10-13, owner's OK for Phase 1):**
 
-* Hubs (bare repos, stand-ins for GitHub until publishing) in `<git>\`:
+* Hubs: local bare repos, stand-ins until a real remote existed:
   `vita3k.git` (the fork), `vita-recomp.git` (the shared toolchain),
-  `ss-delta.git` and `shinobido-2.git`. `vita-recomp` is a working name;
-  renaming before publishing is cheap.
+  `ss-delta.git` and `shinobido-2.git`. `vita-recomp` was a working name.
 * The fork's integration branch is **`games`**: ss-delta's branch plus the
   shared single-game frontend (`vita3k/game-frontend/`, one exe per game
   in `vita3k/games/<id>/`). Both game repos track it. The old `ss-delta`
@@ -126,9 +125,9 @@ of the new repos are the owner's choice.
 * `vita-recomp` (history extracted from ss-delta) holds the recompiler,
   the analysis and driving tools, and the Python build, install and
   packaging scripts, which read each game's `game.json`.
-* Update (2026-10-13): the hubs moved to the owner's Forgejo (D6); the
-  repos are `vita3k`, `vita-recomp-kit` (was `vita-recomp`), `ss-delta`
-  and `utakata` (was `shinobido-2`). The `<git>\*.git` stand-ins are
+* Update (2026-10-13): the hubs moved to the owner's private git server
+  (D6); the repos are `vita3k`, `vita-recomp-kit` (was `vita-recomp`),
+  `ss-delta` and `utakata` (was `shinobido-2`). The local stand-ins are
   retired.
 * ss-delta switched on 2026-10-13 (its D17): both submodules, its
   PowerShell build/install/dist scripts replaced, checked from Stage
@@ -141,7 +140,7 @@ of the new repos are the owner's choice.
 
 **Decision:** a copy of `ss-delta.exe` in `build/ssd-shim/`, JIT only, with
 its own ini and a junction file system that presents PCSE00015 as
-PCSA00152 ([02-baseline](02-baseline.md)). Nothing in `<ss-delta>` is
+PCSA00152 ([02-baseline](02-baseline.md)). Nothing in ss-delta is
 changed.
 
 **Consequences:** it is retired by Phase 1's `shinobido2.exe`. Results from
@@ -172,9 +171,8 @@ repos.
   * scan the whole history, not only the tip, for D2 file types, large
     blobs, zRIF-like base64, `work.bin`/`.rif` contents and personal data.
     Rewrite the history (only before the first push) if anything is found;
-  * docs: absolute local paths (`<ss-delta>`, `<user>\…`) replaced by
-    repo-relative ones; machine details kept only where they matter (GPU
-    vendor and driver);
+  * docs: absolute local paths replaced by repo-relative ones; machine
+    details kept only where they matter (GPU vendor and driver);
   * the commit identity checked: commits carry the author name and email
     configured when they are made (ss-delta's use a local placeholder
     address).
@@ -191,20 +189,25 @@ repos.
 
 **Update (owner, 2026-10-13):**
 
-* **Forgejo first, GitHub later.** All repos live on the owner's private
-  Forgejo (`vita-recomps` org) as `origin`. GitHub comes as a second
-  remote, pushed to on purpose, after the docs cleanup; until then nothing
-  goes public. `.gitmodules` will name the GitHub URLs then, with a local
-  `url.<forgejo>.insteadOf` so this machine keeps fetching from Forgejo.
+* **Private remote first, GitHub later.** All repos live on the owner's
+  private git server as `origin`. GitHub comes as a second remote, pushed to
+  on purpose, after the docs cleanup; until then nothing goes public.
+  `.gitmodules` uses relative URLs (`../vita3k`), which resolve next to
+  wherever the superproject came from, so neither server is named.
+* **Nothing local in the repos** (owner, 2026-10-13): no host names,
+  absolute paths, machine or user names, tokens, not even in history.
+  They live in the private notes repo, which `CLAUDE.local.md` (git-ignored)
+  imports for Claude Code. The history was scrubbed of them before the
+  GitHub pass.
 * **Licences:** MIT for `utakata`, `ss-delta` (except its
   `patches/vita3k/`, GPL like Vita3K) and `vita-recomp-kit`; the fork
   stays GPL-2.0-or-later.
 * **History rewritten** before the first push: every commit of ours by
-  `alex <alex@home.arpa>` now carries the GitHub no-reply address (fork:
+  the old local placeholder address now carries the GitHub no-reply address (fork:
   our 49 commits only, with `--refs ... ^master`, so upstream's commits,
   signatures and IDs are unchanged). Submodule pointers and commit IDs
   quoted in docs and messages were remapped to the new IDs. The old
   histories stay only in local reflogs and backups.
-* **Private notes** go in a separate private repo, `port-notes`, never in
+* **Private notes** go in a separate private repo, never in
   a branch of a repo that will be public (a push of all branches, or a
   mirror, would publish it).

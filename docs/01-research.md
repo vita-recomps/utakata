@@ -4,7 +4,7 @@ Research snapshot from 2026-10-12. **Hypothesis** marks claims not checked
 against the binary or Vita3K. Sources are marked:
 
 * **[local]**: measured on our own dump in this session;
-* **[ssd]**: carried over from the Soul Sacrifice Delta port (`<ss-delta>`),
+* **[ssd]**: carried over from the Soul Sacrifice Delta port (ss-delta),
   where the same tool or mechanism was proven;
 * **[web]**: issue trackers, Sony's update servers, wikis (URLs inline).
 
