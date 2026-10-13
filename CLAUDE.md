@@ -42,7 +42,11 @@ and docs hold most of the know-how.
   `build/shimfs/ux0/app/PCSA00152` is a junction to our PCSE00015 install.
   Drive it with `python -I <ss-delta>\tools\v3kdrive.py build/ssd-shim
   start|run|close`. `--dump-elfs 45` writes ELFs to
-  `build/ssd-shim/ss-delta/elfdumps/PCSE00015/`.
+  `build/ssd-shim/ss-delta/elfdumps/PCSE00015/`. The shim stays at fork
+  `1f100891`. Don't refresh it from ss-delta's current exe: from patch
+  0041 on, that exe defaults to 60 fps and reads and writes SSD's frame
+  timer addresses every frame, whatever game runs. If a newer one is ever
+  needed, set `[display] frame_rate = 30` in the shim's ini.
 - Main menu: the cursor wraps, cross confirms, circle backs out. Taps under
   250 ms can be missed; use `hold:down:250`. System dialogs (Load, Save) are
   Vita3K overlays: `frame:` doesn't capture them, `shot:` does.

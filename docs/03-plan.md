@@ -67,13 +67,27 @@ OK at the time ([D4](decisions.md)).
 * ☐ **Submodules**: this repo gets `third_party/recomp` and
   `third_party/vita3k`; ss-delta switches its nested clone and `recomp/` to
   the same submodules **(ss-delta)**.
-* ☐ **Fork**: a `shinobido-2` branch from the `ss-delta` tip (`1f100891`).
-  Build both exes with `build-vita3k.ps1` (ss-delta's, with paths as
-  parameters).
-* ☐ Generalise `vita3k/ss-delta/` into a per-game front end:
-  * a game profile with title ID, window name, exe name, icon and ini
-    defaults;
-  * hooks for game-specific features;
+* ☐ **Fork**: a `shinobido-2` branch from the `ss-delta` tip (`4704fc6c`,
+  ss-delta finished). Build both exes with the build script (ss-delta's
+  `build-vita3k.ps1`, with paths as parameters).
+* ☐ **Scripts in Python, not PowerShell**, as they are generalised
+  (build, install, dist, map sweep, the RTX 4090 package): Python is
+  already required, and Linux/macOS builds will need them.
+* ☐ Generalise `vita3k/ss-delta/` into a per-game front end. ss-delta's
+  game-specific code becomes hooks of its profile, off for every other
+  game. Today it runs unconditionally, and some of it reads SSD's
+  addresses every frame:
+  * the frame-rate control (`update_frame_rate`: frame timer, flip
+    threshold, `NowLoadingTask` state at SSD addresses);
+  * `boot_config.ini` (`ResoDown`) and the full-3D depth-UV shader fix;
+  * the add-on unlock (`quest_param.csv`);
+  * Ad Hoc Play and its `adhoc_matching` preload in `--dump-elfs`.
+
+  Then:
+  * a game profile with title ID, window name, exe name, icon, and its ini
+    settings declared as data (key, type, range, default, description).
+    The ini parser and, later, the settings menu both read that list, so
+    the menu needs no per-game code;
   * `shinobido2.exe` with `shinobido2.ini`, its own config and log folder,
     keyboard and gamepad bindings, and the saves layout (`SlotParam_N.bin`
     plus data).
@@ -84,8 +98,8 @@ OK at the time ([D4](decisions.md)).
   downloads). ss-delta keeps its zip path.
 * ☐ `--dump-elfs` loads only what this game loads. ss-delta's ad hoc
   matching preload becomes a ss-delta hook.
-* ☐ Tools: `v3kdrive.py` takes the exe/window name as a parameter;
-  `install-game.ps1` and `make-dist.ps1` take a game profile.
+* ☐ Tools: `v3kdrive.py` takes the exe/window name as a parameter; the
+  install and dist scripts take a game profile.
 * ☐ Retire the D5 shim.
 * ☐ Merge `shinobido-2` into one integration branch that builds both exes
   **(ss-delta)**, once ss-delta's quick check passes on it.
@@ -177,7 +191,10 @@ SFX loss; envelope, reverb and EQ audible and plausible against hardware.
 * ☐ Cutscenes and FMV: the four story movies, subtitles, and the "subtitles
   stick after skipping a cutscene" report.
 * ☐ Effects: blood, smoke, water, night lighting.
-* ☐ AMD and NVIDIA (ss-delta's two-reference rule, its D4 update 2).
+* ☐ AMD and NVIDIA (ss-delta's two-reference rule, its D4 update 2). The
+  fork's NVIDIA fixes come along, among them the USSE min/max NaN rule
+  (patch 0039) behind SSD's white floor. PhyreEngine's fog and lighting
+  may hit the same NaN path, so NVIDIA is checked early, not last.
 
 **Exit:** a visual sweep of all areas and cutscenes with no known
 rendering bugs.
@@ -197,11 +214,22 @@ rendering bugs.
   with this game's ten slots).
 * ☐ **DLC**: the Mirror Spirits missions available (installed add-on +
   1.02), and checked in play.
-* ☐ **60 fps study** (optional, as in ss-delta): the frame timer and flip
-  threshold, and whether game logic is frame-locked.
+* ☐ **60 fps**, by ss-delta's method (its D16): find the frame pacing
+  (frame timer period, vblank flip threshold) and change it as data in
+  guest memory from the profile's frame-rate hook, so no game code is
+  patched and native code stays on. Then check:
+  * that game logic steps by the measured frame time (movement, combat,
+    Havok, AI, cutscene timing at 60 against 30);
+  * every screen that may depend on the frame time (ss-delta's loading
+    screen hung at 60 and stays at 30): loading, FMV, mission start and
+    end, menus.
+
+  If logic is frame-locked, 60 needs a game rewrite: mark it unplanned, as
+  ss-delta's D16 allowed for.
 
 **Exit:** a full playthrough is possible on keyboard/controller at ≥ 2×
-internal resolution, grappling hook included.
+internal resolution, grappling hook included, at 60 fps or with 60 marked
+unplanned.
 
 ## Phase 8 — Compatibility pass (M) ☐
 
@@ -234,13 +262,33 @@ that the repo builds from a fresh clone.
 **Exit:** the owner pushes; a stranger can clone, build and install from
 their own dump with the README alone.
 
+## Shared work after Phase 1 (both games) ☐
+
+ss-delta's remaining wishes, done once in the shared repos after Phase 1,
+so both games get them. Not on this game's critical path; the owner orders
+them against Phases 2–8.
+
+* ☐ **Settings menu**: an in-app menu that edits the ini, built from the
+  profile's settings list (Phase 1). It covers display (scale, frame rate),
+  audio, input bindings and paths. Settings that need a restart say so.
+* ☐ **Linux and macOS builds**:
+  * the AOT loader: `dlopen` beside `LoadLibrary` (it is Windows-only
+    today);
+  * the recompiler's CMake: `.so`/`.dylib` instead of DLLs, GCC/Clang
+    instead of MSVC, and the generated C++ checked on both;
+  * macOS on Apple Silicon: an ARM64 host. The recompiler's runtime has
+    no x86 intrinsics, but the generated code's speed there is
+    unmeasured;
+  * Vulkan through MoltenVK on macOS (Vita3K's own path);
+  * the scripts, already in Python after Phase 1;
+  * Steam Deck as a Linux target.
+
 ## Later (deferred)
 
 * Other regions (EU PCSB00049, JP PCSG00019): the same profile with another
   title ID; regenerate per eboot.
 * Modding: loose-file overrides, if the engine has them (unknown), and
   FADEBABE repacking.
-* Linux / Steam Deck (shared with ss-delta).
 
 ---
 
@@ -254,8 +302,8 @@ their own dump with the README alone.
 | R4 | Havok + NEON correctness (13.6% FP/SIMD) | physics desync | ss-delta's NEON layer and dynarmic tests already pass for these forms; differential runs |
 | R5 | PhyreEngine render-to-texture and readback | effects wrong at higher scale | surface sync on (ss-delta D4 update 4); Phase 6 sweep at scale 1 and 2 |
 | R6 | Shared toolchain changes break ss-delta | regressions in the finished port | D4: shared patches tested on both games; ss-delta's quick check in Phase 1's exit |
-| R7 | Frame-locked logic | no 60 fps | optional study only |
+| R7 | Frame-locked logic | no 60 fps | ss-delta D16's method (data-only change, loading screens at 30); otherwise 60 is marked unplanned |
 | R8 | GPL (Vita3K) | runtime can't be relicensed | the fork's source is published with any binary (D6); the recompiler has no Vita3K code |
 | R9 | No debug menu found | slow testing of late content | saves per chapter; Vita save import |
 | R10 | Game data or personal data in a pushed history | can't be taken back once public | D2; the history scan before the first push (Publishing); the scan as a pre-commit hook |
-| R11 | Extracting the shared repos disturbs the finished ss-delta | regressions, lost history | `git filter-repo` keeps history; ss-delta's quick check after each step; the owner OKs each step |
+| R11 | Extracting the shared repos disturbs the finished ss-delta | regressions, lost history | `git filter-repo` keeps history; ss-delta's quick check after each step; the owner OKs each step; ss-delta is finished (2026-10-13), so nothing else moves under it |

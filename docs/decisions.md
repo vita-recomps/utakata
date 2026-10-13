@@ -77,8 +77,13 @@ this machine.
    * End state: **one integration branch for both games**, so each fix
      reaches both and each game repo pins a commit of the same branch.
    * Until the owner OKs changes on ss-delta's side, this game's work goes
-     on a `shinobido-2` branch from the `ss-delta` tip (`1f100891`). It is
-     merged once ss-delta's quick check (title → field) passes on it.
+     on a `shinobido-2` branch from the `ss-delta` tip (`4704fc6c`, patch
+     0042). It is merged once ss-delta's quick check (title → field) passes
+     on it.
+   * Update (2026-10-13): the owner considers ss-delta done (NVIDIA fixed,
+     60 fps), apart from Linux/macOS builds and a settings menu. Both are
+     shared-toolchain work and come after this restructuring, so they are
+     built once for both games (plan, "Shared work after Phase 1").
 2. **The recompiler and shared tools**, extracted from ss-delta in Phase 1
    with their history: `recomp/` (generator, runtime headers, CMake,
    dynarmic tests) and the game-agnostic tools (`velf.py`, `inventory.py`,

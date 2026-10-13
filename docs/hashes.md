@@ -35,4 +35,9 @@ Dumped ELFs (decrypted, relocated by Vita3K at the addresses in
 
 Recompiler code hash: 1.02 `0116ae436dadcb24`; 1.00 `5d169059e3b239dd`.
 
-Pins: ss-delta `107fd85`; its Vita3K fork `1f100891` (branch `ss-delta`).
+Pins:
+
+* Research and the Phase 0 shim (`build/ssd-shim/`): ss-delta `107fd85`, its
+  Vita3K fork `1f100891` (branch `ss-delta`).
+* Base for Phase 1 (ss-delta finished, 2026-10-13): ss-delta `6095ae2`,
+  fork `4704fc6c` (patch 0042).
