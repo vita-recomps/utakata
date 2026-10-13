@@ -1,14 +1,17 @@
-# shinobido-2
+# utakata
 
-A personal research project: a native PC port of **Shinobido 2: Revenge of
-Zen** (PS Vita, US PCSE00015) by static recompilation, built from the
-owner's own dump. It is a sibling of `<ss-delta>` (Soul Sacrifice Delta),
-whose recompiler, Vita3K fork and tools it reuses.
+A native PC port of **Shinobido 2: Revenge of Zen** (PS Vita, US PCSE00015)
+by static recompilation, built from the player's own dump. Utakata is the
+land the game is set in. It is a sibling of ss-delta (Soul Sacrifice
+Delta), whose recompiler, Vita3K fork and tools it shares.
+
+Licence: MIT ([LICENSE](LICENSE)). The Vita3K fork it builds on
+(`third_party/vita3k`) is GPL-2.0-or-later.
 
 > This repository contains *no* game data, *no* firmware and *no* code
 > derived from the game. Everything is regenerated locally from the user's
-> own dump ([D2](docs/decisions.md)). It is not published yet; it is kept
-> ready to be, after a cleanup pass ([D6](docs/decisions.md)).
+> own dump ([D2](docs/decisions.md)). It lives on the owner's private
+> Forgejo; publishing on GitHub follows ([D6](docs/decisions.md)).
 
 ## Status
 

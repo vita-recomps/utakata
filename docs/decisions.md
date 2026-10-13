@@ -89,7 +89,7 @@ this machine.
    dynarmic tests) and the game-agnostic tools (`velf.py`, `inventory.py`,
    `imix.py`, `v3kdrive.py`, `sfo.py`, and this repo's `mkzrif.py` and
    `fetch-update.py`). Hard-coded game values become parameters.
-3. **One repo per game** (`ss-delta`, `shinobido-2`): docs, game-specific
+3. **One repo per game** (`ss-delta`, `utakata`, first called `shinobido-2`): docs, game-specific
    tools and scripts, with 1 and 2 as git submodules (`third_party/vita3k`,
    `third_party/recomp`).
 
@@ -126,6 +126,10 @@ of the new repos are the owner's choice.
 * `vita-recomp` (history extracted from ss-delta) holds the recompiler,
   the analysis and driving tools, and the Python build, install and
   packaging scripts, which read each game's `game.json`.
+* Update (2026-10-13): the hubs moved to the owner's Forgejo (D6); the
+  repos are `vita3k`, `vita-recomp-kit` (was `vita-recomp`), `ss-delta`
+  and `utakata` (was `shinobido-2`). The `<git>\*.git` stand-ins are
+  retired.
 * ss-delta switched on 2026-10-13 (its D17): both submodules, its
   PowerShell build/install/dist scripts replaced, checked from Stage
   Select into a quest on native code with the 60 fps loading-screen
@@ -184,3 +188,23 @@ repos.
 * Install paths must work for strangers: the front end installs from the
   user's own pkg/zip, `work.bin` and PUPs, and fetches nothing behind their
   back (the update is fetched by an explicit command).
+
+**Update (owner, 2026-10-13):**
+
+* **Forgejo first, GitHub later.** All repos live on the owner's private
+  Forgejo (`vita-recomps` org) as `origin`. GitHub comes as a second
+  remote, pushed to on purpose, after the docs cleanup; until then nothing
+  goes public. `.gitmodules` will name the GitHub URLs then, with a local
+  `url.<forgejo>.insteadOf` so this machine keeps fetching from Forgejo.
+* **Licences:** MIT for `utakata`, `ss-delta` (except its
+  `patches/vita3k/`, GPL like Vita3K) and `vita-recomp-kit`; the fork
+  stays GPL-2.0-or-later.
+* **History rewritten** before the first push: every commit of ours by
+  `alex <alex@home.arpa>` now carries the GitHub no-reply address (fork:
+  our 49 commits only, with `--refs ... ^master`, so upstream's commits,
+  signatures and IDs are unchanged). Submodule pointers and commit IDs
+  quoted in docs and messages were remapped to the new IDs. The old
+  histories stay only in local reflogs and backups.
+* **Private notes** go in a separate private repo, `port-notes`, never in
+  a branch of a repo that will be public (a push of all branches, or a
+  mirror, would publish it).

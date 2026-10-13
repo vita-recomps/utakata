@@ -292,14 +292,21 @@ unplanned.
 
 **Exit:** the matrix has no blocking entries.
 
-## Publishing (S, when the owner decides) ☐
+## Publishing (S, when the owner decides) ◐
 
 [D6](decisions.md). Runs for each of the three repos (and ss-delta's,
 **(ss-delta)**). It can happen before Phase 8; the only requirement is
 that the repo builds from a fresh clone.
 
-* ☐ Licences chosen and added (fork: GPL-2.0-or-later with Vita3K's
-  notices; recompiler and game repos: owner's choice).
+* ☑ Licences: MIT for this repo, ss-delta (its Vita3K patches stay GPL)
+  and vita-recomp-kit; the fork GPL-2.0-or-later.
+* ☑ Private Forgejo as `origin` for all four repos, private notes in a
+  separate `port-notes` repo (D6 update).
+* ◐ History: our commits rewritten to the no-reply address in all four
+  repos (fork: ours only), pushed to Forgejo. Scans so far: no D2 file
+  types, no blobs over 1 MB, no personal email (the three gmail hits in
+  ss-delta are the Vita3K-Plus author's public attributions). The
+  `leak-scan.py` hook is still to write.
 * ☐ History scan of every commit: D2 file types, blobs over a few MB,
   zRIF-like base64, `work.bin`/`.rif` contents, personal paths and
   addresses. A script (`tools/leak-scan.py`), also usable as a pre-commit
@@ -310,8 +317,8 @@ that the repo builds from a fresh clone.
   data needed).
 * ☐ Release binaries only from a public tag of the fork.
 
-**Exit:** the owner pushes; a stranger can clone, build and install from
-their own dump with the README alone.
+**Exit:** the owner pushes to GitHub; a stranger can clone, build and
+install from their own dump with the README alone.
 
 ## Shared work after Phase 1 (both games) ☐
 

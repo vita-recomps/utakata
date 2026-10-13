@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-A static-recompilation PC port of Shinobido 2: Revenge of Zen (PS Vita,
+utakata: a static-recompilation PC port of Shinobido 2: Revenge of Zen (PS Vita,
 PCSE00015). Start with `README.md` and `docs/03-plan.md` to find the current
 phase. Sibling project: `<ss-delta>` (Soul Sacrifice Delta), whose
 recompiler, Vita3K fork and tools this project reuses (D4); its `CLAUDE.md`
@@ -42,8 +42,10 @@ and docs hold most of the know-how.
   Keep zRIFs out of the repo.
 - Submodules: `third_party/vita3k` (the fork, branch `games`: the
   integration branch both game repos track) and `third_party/recomp` (the
-  shared toolchain, `main`). Their hub remotes are bare repos in `<git>\`
-  (stand-ins for GitHub, D4/D6). After `git submodule update`, the fork's
+  shared toolchain, `main`). Their `origin` is the owner's private Forgejo,
+  `<private remote>/` (repos `utakata`,
+  `ss-delta`, `vita3k`, `vita-recomp-kit`; D6), whose token is in Windows
+  Credential Manager. The fork's `upstream` remote is Vita3K on GitHub. After `git submodule update`, the fork's
   own submodules need `git -c protocol.file.allow=always submodule update
   --init --recursive` inside it. Commit inside a submodule first, push it
   to the hub, then commit the new pointer here.
