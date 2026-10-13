@@ -40,17 +40,19 @@ Vita3K's NGS loses sound effects after a few missions. See the
 
 ## Tools
 
+This game's own:
+
 | Script | What |
 |---|---|
-| `tools/mkzrif.py` | zRIF (base64) from a `work.bin`, for Vita3K's `--pkg ... --zrif` |
 | `tools/fadebabe.py` | Acquire's FADEBABE archives: stats, table listing, raw members |
-| `tools/fetch-update.py` | lists a title's update on Sony's update server, and downloads and checks it |
-| `tools/proccap/proccap.cpp` | records what one process plays to a WAV (Windows process loopback), optionally turned down so nothing is heard; build with MSVC (see the file) |
-| `tools/wavstats.py` | loudness of a recording over time: RMS, peak and sound onsets per window |
 
-Until Phase 1 moves them into a shared repo (D4), ss-delta's tools are
-used from `<ss-delta>\tools` and `<ss-delta>\recomp`: `velf.py`, `inventory.py`, `imix.py` (needs this ELF's
-segment offset `0x1000` and, for 1.02, exidx `0x813dfc14`), `v3kdrive.py`, `sfo.py`
-and `recomp/recompile.py`.
+The shared toolchain is a submodule, `third_party/recomp` (D4; its README
+lists everything): the recompiler (`recomp/recompile.py`), `velf.py`,
+`inventory.py`, `imix.py`, `v3kdrive.py`, `sfo.py`, and, from this
+project, `mkzrif.py` (zRIF from a `work.bin`), `fetch-update.py` (a
+title's update from Sony's update server), `proccap` (records one
+process's audio) and `wavstats.py` (loudness over time). The Vita3K fork
+is the other submodule, `third_party/vita3k`. Clone with
+`git clone --recurse-submodules`.
 
 Python dependencies: `pyyaml`, `capstone` (as ss-delta).

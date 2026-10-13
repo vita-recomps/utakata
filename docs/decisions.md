@@ -36,7 +36,7 @@ and "downloadable content missions" ([01-research](01-research.md#versions-and-r
 
 **Decision (owner, 2026-10-12):**
 
-* 1.02 is fetched from Sony's update server (`tools/fetch-update.py`) and
+* 1.02 is fetched from Sony's update server (`third_party/recomp/tools/fetch-update.py`) and
   installed over 1.00 with the game's zRIF.
 * It is the only analysis and port target. Its eboot's module NID
   (`0xF4A4F7C3`) and hashes are in [hashes](hashes.md).

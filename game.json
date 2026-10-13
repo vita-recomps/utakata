@@ -1,0 +1,14 @@
+{
+  "_comment": "Read by third_party/recomp/tools (install-game.py, make-dist.py). 'modules' stays empty until Phase 3 has checked the recompiled code (docs/03-plan.md); until then installs run everything on the JIT.",
+  "id": "shinobido2",
+  "name": "Shinobido 2: Revenge of Zen",
+  "title_id": "PCSE00015",
+  "eboot_sha256": {
+    "943a04c05234d1c8a0f1bdd694d3f715d01b643bc5361543366526909e8f4a7b": "1.02"
+  },
+  "modules": {},
+  "load_bases": {},
+  "dump_seconds": 45,
+  "dist_readme": "docs/dist-readme.txt",
+  "dist_files": {}
+}

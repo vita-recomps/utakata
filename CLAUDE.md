@@ -38,34 +38,48 @@ and docs hold most of the know-how.
   is posted keys, and the sticks did not move the player.
   `fs/ux0/user/00/savedata/PCSE00015/` holds a copy of the `hub-day1` save.
 - Installing a pkg: `Vita3K.exe --pkg <pkg> --zrif <zRIF>`, the zRIF from
-  `python -I tools/mkzrif.py <ss-delta fork>/external/psvpfstools/libzrif/src/keyflate.c <work.bin>`.
+  `python -I third_party/recomp/tools/mkzrif.py <ss-delta fork>/external/psvpfstools/libzrif/src/keyflate.c <work.bin>`.
   Keep zRIFs out of the repo.
-- Phase 0 shim (D5): `build/ssd-shim/ss-delta.exe` is a copy of ss-delta's
-  exe with its own `ss-delta.ini` (JIT only, `vita_fs = build/shimfs`).
-  `build/shimfs/ux0/app/PCSA00152` is a junction to our PCSE00015 install.
-  Drive it with `python -I <ss-delta>\tools\v3kdrive.py build/ssd-shim
-  start|run|close`. `--dump-elfs 45` writes ELFs to
-  `build/ssd-shim/ss-delta/elfdumps/PCSE00015/`. The shim stays at fork
-  `1f100891`. Don't refresh it from ss-delta's current exe: from patch
-  0041 on, that exe defaults to 60 fps and reads and writes SSD's frame
-  timer addresses every frame, whatever game runs. If a newer one is ever
-  needed, set `[display] frame_rate = 30` in the shim's ini.
+- Submodules: `third_party/vita3k` (the fork, branch `shinobido-2` until
+  the integration branch exists) and `third_party/recomp` (the shared
+  toolchain, `main`). Their hub remotes are bare repos in `<git>\`
+  (stand-ins for GitHub, D4/D6). After `git submodule update`, the fork's
+  own submodules need `git -c protocol.file.allow=always submodule update
+  --init --recursive` inside it. Commit inside a submodule first, push it
+  to the hub, then commit the new pointer here.
+- Build: `python -I third_party/recomp/tools/build-vita3k.py` (from the
+  repo root; finds MSVC with vswhere) → `build/vita3k/bin/RelWithDebInfo/`
+  with `shinobido2.exe`, `ss-delta.exe` and `Vita3K.exe`. A full build
+  takes ~12 min; `--target shinobido2` for the exe alone.
+- Install and package: `python -I third_party/recomp/tools/install-game.py
+  --firmware <PUPs> --install <game pkg> --license <work.bin> --install
+  <patch pkg> --install <DLC pkg> --license <its work.bin> [--name N]`
+  → `dist/<name>/` with its own `fs/` (reads `game.json`). The PUPs are in
+  `<ss-delta>\extracted\firmware\`. `dist/shinobido2-test/` is such an
+  install, with the `hub-day1` save and `volume = 0`.
+- Running: `python -I third_party/recomp/tools/v3kdrive.py
+  dist/shinobido2-test start|run|close`. `shinobido2.exe` reads
+  `shinobido2.ini` next to it and logs to `shinobido2/vita3k.log`;
+  `--dump-elfs 45` writes to `shinobido2/elfdumps/PCSE00015/`.
+- The Phase 0 shim (`build/ssd-shim/`, D5) is retired: `shinobido2.exe`
+  replaces it. Its folder stays for comparison runs (fork `1f100891`).
 - Stopping a background shell that runs a `v3kdrive.py` loop leaves its
   `sh.exe` and `python.exe` children running, and they keep pressing
   buttons. That caused "phantom input" twice on 2026-10-13 (first blamed
   on the Xbox adapter, which was unplugged at the same moment). Kill the
   children by PID (`Get-CimInstance Win32_Process`), and check none are
-  left before driving the game by hand. The shim also merges real
+  left before driving the game by hand. The front end also merges real
   gamepads and the keyboard with the input pipe.
 - Main menu: the cursor wraps, cross confirms, circle backs out. Taps under
   250 ms can be missed; use `hold:down:250`. System dialogs (Load, Save) are
   Vita3K overlays: `frame:` doesn't capture them, `shot:` does.
 - The target is **1.02** (D3), merged into `ux0/app/PCSE00015`. 1.00 is
   kept in `extracted/app-1.00-PCSE00015/` and `extracted/elf-1.00/`.
-  `python -I tools/fetch-update.py PCSE00015 <dir>` fetches the update.
-- `imix.py` from ss-delta hard-codes SSD's segment offset and exidx; the
-  1.02 eboot needs `SEG_OFF 0x1000` and `EXIDX 0x813dfc14` (1.00:
-  `0x813d8dec`).
+  `python -I third_party/recomp/tools/fetch-update.py PCSE00015 <dir>` fetches the update.
+- Shared tools are in the `third_party/recomp` submodule (D4); fix them
+  there, not in copies. Its `imix.py` reads the segment offset and exidx
+  from the ELF (1.02: `0x1000`, `0x813dfc14`). Its `v3kdrive.py` picks
+  `shinobido2.exe` or `ss-delta.exe` from the folder (`--exe` to choose).
 - 1.02's logos run longer than 1.00's: wait about 40 s before the first
   `start` on the title.
 - In Bash heredocs and `python -c`, backslashes get mangled. Use the Write

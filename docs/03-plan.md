@@ -29,12 +29,12 @@ touch** and the **pkg install path**.
   instruction mix, inventory and a recompiler probe of 1.00; prior work;
   Vita3K's known bugs.
 * ☑ PSN pkg + `work.bin` installed into a portable Vita3K (`--pkg/--zrif`,
-  `tools/mkzrif.py`); DLC installed; firmware 3.74.
+  `third_party/recomp/tools/mkzrif.py`); DLC installed; firmware 3.74.
 * ☑ ELFs decrypted and relocated via a dump run of the ss-delta fork
   ([D5](decisions.md) shim).
 * ☑ Baseline ([02-baseline](02-baseline.md)): logos, FMV, title, menus,
   New Game and the tutorial field at 30 fps on the JIT, rendered correctly.
-* ☑ **Update 1.02** ([D3](decisions.md)): fetched (`tools/fetch-update.py`)
+* ☑ **Update 1.02** ([D3](decisions.md)): fetched (`third_party/recomp/tools/fetch-update.py`)
   and installed; ELFs dumped; `velf`/`imix`/inventory/recompile probe
   re-run (16,972 functions, 0 unsupported); hashes recorded; boots to the
   first in-engine cutscene at 30 fps, and the add-on is found at boot.
@@ -49,8 +49,8 @@ touch** and the **pkg install path**.
   a session (95 min in), and stayed silent through new missions and a
   reload. Dialogue still played, and a new process brought them back. 30
   min of constant combat before that didn't trigger it. The log shows
-  nothing at that moment. Tools: `tools/proccap` (per-process recording),
-  `tools/wavstats.py`.
+  nothing at that moment. Tools: `third_party/recomp/tools/proccap` (per-process recording),
+  `third_party/recomp/tools/wavstats.py`.
 * ☑ Cross-check against upstream Vita3K on this machine
   ([02-baseline](02-baseline.md#upstream-vita3k-on-this-machine-2026-10-13)):
   OpenGL and Vulkan both boot, load a save and render a mission correctly
@@ -62,63 +62,69 @@ touch** and the **pkg install path**.
 **Exit:** the 1.02 game boots to gameplay in our fork, with ELFs, hashes,
 the measurements and a recorded SFX-dropout repro. **Met** (2026-10-13).
 
-## Phase 1 — Shared repos, fork branch and front end (M) ☐
+## Phase 1 — Shared repos, fork branch and front end (M) ◐
 
-Steps marked **(ss-delta)** change `<ss-delta>` and wait for the owner's
-OK at the time ([D4](decisions.md)).
+Steps marked **(ss-delta)** change `<ss-delta>`; the owner OKed Phase 1
+(2026-10-13). The hub repos are in `<git>\` until publishing (D4, D6).
 
-* ☐ **Recompiler repo** (D4 item 2) **(ss-delta)**: extract `recomp/` and
-  the game-agnostic tools with their history (`git filter-repo`), add
-  `mkzrif.py` and `fetch-update.py`. Parameterise what is SSD-specific:
-  `SSD_ROOT`/`GENERATED_DIR`, the `ssd_aot_` DLL prefix and `SSD_AOT*`
-  env names (keeping the old ones working for ss-delta), `imix.py`'s
-  segment offset and exidx (read from the ELF), `v3kdrive.py`'s exe and
-  window name. The dynarmic suites pass on both games' forms.
-* ☐ **Submodules**: this repo gets `third_party/recomp` and
-  `third_party/vita3k`; ss-delta switches its nested clone and `recomp/` to
-  the same submodules **(ss-delta)**.
-* ☐ **Fork**: a `shinobido-2` branch from the `ss-delta` tip (`4704fc6c`,
-  ss-delta finished). Build both exes with the build script (ss-delta's
-  `build-vita3k.ps1`, with paths as parameters).
-* ☐ **Scripts in Python, not PowerShell**, as they are generalised
-  (build, install, dist, map sweep, the RTX 4090 package): Python is
-  already required, and Linux/macOS builds will need them.
-* ☐ Generalise `vita3k/ss-delta/` into a per-game front end. ss-delta's
-  game-specific code becomes hooks of its profile, off for every other
-  game. Today it runs unconditionally, and some of it reads SSD's
-  addresses every frame:
-  * the frame-rate control (`update_frame_rate`: frame timer, flip
-    threshold, `NowLoadingTask` state at SSD addresses);
-  * `boot_config.ini` (`ResoDown`) and the full-3D depth-UV shader fix;
-  * the add-on unlock (`quest_param.csv`);
-  * Ad Hoc Play and its `adhoc_matching` preload in `--dump-elfs`.
-
-  Then:
-  * a game profile with title ID, window name, exe name, icon, and its ini
-    settings declared as data (key, type, range, default, description).
-    The ini parser and, later, the settings menu both read that list, so
-    the menu needs no per-game code;
-  * `shinobido2.exe` with `shinobido2.ini`, its own config and log folder,
-    keyboard and gamepad bindings, and the saves layout (`SlotParam_N.bin`
-    plus data).
-* ☐ Install path for PSN pkgs: `--install-pkg <pkg> --work-bin <file>`
-  (zRIF made in code, as `tools/mkzrif.py` does), then the 1.02 patch pkg
-  (with the game's licence) and the DLC pkg. Fetching the patch stays an
-  explicit step (`fetch-update.py`, or a front-end flag that says what it
-  downloads). ss-delta keeps its zip path.
-* ☐ `--dump-elfs` loads only what this game loads. ss-delta's ad hoc
-  matching preload becomes a ss-delta hook.
-* ☐ Tools: `v3kdrive.py` takes the exe/window name as a parameter; the
-  install and dist scripts take a game profile.
-* ☐ Retire the D5 shim.
+* ☑ **Recompiler repo** `vita-recomp` (D4 item 2), extracted from a copy
+  of ss-delta's history (`git filter-repo`; ss-delta itself untouched):
+  `recomp/` and the game-agnostic tools, plus this project's `mkzrif.py`,
+  `fetch-update.py`, `proccap`, `wavstats.py`. `GENERATED_DIR`,
+  `VITA3K_SRC`/`VITA3K_BUILD` and the DLL prefix (`RECOMP_DLL_PREFIX`,
+  default `ssd_aot_`) are parameters; `imix.py` reads the segment and
+  exidx from the ELF; `v3kdrive.py` picks the front end in the folder.
+  Checked: the 1.02 eboot recompiles to the same code hash
+  (`0116ae436dadcb24`), `imix` matches the hand-patched copy for this
+  game and the old one for SSD, and CMake with ss-delta's paths gives the
+  same `build.ninja`. Not yet run: the dynarmic suites on both games
+  (Phase 3).
+* ◐ **Submodules**: this repo has `third_party/vita3k` and
+  `third_party/recomp`. ss-delta's switch is still to do **(ss-delta)**.
+* ☑ **Fork**: branch `shinobido-2` from `4704fc6c`, built here in 12 min
+  (`build/vita3k`).
+* ◐ **Scripts in Python** in `vita-recomp/tools`: `build-vita3k.py`
+  (MSVC found with vswhere), `install-game.py`, `make-dist.py`, read from
+  the project's `game.json`. ss-delta's map sweep and RTX 4090 package
+  stay PowerShell until ss-delta switches.
+* ☑ **Front end generalised** (fork `4a2d068c`): `vita3k/game-frontend/`
+  (the shared frontend, a library; `Profile` with hooks) and
+  `vita3k/games/<id>/` (one small exe per game). Everything particular to
+  Soul Sacrifice is in its profile: frame-rate control, `boot_config.ini`
+  and the depth-UV fix, the add-on unlock, save import/export, Ad Hoc
+  Play and the `adhoc_matching` dump preload. The settings file is
+  declared as data (`IniLayout`/`SettingSpec`); `ss-delta.ini`'s default
+  text is byte-identical to before. `shinobido2.exe` has the shared
+  settings only. Its saves layout and import come with Phase 7.
+* ☑ **Install path for PSN pkgs**: `--install <pkg> --license
+  <work.bin|rif>` (or `--zrif`); the patch uses the game's installed
+  licence. `install-game.py` installed firmware, game, 1.02 and the DLC
+  into a fresh `dist/shinobido2-test/` in 18 s, and checked the eboot is
+  1.02.
+* ☑ `--dump-elfs` loads only what the game loads: `shinobido2.exe`'s dump
+  is byte-identical to the shim's, without `adhoc_matching`.
+* ☑ Tools take a game: `v3kdrive.py` (auto-detects `shinobido2.exe`),
+  `install-game.py`/`make-dist.py` (`game.json`). New front-end flag
+  `--write-ini <file>` replaces ss-delta's `ssdelta_ini.py`.
+* ☑ **D5 shim retired**: `dist/shinobido2-test/shinobido2.exe` loaded the
+  `hub-day1` save and played a mission at 30 fps (moved, swung), driven
+  by the shared `v3kdrive.py`.
+* ◐ ss-delta on the new front end: `ss-delta.exe` from this build, with
+  ss-delta's recompiled modules, booted to the title, loaded a save into
+  the hub on NativeCPU (all 10 modules placed where expected), 57 fps at
+  scale 2, its hooks active (add-ons, `boot_config`, 60 fps). Run on a
+  junction file system with a copy of the saves, so the owner's weren't
+  touched. A quest (loading screen at 60) is still to check.
+* ☐ ss-delta switches to the submodules and the Python scripts, its docs
+  follow **(ss-delta)**.
 * ☐ Merge `shinobido-2` into one integration branch that builds both exes
-  **(ss-delta)**, once ss-delta's quick check passes on it.
+  **(ss-delta)**.
 
 **Exit:** a fresh clone of this repo with `--recurse-submodules` builds
 `shinobido2.exe`, which installs the game from the owner's pkg files, boots
-1.02 on the JIT to the tutorial at 30 fps, and is driven by `v3kdrive.py`.
-ss-delta still builds and passes its quick check (title → field), so the
-shared changes broke nothing.
+1.02 on the JIT to gameplay at 30 fps, and is driven by `v3kdrive.py`.
+ss-delta still builds and plays (title → a quest), so the shared changes
+broke nothing.
 
 ## Phase 2 — Inventory and game knowledge (S) ☐
 

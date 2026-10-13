@@ -18,14 +18,11 @@ extracted/
 
 # Licences in text form (zRIFs) and other secrets
 *zrif*.txt
-
 # Firmware is Sony's: never committed
 *.PUP
 *.pup
-
 # Recompiler and inventory output is generated from the game's code
 generated/
-
 # Build output
 build/
 out/
@@ -35,21 +32,16 @@ dist/
 *.pdb
 *.obj
 *.exe
-
 # Analysis databases contain disassembled game code
 *.gpr
 *.rep/
 /ghidra-projects/
-
 # Python
 __pycache__/
 *.pyc
-
 # Screenshots, captures and logs of game content are never committed
 /*.png
 /*.jpg
 /*.log
-
 # Vita3K fork: a nested clone or worktree with its own history (D4)
-/third_party/vita3k/
 /third_party/vita-headers/

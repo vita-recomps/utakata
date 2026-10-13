@@ -40,7 +40,7 @@ against the binary or Vita3K. Sources are marked:
   shaders) with **Havok** physics [local]. Scripts are `.sol`/`.sx`.
 * **Version:** the dump is **1.00**; the port targets **1.02**
   ([D3](decisions.md)), the final US update, fetched from Sony's update
-  server with `tools/fetch-update.py` and installed. It adds DLC support and
+  server with `third_party/recomp/tools/fetch-update.py` and installed. It adds DLC support and
   "downloadable content missions" [web]. Its eboot grew by 0.6% and adds
   only two imports (`sceAppUtilDrmOpen/Close`, the add-on mount); libc and
   libfios2 decrypt to the same code as 1.00 ([below](#update-102-local)).
@@ -65,7 +65,7 @@ format from ss-delta's NoNpDrm zip.
 
 * Vita3K's CLI installs a pkg with `--pkg <file> --zrif <base64>`. The zRIF
   is `work.bin` deflated with psvpfstools' 1 KB dictionary (window bits 10)
-  and base64-encoded. `tools/mkzrif.py` makes it from `work.bin`; the
+  and base64-encoded. `third_party/recomp/tools/mkzrif.py` makes it from `work.bin`; the
   dictionary is read from Vita3K's own `libzrif/src/keyflate.c`. Both
   licences decoded, both pkgs installed ("matched retail hmac").
 * Firmware 3.74 is installed from the PUPs ss-delta already has (same
@@ -156,7 +156,7 @@ There is no SceUlt, SceFiber, SceNetAdhoc*, SceNpMatching2 or SceAvPlayer.
 
 ### Update 1.02 [local]
 
-`python -I tools/fetch-update.py PCSE00015 <dir>` reads Sony's update XML
+`python -I third_party/recomp/tools/fetch-update.py PCSE00015 <dir>` reads Sony's update XML
 (the path's HMAC-SHA256 of `np_PCSE00015` under the well-known key), lists
 1.02 only (21,421,968 bytes) and downloads it. The XML's `sha1sum` covers
 the pkg minus its last 32 bytes. Installed with the game's own zRIF

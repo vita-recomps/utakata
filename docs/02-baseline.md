@@ -96,10 +96,10 @@ The shim's junction follows it, so nothing in `build/ssd-shim` changed.
 
 **Setup.** The shim as above, 1.02, `[audio] volume = 100`. In-game: Easy,
 Music Volume 0 (so the recording holds sound effects and voices only),
-SFX 100. The game's output was recorded with `tools/proccap`: Windows
+SFX 100. The game's output was recorded with `third_party/recomp/tools/proccap`: Windows
 process loopback, only this process, with its session turned down to −80 dB
 so nothing was heard. The recording is scaled back up. Loudness per
-window came from `tools/wavstats.py`. Input came from `v3kdrive.py`
+window came from `third_party/recomp/tools/wavstats.py`. Input came from `v3kdrive.py`
 scripts: swings (Square ×3), dashes (Circle + stick), jumps (Cross).
 
 **Run 1 (one process, 2 h 04 min):**
