@@ -113,6 +113,24 @@ build independently. Disk space is not a constraint.
 (extracting `recomp/`, the submodule switch, the merged branch). The names
 of the new repos are the owner's choice.
 
+**Done (Phase 1, 2026-10-13, owner's OK for Phase 1):**
+
+* Hubs (bare repos, stand-ins for GitHub until publishing) in `<git>\`:
+  `vita3k.git` (the fork), `vita-recomp.git` (the shared toolchain),
+  `ss-delta.git` and `shinobido-2.git`. `vita-recomp` is a working name;
+  renaming before publishing is cheap.
+* The fork's integration branch is **`games`**: ss-delta's branch plus the
+  shared single-game frontend (`vita3k/game-frontend/`, one exe per game
+  in `vita3k/games/<id>/`). Both game repos track it. The old `ss-delta`
+  and `shinobido-2` branches stay as history.
+* `vita-recomp` (history extracted from ss-delta) holds the recompiler,
+  the analysis and driving tools, and the Python build, install and
+  packaging scripts, which read each game's `game.json`.
+* ss-delta switched on 2026-10-13 (its D17): both submodules, its
+  PowerShell build/install/dist scripts replaced, checked from Stage
+  Select into a quest on native code with the 60 fps loading-screen
+  switch.
+
 ## D5 — Phase 0 runs through a shim of `ss-delta.exe` (accepted as a stopgap, 2026-10-12)
 
 **Context:** an ELF dump and a baseline were needed before any fork work.

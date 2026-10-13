@@ -62,7 +62,7 @@ touch** and the **pkg install path**.
 **Exit:** the 1.02 game boots to gameplay in our fork, with ELFs, hashes,
 the measurements and a recorded SFX-dropout repro. **Met** (2026-10-13).
 
-## Phase 1 — Shared repos, fork branch and front end (M) ◐
+## Phase 1 — Shared repos, fork branch and front end (M) ☑
 
 Steps marked **(ss-delta)** change `<ss-delta>`; the owner OKed Phase 1
 (2026-10-13). The hub repos are in `<git>\` until publishing (D4, D6).
@@ -79,14 +79,15 @@ Steps marked **(ss-delta)** change `<ss-delta>`; the owner OKed Phase 1
   game and the old one for SSD, and CMake with ss-delta's paths gives the
   same `build.ninja`. Not yet run: the dynarmic suites on both games
   (Phase 3).
-* ◐ **Submodules**: this repo has `third_party/vita3k` and
-  `third_party/recomp`. ss-delta's switch is still to do **(ss-delta)**.
+* ☑ **Submodules**: this repo and ss-delta both have `third_party/vita3k`
+  (branch `games`) and `third_party/recomp` (`main`).
 * ☑ **Fork**: branch `shinobido-2` from `4704fc6c`, built here in 12 min
   (`build/vita3k`).
 * ◐ **Scripts in Python** in `vita-recomp/tools`: `build-vita3k.py`
-  (MSVC found with vswhere), `install-game.py`, `make-dist.py`, read from
-  the project's `game.json`. ss-delta's map sweep and RTX 4090 package
-  stay PowerShell until ss-delta switches.
+  (MSVC found with vswhere, Qt found in `C:\Qt`), `install-game.py`,
+  `make-dist.py`, read from the project's `game.json`. ss-delta's old
+  PowerShell build/install/dist scripts are gone; its map sweep and RTX
+  4090 package stay PowerShell (SSD-specific, used rarely).
 * ☑ **Front end generalised** (fork `4a2d068c`): `vita3k/game-frontend/`
   (the shared frontend, a library; `Profile` with hooks) and
   `vita3k/games/<id>/` (one small exe per game). Everything particular to
@@ -114,17 +115,26 @@ Steps marked **(ss-delta)** change `<ss-delta>`; the owner OKed Phase 1
   the hub on NativeCPU (all 10 modules placed where expected), 57 fps at
   scale 2, its hooks active (add-ons, `boot_config`, 60 fps). Run on a
   junction file system with a copy of the saves, so the owner's weren't
-  touched. A quest (loading screen at 60) is still to check.
-* ☐ ss-delta switches to the submodules and the Python scripts, its docs
-  follow **(ss-delta)**.
-* ☐ Merge `shinobido-2` into one integration branch that builds both exes
-  **(ss-delta)**.
+  touched. After ss-delta's switch, its own rebuilt exe went from Stage
+  Select into a quest (ST01A): loading screen at 30, field at 56–58 fps
+  on native code.
+* ☑ ss-delta switched to the submodules and the Python scripts, docs
+  updated, its D17 **(ss-delta)**; its `master` is at the switch, pushed
+  to `<git>\ss-delta.git`.
+* ☑ One integration branch, `games`, builds both exes; both game repos
+  track it **(ss-delta)**.
 
 **Exit:** a fresh clone of this repo with `--recurse-submodules` builds
 `shinobido2.exe`, which installs the game from the owner's pkg files, boots
 1.02 on the JIT to gameplay at 30 fps, and is driven by `v3kdrive.py`.
 ss-delta still builds and plays (title → a quest), so the shared changes
 broke nothing.
+**Met** (2026-10-13): a `--recurse-submodules` clone of
+`<git>\shinobido-2.git` configured and built from scratch in 9 min (after
+two fixes to `build-vita3k.py` it found: Boost's bootstrap and Qt), and its
+`shinobido2.exe` booted to the title at 30 fps. `dist/shinobido2-test`
+(installed from the pkg files) played a mission. ss-delta played a quest.
+Left open: the map sweep and RTX 4090 package stay PowerShell (ss-delta's).
 
 ## Phase 2 — Inventory and game knowledge (S) ☐
 

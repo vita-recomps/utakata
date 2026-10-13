@@ -58,7 +58,8 @@ and docs hold most of the know-how.
   `<ss-delta>\extracted\firmware\`. `dist/shinobido2-test/` is such an
   install, with the `hub-day1` save and `volume = 0`.
 - Running: `python -I third_party/recomp/tools/v3kdrive.py
-  dist/shinobido2-test start|run|close`. `shinobido2.exe` reads
+  dist/shinobido2-test start|run|close`. In `build/vita3k/bin/...`, which
+  holds every game's exe, add `--exe shinobido2.exe`. `shinobido2.exe` reads
   `shinobido2.ini` next to it and logs to `shinobido2/vita3k.log`;
   `--dump-elfs 45` writes to `shinobido2/elfdumps/PCSE00015/`.
 - The Phase 0 shim (`build/ssd-shim/`, D5) is retired: `shinobido2.exe`
