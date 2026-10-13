@@ -40,9 +40,9 @@ and docs hold most of the know-how.
 - Installing a pkg: `Vita3K.exe --pkg <pkg> --zrif <zRIF>`, the zRIF from
   `python -I third_party/recomp/tools/mkzrif.py <ss-delta fork>/external/psvpfstools/libzrif/src/keyflate.c <work.bin>`.
   Keep zRIFs out of the repo.
-- Submodules: `third_party/vita3k` (the fork, branch `shinobido-2` until
-  the integration branch exists) and `third_party/recomp` (the shared
-  toolchain, `main`). Their hub remotes are bare repos in `<git>\`
+- Submodules: `third_party/vita3k` (the fork, branch `games`: the
+  integration branch both game repos track) and `third_party/recomp` (the
+  shared toolchain, `main`). Their hub remotes are bare repos in `<git>\`
   (stand-ins for GitHub, D4/D6). After `git submodule update`, the fork's
   own submodules need `git -c protocol.file.allow=always submodule update
   --init --recursive` inside it. Commit inside a submodule first, push it

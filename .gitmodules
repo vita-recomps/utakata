@@ -1,7 +1,7 @@
 [submodule "third_party/vita3k"]
 	path = third_party/vita3k
 	url = <git>/vita3k.git
-	branch = shinobido-2
+	branch = games
 [submodule "third_party/recomp"]
 	path = third_party/recomp
 	url = <git>/vita-recomp.git
