@@ -323,6 +323,13 @@ that the repo builds from a fresh clone.
   The fork's and vita-recomp-kit's histories had nothing to scrub. One old
   doc line still quotes the former placeholder email (a reserved
   `home.arpa` address, nothing personal).
+* ☑ Leak scan: vita-recomp-kit `tools/leak-scan.py`, a pre-push hook in
+  every repo (game-data files, big files, licence strings, tokens, user
+  folders, and the owner's private patterns kept outside the repos).
+* ☑ Published on GitHub (2026-10-13), org `vita-recomps`: the fork
+  (`Vita3K`, a fork of Vita3K/Vita3K, default branch `games`) and
+  `vita-recomp-kit`. The game repos (utakata, ss-delta) are not pushed
+  yet; their relative submodule URLs will resolve there unchanged.
 * ☐ A GitHub Actions build of the fork and the recompiler tests (no game
   data needed).
 * ☐ Release binaries only from a public tag of the fork.
