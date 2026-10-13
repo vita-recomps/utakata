@@ -72,6 +72,12 @@ owner's machine-specific notes, kept in a private repo.
   ssd_aot_<m>.dll`; copy them next to `shinobido2.exe`. Counters:
   `SSD_AOT_COUNT=1 SSD_AOT_STATS=<file>`; differential check
   `SSD_AOT_DIFF=2000` (denser intervals slow the game and disturb it).
+  Firmware modules: recompile them from `extracted/elf/firmware/<m>.elf`
+  into `generated/fw_<m>` (the runtime finds modules by that file name; a
+  dump's `0x...-0x..._<m>.elf` name breaks it). The whole flow, no JIT:
+  `install-game.py --no-jit ...` (game.json lists the modules); the exe
+  without dynarmic is `build-vita3k.py --no-jit` → `build/vita3k-nojit`.
+  `dist/utakata-p4/` is such an install (with the hub save, volume 0).
   `tools/untranslatable.py` lists what the recompiler can't translate,
   `tools/xref.py` explores the ELF (disassembly with names, callers,
   strings).

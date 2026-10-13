@@ -201,19 +201,34 @@ every form. Results: [02-baseline, Native code](02-baseline.md#native-code-phase
 
 **Exit:** met (2026-10-13).
 
-## Phase 4 — Standalone, no JIT (S) ☐
+## Phase 4 — Standalone, no JIT (S) ☑
 
-* ☐ Firmware modules recompiled from this install's dumps at this game's
-  addresses: sysmodule, libSceFt2, libpvf, libscemp4 (ss-delta D11).
-* ☐ NativeCPU by default; a build without dynarmic.
-* ☐ The install flow end to end from the owner's pkg files and PUPs into
-  `dist/<name>/`.
-* ☐ Offline stubs checked: NP, trophies, HTTP/SSL, Near (Network Jar
-  reports no gifts), CommonDialog network checks.
+Results: [02-baseline, No JIT](02-baseline.md#no-jit-phase-4-2026-10-13).
 
-**Exit:** `shinobido2.exe` built without dynarmic, installed from the
-owner's pkg, plays the tutorial and the first mission at 30 fps with 0 JIT
-instructions.
+* ☑ Firmware modules recompiled at this game's addresses: sysmodule,
+  libSceFt2, libpvf, libscemp4 (all functions; libpvf's 2 unsupported
+  forms are unreached data). Comparison tests: 6,754 instruction and 174
+  function tests, 0 failing. They must be generated from ELFs named
+  `<module>.elf` (the runtime matches modules by that name to hold and
+  release their places).
+* ☑ Fork: a recompiled module's place is held again when it unloads
+  (`aot_restore_reservation`). libscemp4 loads and unloads for every
+  movie; without this, a later load could land elsewhere, as one did at
+  `0x80650000` in the 2-hour Phase 0 run, and its native code couldn't run.
+* ☑ NativeCPU is the default (`jit = false`); `shinobido2.exe` built
+  without dynarmic (`build-vita3k.py --no-jit`, 8.4 min).
+* ☑ Install flow end to end: `install-game.py --no-jit` from the pkg files,
+  the 1.02 pkg, the add-on and the PUPs into `dist/<name>/` in 6 minutes
+  (install, ELF dump, recompile 7 modules, compile, package with the
+  no-JIT exe); `game.json` lists the modules.
+* ☑ Offline stubs: the NP, trophy, net, HTTP/SSL and Near modules are
+  Vita3K's HLE; no errors in any run, including the 2-hour Phase 0 session
+  with six Near load/unload cycles. Opening the Network Jar in play is
+  left to Phase 8's matrix.
+
+**Exit:** met (2026-10-13). The no-JIT install played New Game → intro
+cutscene → tutorial lessons, and the first mission with combat and a
+restart: 30–31 fps, 100% native, 0 escapes, no "no native code".
 
 ## Phase 5 — Audio: NGS (M–L) ☐
 

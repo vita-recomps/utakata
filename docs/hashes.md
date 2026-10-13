@@ -42,6 +42,10 @@ Recompiler code hashes (they change with the set of functions recompiled):
 | eboot 1.00 (Phase 0) | `5d169059e3b239dd` |
 | libc | `4f78016e91621907` |
 | libfios2 | `5db6513e035d945f` |
+| sysmodule (firmware 3.74, at `0x8031E000`) | `88ff8f2bc39a21a2` |
+| libSceFt2 (at `0x80384000`) | `cd3d98ec49158081` |
+| libpvf (at `0x803D5000`) | `be2406d904d70b55` |
+| libscemp4 (at `0x805B4000`) | `a69c44a30c2f0674` |
 
 Pins:
 

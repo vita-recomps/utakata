@@ -1,12 +1,20 @@
 {
-  "_comment": "Read by third_party/recomp/tools (install-game.py, make-dist.py). 'modules' stays empty until Phase 3 has checked the recompiled code (docs/03-plan.md); until then installs run everything on the JIT.",
+  "_comment": "Read by third_party/recomp/tools (install-game.py, make-dist.py). 'modules': the modules the game loads, as dumped by --dump-elfs, and the generated/<name> each is recompiled into (Phase 3/4).",
   "id": "shinobido2",
   "name": "Shinobido 2: Revenge of Zen",
   "title_id": "PCSE00015",
   "eboot_sha256": {
     "943a04c05234d1c8a0f1bdd694d3f715d01b643bc5361543366526909e8f4a7b": "1.02"
   },
-  "modules": {},
+  "modules": {
+    "eboot": "eboot",
+    "libc": "libc",
+    "libfios2": "libfios2",
+    "sysmodule": "fw_sysmodule",
+    "libSceFt2": "fw_libSceFt2",
+    "libpvf": "fw_libpvf",
+    "libscemp4": "fw_libscemp4"
+  },
   "load_bases": {},
   "dump_seconds": 45,
   "dist_readme": "docs/dist-readme.txt",

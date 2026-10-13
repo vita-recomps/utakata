@@ -173,6 +173,24 @@ SSD_AOT_STATS=<file>`.
 * Rendering matched the JIT build in every screenshot (field, mission
   start, combat, restart).
 
+## No JIT (Phase 4, 2026-10-13)
+
+`dist/utakata-p4`, installed by `install-game.py --no-jit` from the pkg
+files (game, 1.02, add-on) and the PUPs: `shinobido2.exe` without dynarmic,
+seven recompiled modules (eboot, libc, libfios2, sysmodule, libSceFt2,
+libpvf, libscemp4), `jit = false`.
+
+| Run | fps | Native | Escapes | Stops |
+|---|---|---|---|---|
+| boot → New Game → intro cutscene → tutorial (move, jump, crouch, dash) | 30–31 | 100% (1.6 G instructions, JIT 0) | 0 | none |
+| hub save → first mission → combat → *Restart Mission* | 30–31 (199 × 30, 74 × 31) | 100% (2.1 G, JIT 0) | 0 | none |
+
+* libscemp4 (the movie player) loaded three times by the first mission,
+  each time at `0x805B4000`, where its native code expects it.
+* Before the firmware modules were generated from `<module>.elf` names,
+  their places were held but never released, so they loaded elsewhere and
+  the game stopped at once with "no native code" in sysmodule.
+
 ## Upstream Vita3K on this machine (2026-10-13)
 
 The stock release in `extracted/vita3k` (`v0.2.1 4152-38bce160`, the
