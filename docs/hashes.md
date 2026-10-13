@@ -33,7 +33,15 @@ Dumped ELFs (decrypted, relocated by Vita3K at the addresses in
 | `libc.elf` (at `0x80323000`; identical for 1.00 and 1.02) | `50c69179e68d81de85a5522751764cc6cece823ab559192ff0a6e3ea32f2467c` |
 | `libfios2.elf` (at `0x80362000`; identical for 1.00 and 1.02) | `fd69021b6ac385e57ce8e162d786ca80c93f4cb1eefb3c906a954581940b0351` |
 
-Recompiler code hash: 1.02 `0116ae436dadcb24`; 1.00 `5d169059e3b239dd`.
+Recompiler code hashes (they change with the set of functions recompiled):
+
+| Module | Hash |
+|---|---|
+| eboot 1.02, all functions (Phase 3, with half-precision conversions) | `7a92a87f085e73c1` |
+| eboot 1.02, without the 2 half-precision functions (Phase 0) | `0116ae436dadcb24` |
+| eboot 1.00 (Phase 0) | `5d169059e3b239dd` |
+| libc | `4f78016e91621907` |
+| libfios2 | `5db6513e035d945f` |
 
 Pins:
 

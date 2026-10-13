@@ -61,6 +61,20 @@ owner's machine-specific notes, kept in a private repo.
   --zrif <zRIF>`, the zRIF from `python -I third_party/recomp/tools/mkzrif.py
   third_party/vita3k/external/psvpfstools/libzrif/src/keyflate.c <work.bin>`.
   Keep zRIFs out of the repo.
+- To reach gameplay: `python -I tools/to-mission.py dist/<name>` (after
+  `v3kdrive.py dist/<name> start`) goes boot → Continue → slot 1 → hub →
+  first mission's field, waiting for each screen (references in
+  `build/screens/`, made with `--capture <screen> <png>`). It needs a hub
+  save in slot 1. The title plays an attract movie if left alone.
+- Native code: `python third_party/recomp/recomp/recompile.py
+  extracted/elf/<m>.elf generated/<m>`, then `python -I
+  third_party/recomp/tools/build-recomp.py --jobs 6` → `build/recomp/
+  ssd_aot_<m>.dll`; copy them next to `shinobido2.exe`. Counters:
+  `SSD_AOT_COUNT=1 SSD_AOT_STATS=<file>`; differential check
+  `SSD_AOT_DIFF=2000` (denser intervals slow the game and disturb it).
+  `tools/untranslatable.py` lists what the recompiler can't translate,
+  `tools/xref.py` explores the ELF (disassembly with names, callers,
+  strings).
 - Stopping a background shell that runs a `v3kdrive.py` loop leaves its
   `sh.exe` and `python.exe` children running, and they keep pressing
   buttons ("phantom input", 2026-10-13). Kill the children by PID

@@ -142,7 +142,7 @@ Left open: the map sweep and RTX 4090 package stay PowerShell (ss-delta's).
 Results: [01-research, Game knowledge](01-research.md#game-knowledge-phase-2-2026-10-13).
 Tools: `tools/xref.py` (disassembly with names, strings, callers over the
 inventory), `tools/untranslatable.py` (what the recompiler leaves to the
-fallback CPU, and why), `tools/to-mission.sh` (boot → hub save → mission).
+fallback CPU, and why), `tools/to-mission.py` (boot → hub save → mission field).
 
 * ☑ Inventory of 1.02's eboot, libc and libfios2: all exidx entries
   classified, 0 unreached bytes, every indirect branch listed.
@@ -169,23 +169,37 @@ fallback CPU, and why), `tools/to-mission.sh` (boot → hub save → mission).
 
 **Exit:** met (2026-10-13).
 
-## Phase 3 — Native code in the fork (M) ☐
+## Phase 3 — Native code in the fork (M) ☑
 
-ss-delta's Phases 3–5 at once, since the recompiler already covers every
-form.
+ss-delta's Phases 3–5 at once, since the recompiler already covered almost
+every form. Results: [02-baseline, Native code](02-baseline.md#native-code-phase-3-2026-10-13).
 
-* ☐ Generate eboot, libc and libfios2 for their load addresses
-  (`--load-base`, ss-delta D8) and build `*_aot_<module>.dll` (61 + 5
-  buckets, ~210 MB of C++).
-* ☐ The dynarmic comparison suites (`recomp/run-tests.ps1`) for this game's
-  modules: every form, plus whole leaf functions. 0 failing.
-* ☐ Run with the JIT as fallback: counters (`SSD_AOT_COUNT`), then the
-  differential mode (`SSD_AOT_DIFF`) through title, tutorial and a mission.
-* ☐ Check Havok physics native against JIT (ss-delta R1), as ss-delta did
-  in its boss-fight timing.
+* ☑ Recompiler: the half-precision conversions it lacked (VFP
+  `vcvtb/vcvtt.f16.f32`, NEON `vcvt` f32↔f16), so all 16,974 eboot
+  functions translate; and register jumps the inventory resolved to a
+  function entry (libc's `memmove` → `memcpy`, `bx ip`) become tail calls
+  instead of escapes (37 escapes on boot before, 0 after).
+* ☑ eboot, libc and libfios2 generated at their load addresses (their
+  dumps are already relocated) and built into `ssd_aot_*.dll` in 3.4 min
+  with 6 jobs (new `tools/build-recomp.py` in vita-recomp-kit; the eboot
+  DLL is 33 MB).
+* ☑ Comparison suites against dynarmic: eboot 5,711 instruction tests
+  (553 forms, the new ones included) and 300 function tests; libc 2,733 and
+  107; libfios2 1,900 and 40: **0 failing**.
+* ☑ JIT as fallback: boot → hub → mission → combat → *Restart Mission* →
+  combat. 99.5–99.7% of guest instructions native, **0 escapes**, **0 JIT
+  instructions inside the three modules**; the rest is firmware code
+  (`libscemp4`, the video player: Phase 4). Differential mode
+  (`SSD_AOT_DIFF=2000`): 50,727 calls checked, **0 mismatching**.
+* ☑ Rendering and speed as on the JIT: 30 fps in combat (no checker).
+* → Havok physics native against JIT at a scale (ss-delta R1): the
+  differential run covered gameplay with physics (0 mismatches); a
+  dedicated long fight moves to Phase 8's native-vs-JIT item.
+* New tool: `tools/to-mission.py` reaches the field by recognising each
+  screen (references in `build/screens/`) instead of fixed waits, which
+  the title's attract movie broke.
 
-**Exit:** a full mission with **0 JIT instructions** in the eboot, libc and
-libfios2, and a clean differential log.
+**Exit:** met (2026-10-13).
 
 ## Phase 4 — Standalone, no JIT (S) ☐
 

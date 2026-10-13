@@ -150,6 +150,29 @@ tutorial: `SlotParam_0.bin`, `data0000.bin`).
 background shell and keep pressing buttons (see CLAUDE.md). The menus
 react slowly: give each press 3 s or more, and check with screenshots.
 
+## Native code (Phase 3, 2026-10-13)
+
+`shinobido2.exe` (fork `games` + render-target logging), `[recompiled]
+enabled = true, jit = true`, with `ssd_aot_eboot.dll`, `ssd_aot_libc.dll`
+and `ssd_aot_libfios2.dll` in `dist/shinobido2-test`. Driven by
+`tools/to-mission.py` and v3kdrive, counters from `SSD_AOT_COUNT=1
+SSD_AOT_STATS=<file>`.
+
+| Run | Native share | Escapes | JIT inside the 3 modules | Differential | fps |
+|---|---|---|---|---|---|
+| boot → mission → combat (first build) | 99.4% | 87 → 9,406 (libc `memcpy`, through `memmove`'s `bx ip`) | 0 | — | 30 |
+| same, after the tail-call fix | 99.4–99.5% | **0** | **0** | — | **30** (112 samples 30, 41 at 31) |
+| boot → mission → combat → *Restart Mission* → combat, `SSD_AOT_DIFF=2000` | 99.7% | 0 | 0 | 50,727 calls, **0 mismatching**, 1,341 skipped (HLE calls, atomics) | 11–31 (the checker's shadow runs) |
+
+* The rest of the JIT time is the firmware's MP4 player
+  (`libscemp4`, reached through SceMp4 stubs) and other firmware code,
+  all for Phase 4.
+* `SSD_AOT_DIFF=100` slows the game to 4–5 fps and turned the screen red
+  and dark (the shadow runs' undo racing other threads, as ss-delta saw at
+  20); use sparse intervals.
+* Rendering matched the JIT build in every screenshot (field, mission
+  start, combat, restart).
+
 ## Upstream Vita3K on this machine (2026-10-13)
 
 The stock release in `extracted/vita3k` (`v0.2.1 4152-38bce160`, the
