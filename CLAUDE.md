@@ -31,9 +31,12 @@ and docs hold most of the know-how.
 - Windows 11, Radeon 760M mini PC. PowerShell for Windows-native commands;
   Bash (Git Bash) is also available.
 - Portable Vita3K: `extracted/vita3k/` (`pref-path` = `fs/`), firmware 3.74,
-  the game and its DLC installed. It is the upstream release ss-delta uses;
-  its Vulkan crashes on this GPU (ss-delta 02-baseline), so use OpenGL with
-  it, or our fork.
+  the game and its DLC installed. It is the upstream release ss-delta uses
+  (`v0.2.1 4152-38bce160`). With this game both its OpenGL and its Vulkan
+  work on this GPU (Vulkan crashed with Soul Sacrifice). Driven with
+  `v3kdrive.py extracted/vita3k launch PCSE00015 OpenGL|Vulkan`; its input
+  is posted keys, and the sticks did not move the player.
+  `fs/ux0/user/00/savedata/PCSE00015/` holds a copy of the `hub-day1` save.
 - Installing a pkg: `Vita3K.exe --pkg <pkg> --zrif <zRIF>`, the zRIF from
   `python -I tools/mkzrif.py <ss-delta fork>/external/psvpfstools/libzrif/src/keyflate.c <work.bin>`.
   Keep zRIFs out of the repo.
@@ -47,6 +50,13 @@ and docs hold most of the know-how.
   0041 on, that exe defaults to 60 fps and reads and writes SSD's frame
   timer addresses every frame, whatever game runs. If a newer one is ever
   needed, set `[display] frame_rate = 30` in the shim's ini.
+- Stopping a background shell that runs a `v3kdrive.py` loop leaves its
+  `sh.exe` and `python.exe` children running, and they keep pressing
+  buttons. That caused "phantom input" twice on 2026-10-13 (first blamed
+  on the Xbox adapter, which was unplugged at the same moment). Kill the
+  children by PID (`Get-CimInstance Win32_Process`), and check none are
+  left before driving the game by hand. The shim also merges real
+  gamepads and the keyboard with the input pipe.
 - Main menu: the cursor wraps, cross confirms, circle backs out. Taps under
   250 ms can be missed; use `hold:down:250`. System dialogs (Load, Save) are
   Vita3K overlays: `frame:` doesn't capture them, `shot:` does.

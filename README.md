@@ -12,7 +12,7 @@ whose recompiler, Vita3K fork and tools it reuses.
 
 ## Status
 
-Phase 0 (research, decryption, baseline) is nearly done:
+Phase 0 (research, decryption, baseline) is done:
 
 * the PSN pkg, the DLC and update **1.02** (the target,
   [D3](docs/decisions.md)) are installed through Vita3K's `--pkg/--zrif`;
@@ -21,7 +21,8 @@ Phase 0 (research, decryption, baseline) is nearly done:
 * ss-delta's recompiler translates the whole 1.02 eboot unchanged (0
   unsupported instructions).
 
-Next: the audio baseline, then Phase 1, which moves the shared toolchain
+The sound-effects dropout is reproduced: it comes at about the sixth
+mission load of a session. Next is Phase 1, which moves the shared toolchain
 into three publishable repos: the Vita3K fork, the recompiler, and one repo
 per game ([D4](docs/decisions.md)). The known hard problem is audio:
 Vita3K's NGS loses sound effects after a few missions. See the
@@ -44,6 +45,8 @@ Vita3K's NGS loses sound effects after a few missions. See the
 | `tools/mkzrif.py` | zRIF (base64) from a `work.bin`, for Vita3K's `--pkg ... --zrif` |
 | `tools/fadebabe.py` | Acquire's FADEBABE archives: stats, table listing, raw members |
 | `tools/fetch-update.py` | lists a title's update on Sony's update server, and downloads and checks it |
+| `tools/proccap/proccap.cpp` | records what one process plays to a WAV (Windows process loopback), optionally turned down so nothing is heard; build with MSVC (see the file) |
+| `tools/wavstats.py` | loudness of a recording over time: RMS, peak and sound onsets per window |
 
 Until Phase 1 moves them into a shared repo (D4), ss-delta's tools are
 used from `<ss-delta>\tools` and `<ss-delta>\recomp`: `velf.py`, `inventory.py`, `imix.py` (needs this ELF's

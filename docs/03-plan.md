@@ -23,7 +23,7 @@ touch** and the **pkg install path**.
 
 ---
 
-## Phase 0 — Workspace, decryption, baseline (S) ◐
+## Phase 0 — Workspace, decryption, baseline (S) ☑
 
 * ☑ Research snapshot ([01-research](01-research.md)): imports,
   instruction mix, inventory and a recompiler probe of 1.00; prior work;
@@ -38,19 +38,29 @@ touch** and the **pkg install path**.
   and installed; ELFs dumped; `velf`/`imix`/inventory/recompile probe
   re-run (16,972 functions, 0 unsupported); hashes recorded; boots to the
   first in-engine cutscene at 30 fps, and the add-on is found at boot.
-* ☐ Check the DLC missions appear in play (mission board, after the
-  tutorial).
+* ◐ DLC: the add-on is found at boot, but its missions didn't appear on
+  the board up to day 4. Moved to Phase 7's DLC item: it needs play
+  further into the story, or Phase 2's look at the DLC check in the code.
 * ☑ Repository: branch `main`, first commit `393f883` (docs and tools
   only). The commit identity is the owner's GitHub no-reply address
   ([D6](decisions.md)), set in this repo's local git config.
-* ☐ Audio baseline: run with sound on and reproduce the SFX dropout (2–3
-  missions, or sprinting over corpses). Record how long it takes and what
-  the NGS log says when it happens.
-* ☐ Cross-checks: the upstream Vita3K release (OpenGL and Vulkan) on this
-  machine, and an RTX 4090 run (reuse ss-delta's `pkg4090` flow).
+* ☑ Audio baseline ([02-baseline](02-baseline.md#audio-baseline-the-sfx-dropout-reproduced-2026-10-13)):
+  dropout reproduced. Sound effects went silent at the 6th mission load of
+  a session (95 min in), and stayed silent through new missions and a
+  reload. Dialogue still played, and a new process brought them back. 30
+  min of constant combat before that didn't trigger it. The log shows
+  nothing at that moment. Tools: `tools/proccap` (per-process recording),
+  `tools/wavstats.py`.
+* ☑ Cross-check against upstream Vita3K on this machine
+  ([02-baseline](02-baseline.md#upstream-vita3k-on-this-machine-2026-10-13)):
+  OpenGL and Vulkan both boot, load a save and render a mission correctly
+  at 30 fps. Unlike with Soul Sacrifice, upstream Vulkan doesn't crash
+  here.
+* → The RTX 4090 run moves to Phase 6's AMD/NVIDIA item. It needs the
+  owner's other PC, and ss-delta's package flow is generalised in Phase 1.
 
 **Exit:** the 1.02 game boots to gameplay in our fork, with ELFs, hashes,
-the measurements and a recorded SFX-dropout repro.
+the measurements and a recorded SFX-dropout repro. **Met** (2026-10-13).
 
 ## Phase 1 — Shared repos, fork branch and front end (M) ☐
 
@@ -169,15 +179,19 @@ instructions.
 
 The one known blocking bug. It is Vita3K's, so the fix is upstreamable.
 
-* ☐ Reproduce the SFX dropout deterministically, if possible with a saved
-  game in a combat area and a scripted loop.
+* ☐ Reproduce the SFX dropout deterministically. Start from Phase 0's
+  repro: the `hub-day1` save, then *Restart Mission* every ~90 s; it
+  died at about the 6th mission load. Count the loads it takes, and check
+  whether loads alone (no combat) are enough.
 * ☐ Trace NGS: voices created, played, released and their states over time.
-  Find what leaks: voices that never end, a voice limit, a callback never
-  fired, or the game's own pool.
-* ☐ Implement what the game uses that Vita3K lacks: the **envelope** module
-  (the leading suspect: a voice whose envelope never ends is never
-  released, **hypothesis**), **reverb**, **equalizer**, and
-  `sceNgsModuleGetPreset`.
+  Find what leaks. The code reading
+  ([01-research](01-research.md#vita3ks-ngs-and-this-game-code-reading-2026-10-13))
+  rules out the envelope holding voices and ranks a stale pause flag, an
+  end-of-data race, the SFX buss leaving the queue, and a game-side wait on
+  state Vita3K fills differently. The log list is there too.
+* ☐ Fix the cause, then implement what the game uses that Vita3K lacks,
+  for sound quality: the **envelope** (attack/release instead of hard
+  cuts), **reverb**, **equalizer**, and `sceNgsModuleGetPreset`.
 * ☐ Compare against a Vita (a recording by the owner) for envelopes and
   reverb in a few known scenes.
 
@@ -214,6 +228,27 @@ rendering bugs.
   with this game's ten slots).
 * ☐ **DLC**: the Mirror Spirits missions available (installed add-on +
   1.02), and checked in play.
+* ☐ **Texture shimmer** (seen by the owner in the tutorial field,
+  2026-10-13: the ground grains and shimmers while the camera moves). In
+  ss-delta the same look was the game's own (a real Vita shimmers too), from
+  repeating textures shipped without mips (its 02-baseline, "Ground shimmer
+  in motion"). Here:
+  1. ☑ Confirmed on hardware (the owner, 2026-10-13): the tutorial
+     shimmers exactly the same on a Vita. It is more visible on PC because
+     the 960×544 image is blown up to a large screen.
+  2. Find the cause with a sampler trace, as ss-delta did: mip levels, wrap
+     mode, filters and LOD bias of the ground textures.
+  3. Options, cheapest first:
+     * a higher internal resolution, which supersamples and reduces
+       shimmer even without mips; it costs GPU time;
+     * Vita3K's anisotropic filtering, which only helps textures that have
+       mips;
+     * **mip chains built at upload** for mipless repeating textures.
+       ss-delta proposed this but never built it, so it is shared work for
+       both games ("Shared work after Phase 1"). It is an enhancement that
+       changes the look, so it is a setting.
+
+  Post-process AA (FXAA/SMAA) does little for texture shimmer.
 * ☐ **60 fps**, by ss-delta's method (its D16): find the frame pacing
   (frame timer period, vblank flip threshold) and change it as data in
   guest memory from the profile's frame-rate hook, so no game code is
@@ -271,6 +306,9 @@ them against Phases 2–8.
 * ☐ **Settings menu**: an in-app menu that edits the ini, built from the
   profile's settings list (Phase 1). It covers display (scale, frame rate),
   audio, input bindings and paths. Settings that need a restart say so.
+* ☐ **Mip chains for mipless textures** (a setting): generated at texture
+  upload for repeating textures with one level, against ground shimmer in
+  both games (Phase 7, "Texture shimmer").
 * ☐ **Linux and macOS builds**:
   * the AOT loader: `dlopen` beside `LoadLibrary` (it is Windows-only
     today);

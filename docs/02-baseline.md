@@ -92,6 +92,86 @@ The shim's junction follows it, so nothing in `build/ssd-shim` changed.
 * **Not yet checked:** that the DLC missions show up in the game (needs
   play to the mission board).
 
+## Audio baseline: the SFX dropout reproduced (2026-10-13)
+
+**Setup.** The shim as above, 1.02, `[audio] volume = 100`. In-game: Easy,
+Music Volume 0 (so the recording holds sound effects and voices only),
+SFX 100. The game's output was recorded with `tools/proccap`: Windows
+process loopback, only this process, with its session turned down to −80 dB
+so nothing was heard. The recording is scaled back up. Loudness per
+window came from `tools/wavstats.py`. Input came from `v3kdrive.py`
+scripts: swings (Square ×3), dashes (Circle + stick), jumps (Cross).
+
+**Run 1 (one process, 2 h 04 min):**
+
+| Time into the run | What | Sound effects |
+|---|---|---|
+| 0–8 min | boot, menus, intro, tutorial lessons | yes |
+| 8–38 min | stress loop in the tutorial field: ~400 swings, dashes and jumps a minute | **yes, steady** (−27 to −29 dB RMS, peaks −3 dB, ~600 onsets/min) |
+| 38–77 min | the loop's presses ran past the tutorial's end into the hub menus (not intended) | menu sounds only |
+| 77–84 min | save; mission 1 "Request for Help" loaded, restarted once, ended | yes |
+| 86–95 min | mission 2 "Kill Kinokuniya": load, then *Restart Mission* after each ~90 s cycle | yes after the load and the 1st restart |
+| **95 min** | **2nd restart in mission 2 (about the 6th mission load of the session)** | **gone, for good** |
+| 95–124 min | 10 more cycles; three 20 s probes (swings, dashes, jumps): in the same mission, in a new mission (after giving up and a new day), and after *Back to Title* + loading the save | **exact digital silence** (−100 dB) in every probe |
+| | cutscene after a failed mission | **dialogue audible** (−30 dB) |
+| | the "Mission Failed" sting | silent |
+
+**Run 2 (new process, same save):** the first mission's probe has sound
+effects again (−27 dB, peaks −3 dB).
+
+**What this shows:**
+
+* Reproduced: sound effects stop and stay stopped while voice playback
+  goes on, as in every Vita3K report.
+* The loss is **sudden, and it came at a mission load**, not during
+  combat. 30 minutes of constant swings in the tutorial didn't trigger it.
+  **Hypothesis:** each mission load (or restart) leaks something in the SFX
+  path, and after about six the SFX path dies. That fits "after 2–3
+  missions" (each mission has loads and retries) better than a per-sound
+  leak. The "faster when sprinting over corpses" report is not explained
+  yet.
+* Nothing saved is involved: Back to Title and reloading don't help, and
+  a new process does.
+* The log has nothing at the moment of the loss (no NGS warning or error;
+  Vita3K logs each NGS error once, and the only NGS lines are the first-use
+  warnings at boot). Phase 5 needs the instrumentation listed in
+  [01-research](01-research.md#vita3ks-ngs-and-this-game-code-reading-2026-10-13).
+* The dropout came 6 loads into the session. To get there quickly, load
+  the `hub-day1` save, start a mission and use *Restart Mission* (pause →
+  top item → Yes) every ~90 s, probing in between.
+
+**Files** (git-ignored): `build/audio/run1.wav`, `run2.wav` (the
+recordings), `chunks.log` (each step's start offset in the recording),
+`run1-vita3k.log`, the `cycle.sh` and `probe.sh` scripts and their
+screenshots, `build/saves/hub-day1/` (a save at the hub, day 1, after the
+tutorial: `SlotParam_0.bin`, `data0000.bin`).
+
+**Driving pitfalls seen:** `v3kdrive.py` children outlive a stopped
+background shell and keep pressing buttons (see CLAUDE.md). The menus
+react slowly: give each press 3 s or more, and check with screenshots.
+
+## Upstream Vita3K on this machine (2026-10-13)
+
+The stock release in `extracted/vita3k` (`v0.2.1 4152-38bce160`, the
+build ss-delta compared against), 1.02, the `hub-day1` save, scale 1:
+
+| Renderer | Boot → title → hub (save loaded) | Mission field ("Request for Help") |
+|---|---|---|
+| OpenGL | correct | **correct, 30 fps** (samples 30–31) |
+| Vulkan | correct | **correct, 30 fps** (27–32, mostly 30) |
+
+* Unlike Soul Sacrifice Delta, upstream Vulkan **doesn't crash** on the
+  Radeon 760M with this game. So upstream is a usable reference on both
+  renderers here, which helps Phase 6 (renderer differences against our
+  fork).
+* No visible difference from the fork in these scenes.
+* Not run: the RTX 4090 (it needs the owner's other PC; see the plan).
+
+**DLC check, so far:** the hub up to day 4 lists only story missions, and
+the day-1 letters are regular ones. The Mirror Spirits missions didn't
+appear yet; they may unlock later in the story (**hypothesis**). The
+add-on itself is found at boot.
+
 ## How to re-run
 
 ```

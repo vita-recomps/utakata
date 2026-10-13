@@ -324,13 +324,74 @@ No FPS figures reported. Every report is on Vulkan.
 | Known Vita3K bugs | rendering (surface sync, Mind's Eye, AMD crash) | **SFX dropout**, subtitles sticking |
 | Debug features | `BootSequence` debug menu in `config.ini` | none found yet |
 
+## In-game facts [local]
+
+Seen in the 1.02 runs (2026-10-13):
+
+* **Options** (title → New Game → Options, and the pause menu): Music
+  Volume (default 50), SFX Volume (100), Bloodshed, Y/X-axis camera,
+  **Rear Touch Pad Control: Wide / Standard / Off**, Subtitles. Saving
+  asks "Save these options?". Rear touch can be switched off by the
+  player, so a PC mapping only has to cover what it does when on.
+* **Difficulty:** Easy / Normal / Hard.
+* **Controls** (pause → Controls): left stick move, right stick camera,
+  Square normal attack, Triangle Chimatsuri Sappo (stealth kill) / pick up
+  / carry, Circle dash / sheathe / draw, Cross jump, L focus / guard, R
+  crouch / cling to wall, d-pad use tool, Select item management, Start
+  pause. A "caution" icon sits at the right edge of the screen in the
+  field (the front-touch lock-on, **hypothesis**).
+* **Tutorial:** movement (move, jump, crouch, dash, reach a point), then
+  "Execute Chimatsuri Sappo". The pause menu has Restart Training,
+  Training Details, Status, Controls, Options, Quit.
+
+## Vita3K's NGS and this game (code reading, 2026-10-13)
+
+From the fork's sources (`vita3k/modules/SceNgsUser/SceNgs.cpp`,
+`vita3k/ngs/src/scheduler.cpp`, `player.cpp`, `atrac9.cpp`). Phase 5 has
+to confirm all of it in a run.
+
+* Of the game's 27 SceNgs imports, all are implemented except
+  `sceNgsModuleGetPreset`, which returns success without writing the
+  preset. The DSP of the envelope, reverb, EQ, mixer, generator,
+  distortion and compressor modules does nothing.
+* **The missing envelope can't hold voices** (this drops the earlier
+  hypothesis). `sceNgsVoiceKeyOff` ends the voice inside the call (no
+  release phase), and a module's `process()` can only end a voice, never
+  keep it. The game imports no voice-info or finished-callback function.
+  Side effects: key-off cuts sounds without a release tail; envelope state
+  reads back as zeros.
+* Ways voices could still be lost, all **hypotheses**:
+  1. **Stale pause flag:** pausing an *available* voice sets `is_paused`,
+     which kill and key-off don't clear. The next play makes it active but
+     never queues it: silent, no callback, and later plays fail. Play
+     errors are logged only once.
+  2. **End-of-data race:** while the END_OF_DATA callback runs (locks
+     released), the voice is still active, so a re-play from the callback
+     or another thread fails. The exports also change voice state without
+     the scheduler lock.
+  3. **SFX buss voice drops out of the queue** (paused, killed or a failed
+     re-play): every SFX goes silent at once while BGM and voices continue,
+     which matches the reports.
+  4. The game's own "voice done" test reads state that Vita3K fills
+     differently (the player's `current_buffer` reset after the end,
+     envelope state all zeros).
+* What to log (needs instrumentation in the fork, Phase 5): every play,
+  key-off, kill, pause, resume and GetStateData with voice, caller and
+  result (every error, not once); module callbacks; per rack, every few
+  seconds, voices active+queued, active+paused and available, and whether
+  each buss voice is queued.
+
 ## Open questions
 
 1. ~~Does update 1.02 change the eboot much?~~ No: +55 functions, two new
    imports, same recompiler result ([Update 1.02](#update-102-local)).
-2. What causes the SFX dropout: the missing NGS envelope module (voices
-   never released, the game runs out of voices; **hypothesis**), reverb or
-   EQ, or the game's own voice manager waiting on NGS callbacks?
+2. What causes the SFX dropout? Not the missing envelope by itself (see
+   [Vita3K's NGS](#vita3ks-ngs-and-this-game-code-reading-2026-10-13));
+   the candidates are voice-state races in Vita3K or a game-side wait.
+   Reproduced ([02-baseline](02-baseline.md#audio-baseline-the-sfx-dropout-reproduced-2026-10-13)):
+   it came at a mission load, not during combat, which points at
+   something done per load (the SFX buss or rack set up again, voices
+   paused or killed at unload; **hypothesis**).
 3. Which touch port and region does the grappling hook read? (`SceTouch`
    call sites, Phase 2.)
 4. What is the 3D's internal resolution? PhyreEngine render targets are
