@@ -137,28 +137,37 @@ two fixes to `build-vita3k.py` it found: Boost's bootstrap and Qt), and its
 (installed from the pkg files) played a mission. ss-delta played a quest.
 Left open: the map sweep and RTX 4090 package stay PowerShell (ss-delta's).
 
-## Phase 2 — Inventory and game knowledge (S) ☐
+## Phase 2 — Inventory and game knowledge (S) ☑
 
-* ☐ Inventory of 1.02's eboot, libc and libfios2 (`tools/inventory.py`):
-  every indirect branch resolved or listed.
-* ☐ Explain the 2 "untranslatable" eboot functions and libpvf's 2
-  unsupported forms at this load address.
-* ☐ Locate:
-  * the main loop and frame pacing (vblank wait, frame timer) for the 60 fps
-    study;
-  * the render-target creation sites (internal 3D resolution);
-  * the NGS voice manager (how the game allocates and frees voices);
-  * the `SceTouch` call sites (front/rear, which regions);
-  * the DLC check (`DLCVersion000.txt`);
-  * the Near / Network Jar calls.
-* ☐ A debug or mission-select entry point for testing, if one is left in
-  the retail eboot. Otherwise, a test save per chapter.
-* ☐ `tools/fadebabe.py`: list and extract `volume.dat` and the StreamPacks
-  (names, kinds 2–5 decompression). This is for debugging and mods; the
-  port doesn't need it.
+Results: [01-research, Game knowledge](01-research.md#game-knowledge-phase-2-2026-10-13).
+Tools: `tools/xref.py` (disassembly with names, strings, callers over the
+inventory), `tools/untranslatable.py` (what the recompiler leaves to the
+fallback CPU, and why), `tools/to-mission.sh` (boot → hub save → mission).
 
-**Exit:** 100% of exidx entries classified; the frame loop, render targets,
-NGS use and touch sites have addresses in 01-research.
+* ☑ Inventory of 1.02's eboot, libc and libfios2: all exidx entries
+  classified, 0 unreached bytes, every indirect branch listed.
+* ☑ The 2 "untranslatable" eboot functions: half-precision conversions
+  (`vcvtb.f16.f32`, `vcvt.f32.f16` NEON) the recompiler doesn't translate
+  yet (to add before Phase 4). libpvf's 2 forms are unreached data.
+* ☑ Located (addresses in 01-research):
+  * main loop and frame pacing: one value, the application's frame rate
+    (`[app+8]`, set to 30 by `main`), drives both the period and the
+    vblank minimum;
+  * render targets: a single 960×544 target and surface, so the 3D is at
+    the full native resolution;
+  * the NGS voice manager, which frees a stopped voice only when the
+    envelope (module 4) reports its release done: the leading lead for
+    the SFX dropout (Phase 5);
+  * touch: front (port 0) and rear (port 1) reads in PhyreEngine's input
+    update;
+  * the DLC check (a key string compared with the add-on's file);
+  * the Near / Network Jar calls (one thread).
+* ☑ No debug or mission-select entry point is left: late-game tests use
+  saves (R9).
+* → `tools/fadebabe.py` names and kinds 2–5: deferred to "Later" (the port
+  doesn't need it).
+
+**Exit:** met (2026-10-13).
 
 ## Phase 3 — Native code in the fork (M) ☐
 
@@ -206,6 +215,12 @@ The one known blocking bug. It is Vita3K's, so the fix is upstreamable.
   rules out the envelope holding voices and ranks a stale pause flag, an
   end-of-data race, the SFX buss leaving the queue, and a game-side wait on
   state Vita3K fills differently. The log list is there too.
+* ☐ First suspect (Phase 2): the game frees a stopped voice only when
+  `sceNgsVoiceGetStateData(voice, 4 = envelope)` reports the release done
+  (`+0x10 == 1`, level 0); Vita3K's envelope has no state. Trace the slot
+  table and stopping list of `0x8122d870`, then give the envelope its
+  state (release progress after key-off). Upstream Vita3K's
+  `audio-improvements` branch may already have envelope work.
 * ☐ Fix the cause, then implement what the game uses that Vita3K lacks,
   for sound quality: the **envelope** (attack/release instead of hard
   cuts), **reverb**, **equalizer**, and `sceNgsModuleGetPreset`.
@@ -366,7 +381,8 @@ them against Phases 2–8.
 * Other regions (EU PCSB00049, JP PCSG00019): the same profile with another
   title ID; regenerate per eboot.
 * Modding: loose-file overrides, if the engine has them (unknown), and
-  FADEBABE repacking.
+  FADEBABE repacking; `tools/fadebabe.py` names and kinds 2–5
+  decompression (from Phase 2).
 
 ---
 

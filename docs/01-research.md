@@ -374,33 +374,124 @@ to confirm all of it in a run.
      which matches the reports.
   4. The game's own "voice done" test reads state that Vita3K fills
      differently (the player's `current_buffer` reset after the end,
-     envelope state all zeros).
+     envelope state all zeros). **Now the leading lead**: the game's
+     voice manager frees a stopped voice only on the envelope's state
+     ([Game knowledge](#game-knowledge-phase-2-2026-10-13), Sound).
 * What to log (needs instrumentation in the fork, Phase 5): every play,
   key-off, kill, pause, resume and GetStateData with voice, caller and
   result (every error, not once); module callbacks; per rack, every few
   seconds, voices active+queued, active+paused and available, and whether
   each buss voice is queued.
 
+## Game knowledge (Phase 2, 2026-10-13)
+
+From the 1.02 eboot with `tools/xref.py` (disassembly with import and
+callee names, the strings and data a function builds, callers) over the
+inventory. Addresses are the eboot's (1.02, loaded at `0x81000000`).
+
+**Coverage.** The inventory classifies all 17,423 exidx entries (16,974
+Thumb functions, 448 import stubs, 1 end marker) with 0 unreached bytes and
+every indirect branch listed; libc (1,233 entries, 81 C++ landing pads) and
+libfios2 (603) likewise. The recompiler leaves 2 eboot functions to the
+fallback CPU, both for half-precision conversions it doesn't translate yet:
+`0x811dc974` (10 × `vcvtb.f16.f32`) and `0x8134d0f8` (`vcvt.f32.f16 q0, d0`,
+NEON). Those two forms are needed before Phase 4 (no JIT). libpvf's 2
+"unsupported" forms (`stc`, `svc #0x46`) are data decoded as code after a
+no-return call: traps never reached.
+
+**Main loop and frame pacing.**
+* `main` = `0x81000016`. It defaults the display to 960×544, takes a
+  `-width=N` argument (height = N × 544/960, rounded), creates the
+  application (`0x81148d20`), sets its **frame rate to 30**
+  (`movs r0, #0x1e` at `0x810000d4`; `str r0, [app, #8]`; PhyreEngine's
+  root constructor `0x8114a22c` defaults it to 60), then calls init and
+  run through the vtable (`0x81449f10`; base class `0x81449fa8`).
+* The run loop `0x8114d024` (vtable slot 4): period = 1 / `[app+8]`; it
+  waits on `sceDisplayWaitVblankStartCB` until the period has passed and at
+  least `60 / [app+8]` vblanks (`0x813168a8`, an unsigned divide) since the
+  last frame, then runs one frame through the vtable. **One value,
+  `[app+8]`, sets both the period and the vblank minimum**: the 60 fps
+  study (Phase 7) starts there. Time base: `0x811cb902` (a double, minus
+  the start time at `0x819b5b30`).
+* Display: GXM display-queue callback `0x8114d28e` (`sceGxmPadHeartbeat`,
+  `sceGxmDisplayQueueAddEntry`; 3 frame buffers, index at `+0xf8` of
+  `*0x8146c2c0`); the flip callback `0x8114d250` sets the frame buffer and
+  waits one vblank.
+
+**Render targets.** The GXM setup `0x8114c906` creates the only render
+target the game uses in play: **960×544** (height hard-coded; width from
+init), 1 scene per frame, no MSAA, with one 960×544 colour surface (stride
+1024). A run from boot into a mission field logged no other target or
+surface (fork log lines `Render target`/`Color surface`). So the 3D draws
+at the full native resolution in a single pass, and Vita3K's resolution
+multiplier scales all of it (unlike Soul Sacrifice's 720×408 3D).
+PhyreEngine's generic render-to-texture path (`0x811e0302`, `0x811e09a2`,
+`0x811e3bb4`) exists but did not run there.
+
+**Touch.** PhyreEngine's input update `0x811c4db6` reads the front panel
+(port 0) when bit 0 of `[input+0x8ac]` is set and the rear panel (port 1)
+when bit 1 is, up to 6 samples each (`sceTouchRead` at `0x811c4dee` and
+`0x811c4ee6`), into buffers at `+0x1a0` and `+0x4ec`; setup in
+`0x811c4b74` (panel info, sampling on). What the grappling hook does with
+rear touches (point, drag or hold) is still to be seen at run time
+(Phase 7).
+
+**Sound (Acquire's `CAcqSound`: a stream thread and a mix thread).** All
+NGS calls are in `0x8122b522`–`0x8122e8xx`:
+* `0x8122b5bc` sets up the racks: ATRAC9 voices, a Template1 (normal
+  player) voice, and master, mixer, reverb and compressor busses.
+* Play: `0x8122dcfc`, `0x8122df4c`, `0x8122e174` (each Kill, set a module
+  callback, Play). Stop: key-off in `0x8122ded0`, `0x8122e392`,
+  `0x8122e460`. Pause/resume: `0x8122e528`/`0x8122e570`,
+  `0x8122e5b8`/`0x8122e600`.
+* The per-frame update `0x8122d870` (before `sceNgsSystemUpdate` and
+  `sceAudioOutOutput`) keeps voices in 28-byte slots (table at
+  `[mgr+0xf0]`: in use `+0xc`, owner `+0x10`, playing `+0x14`, timeout
+  `+0x18`). For each voice on its **stopping list** it reads
+  `sceNgsVoiceGetStateData(voice, 4, buf, 0x14)`, and only when
+  `buf+0x10 == 1` and the level `buf+0` is 0 does it kill the voice and
+  free the slot. **Module 4 is the envelope** in both voice types the game
+  uses (ATRAC9 and the normal player, in Vita3K's definitions too).
+  Vita3K's envelope has no state, so this reads zeros: a stopped voice is
+  **never freed**, and once the pool is used up new sound effects can't
+  start. **Hypothesis**, the leading one for the SFX dropout, to prove in
+  Phase 5 by tracing the slots and stopping list.
+
+**DLC.** `0x8114a156` mounts the add-on (`sceAppUtilDrmOpen
+("DLC001X000000000")`), reads 32 bytes of `RomImage/DLC/DLCVersion000.txt`
+and compares them with a key string in the eboot (`0x8140abe8`); a match
+sets the flag at `[obj+0x2b0]`. The installed add-on holds that key, so
+the unlock succeeds; the missions' timing in the story is still unchecked.
+
+**Network Jar (Near).** All 17 SceNearUtil calls are in one function,
+`0x811bc526` (the "near_sub_thr" thread); Vita3K serves them as stubs.
+
+**No debug menu.** No developer menu, stage select or boot option is left:
+the "mission select" strings are the normal board's labels and
+"DebugPrint" a script command. Late-game tests need saves (risk R9).
+
 ## Open questions
 
 1. ~~Does update 1.02 change the eboot much?~~ No: +55 functions, two new
    imports, same recompiler result ([Update 1.02](#update-102-local)).
-2. What causes the SFX dropout? Not the missing envelope by itself (see
-   [Vita3K's NGS](#vita3ks-ngs-and-this-game-code-reading-2026-10-13));
-   the candidates are voice-state races in Vita3K or a game-side wait.
+2. What causes the SFX dropout? Not the envelope holding voices in
+   Vita3K, but the game waiting for the envelope's state before freeing a
+   stopped voice ([Game knowledge](#game-knowledge-phase-2-2026-10-13),
+   Sound; **hypothesis**, to prove in Phase 5).
    Reproduced ([02-baseline](02-baseline.md#audio-baseline-the-sfx-dropout-reproduced-2026-10-13)):
    it came at a mission load, not during combat, which points at
    something done per load (the SFX buss or rack set up again, voices
    paused or killed at unload; **hypothesis**).
-3. Which touch port and region does the grappling hook read? (`SceTouch`
-   call sites, Phase 2.)
-4. What is the 3D's internal resolution? PhyreEngine render targets are
-   created through `sceGxmColorSurfaceInit`; find the sizes (Phase 2).
-5. Is the main loop frame-locked to 30 fps (vblank wait of 2)?
-6. Is there a debug menu, mission select or developer boot option left in
-   the retail eboot? None of ss-delta's `config.ini` mechanism exists here.
+3. What does the grappling hook do with rear touches? Ports and buffers
+   are known (Phase 2); the gesture is for Phase 7.
+4. ~~The 3D's internal resolution?~~ The full 960×544 (Phase 2).
+5. Does game logic step by the measured frame time? The loop's rate is one
+   value (`[app+8]`, Phase 2); the logic's time step is for Phase 7.
+6. ~~A debug menu?~~ None (Phase 2).
 7. FADEBABE compression and the name table (Phase 2, for tools only).
-8. What are the 2 "untranslatable" eboot functions and the 2 libpvf forms?
+8. ~~The 2 "untranslatable" functions and libpvf's 2 forms?~~
+   Half-precision conversions to add to the recompiler; libpvf's are
+   unreached data (Phase 2).
 
 ## Workspace state
 
