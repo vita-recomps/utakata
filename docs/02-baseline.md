@@ -285,7 +285,12 @@ in `shinobido2.exe` only):
   switched to 30 and the fight stayed there (the scene flag stays set: the
   intro leads into the fight without the scene's end). A scene now also
   needs the player frozen; the opening scene still runs at 30 with it.
-  The boss fight is for the owner to confirm.
+  The owner's next test: the fight still at 30, and the log showed the
+  player "frozen" through it. Memory dumps of the HUD manager, its widgets,
+  the script controller and the player (scene and play) found the HUD's
+  shown byte; a scene now needs the HUD hidden instead. The opening scene
+  runs at 30 with it, play at 60. The boss fight is for the owner to
+  confirm.
 
 **DLC mission** (the owner's New Game+ save, 2026-10-14, 60 fps): the
 mission list starts with "An Unsettling Shadow…" (gold frame, enemies

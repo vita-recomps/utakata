@@ -518,7 +518,12 @@ play, 2026-10-14; code read after). The script controller's scene start
 `0x8110473c`, which restores the player and clears it (0 in the hub and in
 play). `[0x8146acd8]` holds the scene's music track (-1 for none) and
 `[0x8146acdc]` is set while a scene has lowered the music (`0x81110da6`
-clears both at the start, `0x81110e38` at the end). The fixed step is not
+clears both at the start, `0x81110e38` at the end). The HUD manager
+(`*0x8146c308`) and each of its 24 widgets have a shown byte at `+0x1c`:
+0 in a scene, 1 in play. The script controller (`*0x8146ac74`) holds 1 at
+`+0x58` in a scene and 6 in play. A boss's intro scene leads into the
+fight without the scene's end: the flag and the player's freeze bit stay
+set through the fight (owner's log). The fixed step is not
 a scene marker: it stayed on through a scene and the play after it
 (save 56's mission), and scene starts only call the setter again. Some
 scenes advance per frame apart from the step (**hypothesis**: the two
