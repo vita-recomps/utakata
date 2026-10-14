@@ -304,11 +304,11 @@ rendering bugs.
     the owner confirmed the right trigger works in play (2026-10-14).
 * ☐ **Saves**: import/export of Vita saves (ss-delta's `--import-save`,
   with this game's ten slots).
-* ◐ **DLC**: the Mirror Spirits missions available (installed add-on +
+* ☑ **DLC**: the Mirror Spirits missions available (installed add-on +
   1.02), and checked in play. They are issued only after an ending, so
   this needs a cleared save. The owner started New Game+ on the cleared
-  save and the DLC missions were in the list (2026-10-14); playing one
-  is still to check.
+  save and the DLC missions were in the list (2026-10-14). ☑ The first
+  DLC mission loads and plays (02-baseline).
 * ☐ **Texture shimmer** (seen by the owner in the tutorial field,
   2026-10-13: the ground grains and shimmers while the camera moves). In
   ss-delta the same look was the game's own (a real Vita shimmers too), from
@@ -356,8 +356,10 @@ rendering bugs.
   at twice the speed** while their audio stayed at normal speed. The
   cutscenes before and after missions were right. No movie file played
   mid-mission (the log), so these are real-time scenes whose animation
-  steps per frame (**hypothesis**). Next: find which missions, reproduce
-  from the archived saves, find their step.
+  steps per frame (**hypothesis**). Fixed: scripted scenes now run at
+  30 fps (the script controller's scene flag, 01-research), checked on a
+  mission's opening scene; the two mid-mission scenes themselves are for
+  the owner to confirm when convenient (boss 1 of the last two missions).
 
 **Exit:** a full playthrough is possible on keyboard/controller at ≥ 2×
 internal resolution, grappling hook included (native controls), at 60 fps or with 60 marked

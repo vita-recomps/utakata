@@ -272,8 +272,20 @@ in `shinobido2.exe` only):
   three of four 60 fps boots showed the warning. Fixed in the fork (`c5dcca1c`):
   the code segment stays allocated as the place and the next load takes
   it over. Every movie load since went back to `0x805b4000`.
-* Not checked yet: the results screen's timers and HUD animations at 60
-  (twice as fast by the code), story cutscenes, Havok-heavy scenes.
+* The owner's play at 60 to the ending: gameplay right, HUD and menus
+  twice as fast (expected), and two mid-mission story scenes (between
+  the two bosses of the last two missions) at twice the speed with their
+  audio at normal speed. No movie played there (log): real-time scenes.
+  Since then, scripted scenes run at 30 at that setting (fork `shinobido2:
+  scripted scenes at 30 fps`): a mission's opening scene from save 56 ran
+  at 30 fps for its 20 s and play at 60 before and after. The two scenes
+  themselves need boss 1 beaten; the owner can confirm them.
+
+**DLC mission** (the owner's New Game+ save, 2026-10-14, 60 fps): the
+mission list starts with "An Unsettling Shadow…" (gold frame, enemies
+"Mirror Spirit (Minion)"); it loads and plays at 59–60 fps with the DLC's
+tools on the HUD. "Today's Events" introduces the DLC on the first hub
+visit.
 * `tools/to-mission.py` matched the hub by its banner, which shows the
   hub's background; that changes, so the hub check now uses the menu,
   the message bar and the button help.

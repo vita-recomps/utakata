@@ -511,6 +511,19 @@ of the last 8 frame times capped at `[0x81468998]`, or in fixed mode
 menu animations (`0x8114e8ce`, ~40 widgets) and the results screen's
 timers (`0x811773c2`) step by a literal 1/30.
 
+**Scripted scenes** (memory dumps during a mission's opening scene and in
+play, 2026-10-14; code read after). The script controller's scene start
+(`0x81102c70`) calls `0x81104428`, which freezes the player and sets
+`[0x815399f8]` (bit 1; 2 in the dumps); the scene end (`0x8110291e`) calls
+`0x8110473c`, which restores the player and clears it (0 in the hub and in
+play). `[0x8146acd8]` holds the scene's music track (-1 for none) and
+`[0x8146acdc]` is set while a scene has lowered the music (`0x81110da6`
+clears both at the start, `0x81110e38` at the end). The fixed step is not
+a scene marker: it stayed on through a scene and the play after it
+(save 56's mission), and scene starts only call the setter again. Some
+scenes advance per frame apart from the step (**hypothesis**: the two
+that ran at twice the speed at 60, below).
+
 **Network Jar (Near).** All 17 SceNearUtil calls are in one function,
 `0x811bc526` (the "near_sub_thr" thread); Vita3K serves them as stubs.
 
