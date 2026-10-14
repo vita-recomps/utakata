@@ -230,29 +230,31 @@ Results: [02-baseline, No JIT](02-baseline.md#no-jit-phase-4-2026-10-13).
 cutscene → tutorial lessons, and the first mission with combat and a
 restart: 30–31 fps, 100% native, 0 escapes, no "no native code".
 
-## Phase 5 — Audio: NGS (M–L) ☐
+## Phase 5 — Audio: NGS (M–L) ◐
 
 The one known blocking bug. It is Vita3K's, so the fix is upstreamable.
+Results: [02-baseline, SFX dropout fixed](02-baseline.md#the-sfx-dropout-cause-and-fix-phase-5-2026-10-14).
 
-* ☐ Reproduce the SFX dropout deterministically. Start from Phase 0's
-  repro: the `hub-day1` save, then *Restart Mission* every ~90 s; it
-  died at about the 6th mission load. Count the loads it takes, and check
-  whether loads alone (no combat) are enough.
-* ☐ Trace NGS: voices created, played, released and their states over time.
-  Find what leaks. The code reading
-  ([01-research](01-research.md#vita3ks-ngs-and-this-game-code-reading-2026-10-13))
-  rules out the envelope holding voices and ranks a stale pause flag, an
-  end-of-data race, the SFX buss leaving the queue, and a game-side wait on
-  state Vita3K fills differently. The log list is there too.
-* ☐ First suspect (Phase 2): the game frees a stopped voice only when
+* ☑ **Cause found** (the Phase 2 suspect, confirmed by measurement): the
+  game's sound manager (`0x8122d870`) frees a voice it keyed off only when
   `sceNgsVoiceGetStateData(voice, 4 = envelope)` reports the release done
-  (`+0x10 == 1`, level 0); Vita3K's envelope has no state. Trace the slot
-  table and stopping list of `0x8122d870`, then give the envelope its
-  state (release progress after key-off). Upstream Vita3K's
-  `audio-improvements` branch may already have envelope work.
-* ☐ Fix the cause, then implement what the game uses that Vita3K lacks,
-  for sound quality: the **envelope** (attack/release instead of hard
-  cuts), **reverb**, **equalizer**, and `sceNgsModuleGetPreset`.
+  (`nReleasing == 1`, height 0). Vita3K's envelope had no state and read
+  zeros, so every such voice stayed taken: one more per mission load,
+  until the sound-effect voices ran out.
+* ☑ **Fixed in the fork** (`fe8659d0`): the envelope keeps
+  `SceNgsEnvelopeStates`, reports the release finished when Vita3K ends
+  the voice, and applies the envelope's gain while the voice plays. Over 3
+  mission restarts the game re-polled ended voices 71,000 times without
+  the fix and 2 times with it; sound-effect loudness is unchanged.
+* ☑ Repro tooling: `tools/sfx-soak.py` (combat, *Restart Mission*,
+  loudness per cycle). Restarting mission 1 alone leaks one voice per
+  load but did not empty the pool in 12 loads; Phase 0's dropout came
+  in mission 2, which uses more voices.
+* ☐ **Owner's playtest:** a long session (several different missions,
+  as in Phase 0) with sound on, to confirm the dropout is gone.
+* ☐ Reverb, equalizer and `sceNgsModuleGetPreset` (still unimplemented;
+  sound quality, not the dropout). Key-off still ends a voice at once,
+  without the envelope's release tail.
 * ☐ Compare against a Vita (a recording by the owner) for envelopes and
   reverb in a few known scenes.
 

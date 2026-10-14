@@ -81,6 +81,11 @@ owner's machine-specific notes, kept in a private repo.
   `tools/untranslatable.py` lists what the recompiler can't translate,
   `tools/xref.py` explores the ELF (disassembly with names, callers,
   strings).
+- Long runs: log memory with `powershell -NoProfile -File
+  tools/memwatch.ps1 -Out <csv> [-Minutes 30]` alongside (the game holds
+  ~1.6 GB; the machine has 14 GB). Don't overlap long runs with builds of
+  generated code (6 jobs ≈ 3 GB). `tools/sfx-soak.py <dist> <cycles>`
+  measures sound effects over mission restarts.
 - Stopping a background shell that runs a `v3kdrive.py` loop leaves its
   `sh.exe` and `python.exe` children running, and they keep pressing
   buttons ("phantom input", 2026-10-13). Kill the children by PID

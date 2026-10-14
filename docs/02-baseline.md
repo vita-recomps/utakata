@@ -191,6 +191,28 @@ libpvf, libscemp4), `jit = false`.
   their places were held but never released, so they loaded elsewhere and
   the game stopped at once with "no native code" in sysmodule.
 
+## The SFX dropout: cause and fix (Phase 5, 2026-10-14)
+
+No-JIT install (`dist/utakata-p4`), sound recorded by `tools/sfx-soak.py`
+(3–12 cycles of 30 s combat + *Restart Mission* in the first mission).
+
+| Build | Cycles | SFX loudness per cycle | Polls of voices Vita3K had ended |
+|---|---|---|---|
+| fork before the envelope fix | 12 | −27 to −28 dB, steady | (not counted) |
+| before the fix, with a temporary counter | 3 | −26 to −27 dB | **71,000** (every frame, never freed) |
+| with the fix (`fe8659d0`) | 3 | −27 to −28 dB | **2** (freed at once) |
+
+* A first counter (distinct ended voices still polled) rose by exactly one
+  per mission load before the fix: the leak is one voice per load in
+  mission 1. Twelve loads did not exhaust the pool there; Phase 0's
+  dropout came in mission 2, after about six loads in total.
+* The envelope gain changed no measured loudness.
+* **Memory** (`tools/memwatch.ps1`, every 15 s for 30 min over four game
+  sessions): the game's private memory 1.2–1.6 GB and flat within each
+  session (1,599 → 1,602 MB over 12 restarts), handles flat; free RAM never
+  below 4.9 GB. No leak in the game. Windows Defender peaked at ~1 GB while
+  scanning build and test output.
+
 ## Upstream Vita3K on this machine (2026-10-13)
 
 The stock release in `extracted/vita3k` (`v0.2.1 4152-38bce160`, the

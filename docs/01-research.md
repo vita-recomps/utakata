@@ -477,7 +477,7 @@ the "mission select" strings are the normal board's labels and
 2. What causes the SFX dropout? Not the envelope holding voices in
    Vita3K, but the game waiting for the envelope's state before freeing a
    stopped voice ([Game knowledge](#game-knowledge-phase-2-2026-10-13),
-   Sound; **hypothesis**, to prove in Phase 5).
+   Sound). **Confirmed and fixed in Phase 5** (fork `fe8659d0`).
    Reproduced ([02-baseline](02-baseline.md#audio-baseline-the-sfx-dropout-reproduced-2026-10-13)):
    it came at a mission load, not during combat, which points at
    something done per load (the SFX buss or rack set up again, voices
