@@ -306,6 +306,10 @@ in `shinobido2.exe` only):
   intro and a second or two while a scene loads. The opening scene plays
   at 60 (30 for 1.8 s of its load). The final mission's scene between
   its bosses is for the owner to confirm.
+* Outside missions (no script controller: the title, its menus, the hub
+  and the mission results) the game runs at 30 too (owner's request: menu
+  animations step by 1/30). Checked: title and hub at 30, field and pause
+  menu at 60, "Mission Failed" at 60, then results and hub at 30.
 
 **DLC mission** (the owner's New Game+ save, 2026-10-14, 60 fps): the
 mission list starts with "An Unsettling Shadow…" (gold frame, enemies

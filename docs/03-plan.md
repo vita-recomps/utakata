@@ -360,6 +360,9 @@ rendering bugs.
   at 30 fps, everything else at 60; found from logged signals over four
   owner tests, confirmed end to end on the second-to-last mission
   (02-baseline). The final mission's scene is for the owner to confirm.
+  The title, menus, hub and mission results run at 30 too (no script
+  controller), so their 1/30 animations and timers keep their speed; the
+  pause menu and HUD in a mission still animate twice as fast.
 
 **Exit:** a full playthrough is possible on keyboard/controller at ≥ 2×
 internal resolution, grappling hook included (native controls), at 60 fps or with 60 marked
