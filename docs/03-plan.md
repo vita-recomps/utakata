@@ -290,10 +290,12 @@ rendering bugs.
   * front touch: the caution-icon lock-on and any menu touches, as keys
     (ss-delta's held-finger bindings). ◐ Caution (owner's request,
     2026-10-14): `caution_key = F`, `caution_gamepad = righttrigger`. The
-    eyes move (one per nearby enemy, stacked on the right), so the binding
-    puts its finger on the first eye wherever the game draws it, read from
-    the HUD's layout data (a new front-end feature: touch bindings with a
-    moving target). Waiting for the owner to try it in play.
+    eyes move (one per nearby enemy, stacked on the right, in four
+    colours), so when the binding goes down the front end reads one frame
+    back, finds the topmost eye by its frame (a new front-end feature:
+    touch bindings with a moving target), and holds the finger there.
+    Checked in the field: the camera turns to the enemy while F is held.
+    Waiting for the owner to try it in play.
 * ☐ **Saves**: import/export of Vita saves (ss-delta's `--import-save`,
   with this game's ten slots).
 * ☐ **DLC**: the Mirror Spirits missions available (installed add-on +

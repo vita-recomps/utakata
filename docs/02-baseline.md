@@ -213,6 +213,27 @@ No-JIT install (`dist/utakata-p4`), sound recorded by `tools/sfx-soak.py`
   below 4.9 GB. No leak in the game. Windows Defender peaked at ~1 GB while
   scanning build and test output.
 
+## Caution binding (Phase 7, 2026-10-14)
+
+The `caution` touch binding (F, right trigger) puts its finger on the
+topmost caution eye. When it goes down, the front end reads back one frame
+and slides a 150-point template of the eye's frame (wings, rim and pupil,
+taken where white and red eyes over five backgrounds agree) down x = 896;
+the first y scoring under 30 (mean difference per channel) is the eye.
+
+| Screenshots | Score |
+|---|---|
+| 12 with an eye (white, red, one fading in, one over a bright wall) | 4.9–20.7 |
+| 104 without (field, combat, menus, cutscenes, system pictures) | 43 and up |
+
+In the field (no-JIT build, scale 2), after fighting until an eye showed,
+holding F logged `caution: eye at 896, 258` and turned the camera to the
+enemy; it turned back on release. With no eye shown it logged
+`no eye on screen` and touched nothing. Yellow and purple eyes were not
+in the samples; they share the frame (**hypothesis**: they match the
+same way). `v3kdrive.py` cannot press F for the game (front-end keys need
+the window focused), so this check focused the window by hand.
+
 ## Upstream Vita3K on this machine (2026-10-13)
 
 The stock release in `extracted/vita3k` (`v0.2.1 4152-38bce160`, the
