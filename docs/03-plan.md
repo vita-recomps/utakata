@@ -252,7 +252,9 @@ Results: [02-baseline, SFX dropout fixed](02-baseline.md#the-sfx-dropout-cause-a
   in mission 2, which uses more voices.
 * ◐ **Owner's playtest** (2026-10-14, the no-JIT install with the fix):
   all tutorials and several missions in one session, a new save after
-  every mission; no audio loss, glitches or other issues seen. Further
+  every mission; no audio loss, glitches or other issues seen. Second
+  session (same day, with the caution binding): to day 16 of the story
+  (~40%, 1:45 played, all ten save slots used), still no issues. Further
   sessions continue as the owner plays through.
 * ☐ Reverb, equalizer and `sceNgsModuleGetPreset` (still unimplemented;
   sound quality, not the dropout). Key-off still ends a voice at once,
@@ -288,14 +290,14 @@ rendering bugs.
     right stick or the mouse. This depends on what Phase 2 finds the game
     reads: an absolute point, a drag, or a hold;
   * front touch: the caution-icon lock-on and any menu touches, as keys
-    (ss-delta's held-finger bindings). ◐ Caution (owner's request,
+    (ss-delta's held-finger bindings). ☑ Caution (owner's request,
     2026-10-14): `caution_key = F`, `caution_gamepad = righttrigger`. The
     eyes move (one per nearby enemy, stacked on the right, in four
     colours), so when the binding goes down the front end reads one frame
     back, finds the topmost eye by its frame (a new front-end feature:
     touch bindings with a moving target), and holds the finger there.
-    Checked in the field: the camera turns to the enemy while F is held.
-    Waiting for the owner to try it in play.
+    Checked in the field: the camera turns to the enemy while F is held;
+    the owner confirmed the right trigger works in play (2026-10-14).
 * ☐ **Saves**: import/export of Vita saves (ss-delta's `--import-save`,
   with this game's ten slots).
 * ☐ **DLC**: the Mirror Spirits missions available (installed add-on +
