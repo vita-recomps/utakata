@@ -344,6 +344,22 @@ held (a dip to 25 on arrival while textures are decompressed). The two
 runs faced different ways at the spawn, so there is no like-for-like still;
 the owner judges it in motion.
 
+## Native against JIT (Phase 8, 2026-10-14)
+
+The current fork (sound effects, scene pacing, module reloads, generated
+mipmaps) with the JIT build and `jit = true`, `SSD_AOT_DIFF=2000`: boot →
+mission 1 → combat → *Restart Mission* → combat (`tools/sfx-soak.py`, 2
+cycles), the shadow JIT re-running sampled native calls.
+
+| Run | Calls checked | Mismatching | Skipped | Native share |
+|---|---|---|---|---|
+| 30 fps | 35,790 | **0** | 826 | 100.0% |
+| 60 fps | 43,062 | **0** | 1,123 | 100.0% |
+
+Havok and the AI run inside the eboot's native code, so the fights check
+them as far as sampling reaches; the owner's playthrough found no
+difference in play.
+
 ## Upstream Vita3K on this machine (2026-10-13)
 
 The stock release in `extracted/vita3k` (`v0.2.1 4152-38bce160`, the

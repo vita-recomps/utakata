@@ -95,6 +95,7 @@ copies them out.
 | [01-research](docs/01-research.md) | the dump, the FADEBABE archives, the eboot measured, prior work, differences from ss-delta |
 | [02-baseline](docs/02-baseline.md) | how the game behaves today, the SFX dropout repro, and how to re-run it |
 | [03-plan](docs/03-plan.md) | phases, exit criteria, risks |
+| [06-compatibility](docs/06-compatibility.md) | what has been played and checked, and what not yet |
 | [decisions](docs/decisions.md) | decision log |
 | [hashes](docs/hashes.md) | input hashes and pins |
 

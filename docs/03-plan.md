@@ -382,13 +382,14 @@ internal resolution, grappling hook included (native controls), at 60 fps or wit
 unplanned. Met (2026-10-14): the owner's playthrough at scale 2 on a gamepad,
 its last missions at 60. The texture shimmer is the open item.
 
-## Phase 8 — Compatibility pass (M) ☐
+## Phase 8 — Compatibility pass (M) ☑
 
-* ☐ A compatibility matrix (`docs/06-compatibility.md`, to be started): story
-  missions, faction missions, Harakiri Engine missions, DLC missions,
-  every ending, letters, items, Network Jar (offline), options, saves.
-* ☐ Native against JIT for timing-sensitive systems (Havok, AI) in one
-  fight.
+* ☑ A compatibility matrix ([06-compatibility](06-compatibility.md)):
+  from the owner's playthrough and the test runs. No blocking entries; open
+  (?) are other endings and difficulties, Kaede, the DLC missions played
+  through, Network Jar and NVIDIA.
+* ☑ Native against JIT for timing-sensitive systems (Havok, AI) in one
+  fight: differential runs at 30 and 60 fps, 0 mismatches (02-baseline).
 
 **Exit:** the matrix has no blocking entries.
 
