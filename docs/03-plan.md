@@ -321,7 +321,7 @@ the owner's NVIDIA PC).
   this needs a cleared save. The owner started New Game+ on the cleared
   save and the DLC missions were in the list (2026-10-14). ☑ The first
   DLC mission loads and plays (02-baseline).
-* ◐ **Texture shimmer** (seen by the owner in the tutorial field,
+* ☑ **Texture shimmer** (seen by the owner in the tutorial field,
   2026-10-13: the ground grains and shimmers while the camera moves). In
   ss-delta the same look was the game's own (a real Vita shimmers too), from
   repeating textures shipped without mips (its 02-baseline, "Ground shimmer
@@ -338,9 +338,10 @@ the owner's NVIDIA PC).
      * Vita3K's anisotropic filtering, which only helps textures that have
        mips;
      * ☑ **mip chains built at upload** for mipless repeating textures:
-       in the fork (`State::generate_mips`, Vulkan), `[display] mipmaps`
-       in shinobido2.ini, off by default; the owner judges whether it
-       should be on. ss-delta can use it with a setting of its own.
+       in the fork (`State::generate_mips`, Vulkan), `[display] mipmaps`.
+       The owner (2026-10-14): the shimmer in motion is gone, so it is on
+       by default (D8). In ss-delta it made no visible difference on the
+       ST17 ground, so it is there but off.
 
   Post-process AA (FXAA/SMAA) does little for texture shimmer.
 * ☑ **60 fps**, by ss-delta's method (its D16): find the frame pacing
@@ -387,7 +388,7 @@ its last missions at 60. The texture shimmer is the open item.
 * ☑ A compatibility matrix ([06-compatibility](06-compatibility.md)):
   from the owner's playthrough and the test runs. No blocking entries; open
   (?) are other endings and difficulties, Kaede, the DLC missions played
-  through, Network Jar and NVIDIA.
+  through and NVIDIA; Kaede works (owner); Network Jar is unplanned (D7).
 * ☑ Native against JIT for timing-sensitive systems (Havok, AI) in one
   fight: differential runs at 30 and 60 fps, 0 mismatches (02-baseline).
 

@@ -211,3 +211,22 @@ repos.
 * **Private notes** go in a separate private repo, never in
   a branch of a repo that will be public (a push of all branches, or a
   mirror, would publish it).
+
+## D7 — Network Jar is unplanned (accepted, 2026-10-14)
+
+**Context:** the Network Jar trades resources between players through PS
+Vita "near" (SceNearUtil), which Vita3K only stubs. It needs another Vita
+nearby and adds nothing to the story.
+
+**Decision:** not implemented; the compatibility matrix lists it as
+unplanned (the owner, 2026-10-14).
+
+## D8 — Generated mipmaps on by default (accepted, 2026-10-14)
+
+**Context:** half of the large repeating textures ship without mips and
+shimmer in motion, on a Vita too (02-baseline). Building mip chains at
+upload changes the look slightly.
+
+**Decision:** `[display] mipmaps` is on by default in shinobido2.ini: the
+owner found the shimmer gone and the look right. ss-delta has the same
+setting, off, as it made no visible difference there.

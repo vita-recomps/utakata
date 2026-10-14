@@ -19,8 +19,8 @@ whole story to the ending on it, and the DLC missions load and play. The
 game runs on native code recompiled from your own copy, without a JIT, at
 2× internal resolution and 30 or 60 fps. Phases 0–5 and 8 are done (the
 Vita3K sound-effects dropout is fixed in the fork). Open: an NVIDIA check
-(Phase 6), whether generated mipmaps should be on by default for the
-texture shimmer the game has on a Vita too (Phase 7), and publishing.
+(Phase 6) and publishing. The texture shimmer the game has on a Vita too
+is smoothed by generated mipmaps, on by default.
 
 ## What you need
 

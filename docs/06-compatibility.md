@@ -16,7 +16,7 @@ scale 2, a gamepad; the last missions at 60 fps) and the test runs in
 | Endings | ◐ | one ending seen; the story asks "repay my debts, or follow my revenge", so others may exist (**hypothesis**) |
 | New Game+ | ✓ | from the cleared save; keeps money; Kaede playable |
 | DLC (Mirror Spirits) missions | ◐ | listed after an ending; the first loads and plays; not played through |
-| Playing as Kaede | ? | offered in New Game+ |
+| Playing as Kaede | ✓ | New Game+, the owner (2026-10-14) |
 | Other difficulties (Normal, Hard) | ? | Easy only |
 | Caution eye (front touch) | ✓ | F / right trigger, any eye colour |
 | Grappling hook | ✓ | the game's own R + Circle aiming |
@@ -27,9 +27,9 @@ scale 2, a gamepad; the last missions at 60 fps) and the test runs in
 | Saves: save, load, ten slots | ✓ | owner, four batches archived |
 | Saves: `--import-save` / `--export-save` | ✓ | folder, zip, one slot or all |
 | Trophies | ◐ | earned in the test install (a pop-up shown) |
-| Network Jar (Near) | ? | Vita3K stubs SceNearUtil; offline only |
+| Network Jar (Near) | unplanned | needs PS Vita "near" between players, only shares resources ([D7](decisions.md)) |
 | 60 fps | ✓ | missions at 60; menus, hub, results and post-load scenes at 30 |
-| Generated mipmaps | ◐ | off by default; renders correctly, for the owner to judge |
+| Generated mipmaps | ✓ | on by default: the shimmer in motion is gone (the owner) ([D8](decisions.md)) |
 | NVIDIA GPUs | ? | the fork carries ss-delta's NVIDIA fixes; untested here |
 | Native code against the JIT | ✓ | 0 mismatches in ~79,000 sampled calls |
 
