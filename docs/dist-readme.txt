@@ -7,7 +7,13 @@ docs/03-plan.md for its state.
 shinobido2.exe runs the game installed in a Vita file system ([paths]
 vita_fs in shinobido2.ini; default: the fs folder next to this file).
 
-Settings are in shinobido2.ini; read when the game starts:
+Settings: press F1, or hold Select (Back/View) on a gamepad for a second, to
+open the settings menu over the paused game (Up/Down choose, Left/Right or
+Cross change, L1/R1 or Q/E switch pages, Circle, Esc or F1 close). Window
+size, fullscreen, vsync, filter and volume change at once; the rest are
+marked * and take effect the next time the game starts. The menu writes
+shinobido2.ini, which can also be edited by hand (key bindings and paths
+are there only); read when the game starts:
 - [display] scale (internal resolution, 2 = 1920x1088), window, fullscreen
   (F11 or Alt+Enter while playing), vsync, filter, and frame_rate: 30 as on
   the Vita, or 60. At 60, missions run at 60; the title, menus, hub and

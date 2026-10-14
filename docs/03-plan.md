@@ -444,10 +444,16 @@ ss-delta's remaining wishes, done once in the shared repos after Phase 1,
 so both games get them. Not on this game's critical path; the owner orders
 them against Phases 2–8.
 
-* ☐ **Settings menu**: an in-app menu that edits the ini, built from the
+* ☑ **Settings menu**: an in-app menu that edits the ini, built from the
   profile's settings list (Phase 1). It covers display (scale, frame rate),
   audio, input bindings and paths. Settings that need a restart say so.
-* ☐ **Mip chains for mipless textures** (a setting): generated at texture
+  Done (2026-10-14, both games): F1 or Select held for a second opens it
+  over the paused game; one page per section, built from the declarations;
+  changes written to the ini line by line (comments and line endings kept)
+  and live where the emulator allows (window, fullscreen, vsync, filter,
+  volume, ss-delta's frame rate). Not in it yet: key bindings (rebinding
+  needs key capture) and paths, which stay in the ini.
+* ☑ **Mip chains for mipless textures** (a setting): generated at texture
   upload for repeating textures with one level, against ground shimmer in
   both games (Phase 7, "Texture shimmer").
 * ☐ **Linux and macOS builds**:

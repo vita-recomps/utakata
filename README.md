@@ -76,8 +76,10 @@ system in `fs/`. Everything in it is derived from your copy: don't share it.
 
 ## Playing
 
-Run `dist/utakata/shinobido2.exe`. Settings are in `shinobido2.ini` next
-to it, and the `README.txt` there describes them: resolution, window,
+Run `dist/utakata/shinobido2.exe`. F1, or holding Select (Back/View) on a
+gamepad for a second, opens the settings menu over the paused game. The
+settings live in `shinobido2.ini` next to it, and the `README.txt` there
+describes them: resolution, window,
 fullscreen (F11 or Alt+Enter), 30 or 60 fps, volume and sound effects,
 keyboard and gamepad bindings, and keys that touch the screen (the caution
 eye: F or the right trigger). F12 saves a screenshot. The mouse is the
