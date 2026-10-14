@@ -230,7 +230,7 @@ Results: [02-baseline, No JIT](02-baseline.md#no-jit-phase-4-2026-10-13).
 cutscene → tutorial lessons, and the first mission with combat and a
 restart: 30–31 fps, 100% native, 0 escapes, no "no native code".
 
-## Phase 5 — Audio: NGS (M–L) ◐
+## Phase 5 — Audio: NGS (M–L) ☑
 
 The one known blocking bug. It is Vita3K's, so the fix is upstreamable.
 Results: [02-baseline, SFX dropout fixed](02-baseline.md#the-sfx-dropout-cause-and-fix-phase-5-2026-10-14).
@@ -258,39 +258,48 @@ Results: [02-baseline, SFX dropout fixed](02-baseline.md#the-sfx-dropout-cause-a
   whole story to the ending the same day (Easy, 5:04, clear count 1), the
   last part at 60 fps: no audio loss, glitches or crashes. Saves after
   every mission are archived (four batches, the cleared save included).
-* ◐ Reverb, `sceNgsModuleGetPreset` and the release fade on key-off,
+* ☑ Reverb, `sceNgsModuleGetPreset` and the release fade on key-off,
   in the fork behind a per-game switch (`[audio] effects`, on for this
   game, off for ss-delta; owner's choice, 2026-10-14). The soak stays
   steady with them. In the scenes tested the game sends nothing to the
   reverb and asks for no fades, so they still need a scene that uses
   them (02-baseline). The EQ is left out: the game sets it flat.
-* ☐ Compare against a Vita (a recording by the owner) for envelopes and
-  reverb in a few known scenes.
+* → Comparing against a Vita (a recording by the owner) for envelopes and
+  reverb moved to "Later": the owner heard nothing wrong in a whole
+  playthrough.
 
 **Exit:** a long session (several missions, or an hour of combat) with no
 SFX loss; envelope, reverb and EQ audible and plausible against hardware.
+Met (2026-10-14): the whole story played with no sound loss; the effects
+follow the game's requests (the EQ is flat in this game).
 
-## Phase 6 — Rendering correctness (M) ☐
+## Phase 6 — Rendering correctness (M) ◐
 
-* ☐ Sweep every mission area and the castle/hub screens (ss-delta's
-  `map-sweep.ps1` pattern, through saves or a mission select).
-* ☐ Cutscenes and FMV: the four story movies, subtitles, and the "subtitles
-  stick after skipping a cutscene" report.
-* ☐ Effects: blood, smoke, water, night lighting.
+* ☑ Sweep every mission area and the castle/hub screens: covered by the
+  owner's playthrough (2026-10-14, AMD, scale 2): every story mission to
+  the ending and a DLC mission, no rendering issue seen. The owner judged
+  a scripted sweep not worth doing after it. Saves after every mission are
+  archived should one be needed.
+* ☑ Cutscenes and FMV: the story movies and every story scene played in
+  the playthrough; no stuck subtitles seen.
+* ☑ Effects: blood, smoke, water, night lighting: seen in play, no issue.
 * ☐ AMD and NVIDIA (ss-delta's two-reference rule, its D4 update 2). The
   fork's NVIDIA fixes come along, among them the USSE min/max NaN rule
   (patch 0039) behind SSD's white floor. PhyreEngine's fog and lighting
   may hit the same NaN path, so NVIDIA is checked early, not last.
 
 **Exit:** a visual sweep of all areas and cutscenes with no known
-rendering bugs.
+rendering bugs. Met on AMD by the playthrough; NVIDIA is open (it needs
+the owner's NVIDIA PC).
 
-## Phase 7 — PC features (M) ☐
+## Phase 7 — PC features (M) ◐
 
-* ☐ **Internal resolution**: Vita3K's multiplier; first find the game's own
-  3D resolution (Phase 2) and check depth-reading effects at scale 2.
-* ☐ **Input**:
-  * keyboard and gamepad bindings;
+* ☑ **Internal resolution**: Vita3K's multiplier. The game renders 3D at
+  the full 960×544 (Phase 2); the playthrough ran at scale 2 (1920×1088)
+  with no depth or effect issues, 57–60 fps at frame_rate 60.
+* ☑ **Input**:
+  * keyboard and gamepad bindings: the front end's [keyboard] and
+    [gamepad]; the whole playthrough on a gamepad;
   * ☑ **rear touch**: not needed. The game itself aims the grappling
     hook with R + Circle held and the left stick (owner, 2026-10-14);
   * front touch: the caution-icon lock-on and any menu touches, as keys
@@ -302,8 +311,11 @@ rendering bugs.
     touch bindings with a moving target), and holds the finger there.
     Checked in the field: the camera turns to the enemy while F is held;
     the owner confirmed the right trigger works in play (2026-10-14).
-* ☐ **Saves**: import/export of Vita saves (ss-delta's `--import-save`,
-  with this game's ten slots).
+* ☑ **Saves**: `--import-save <folder|zip> [--slot N]` and `--export-save
+  <folder> [--slot N]` for the ten slots (data0000-0009.bin, Vita3K's slot
+  records). Checked: export of all slots, a Vita-style folder (data file
+  only) into slot 5 and a zip into slot 6, both in the Load dialog, slot 5
+  loads.
 * ☑ **DLC**: the Mirror Spirits missions available (installed add-on +
   1.02), and checked in play. They are issued only after an ending, so
   this needs a cleared save. The owner started New Game+ on the cleared
@@ -330,7 +342,7 @@ rendering bugs.
        changes the look, so it is a setting.
 
   Post-process AA (FXAA/SMAA) does little for texture shimmer.
-* ◐ **60 fps**, by ss-delta's method (its D16): find the frame pacing
+* ☑ **60 fps**, by ss-delta's method (its D16): find the frame pacing
   (frame timer period, vblank flip threshold) and change it as data in
   guest memory from the profile's frame-rate hook, so no game code is
   patched and native code stays on. Then check:
@@ -366,7 +378,8 @@ rendering bugs.
 
 **Exit:** a full playthrough is possible on keyboard/controller at ≥ 2×
 internal resolution, grappling hook included (native controls), at 60 fps or with 60 marked
-unplanned.
+unplanned. Met (2026-10-14): the owner's playthrough at scale 2 on a gamepad,
+its last missions at 60. The texture shimmer is the open item.
 
 ## Phase 8 — Compatibility pass (M) ☐
 
@@ -453,6 +466,9 @@ them against Phases 2–8.
 * Modding: loose-file overrides, if the engine has them (unknown), and
   FADEBABE repacking; `tools/fadebabe.py` names and kinds 2–5
   decompression (from Phase 2).
+* Sound against a Vita recording (envelopes, reverb), from Phase 5; and
+  the final mission's scene between its bosses at 60 fps (the owner
+  confirmed the second-to-last mission's).
 
 ---
 

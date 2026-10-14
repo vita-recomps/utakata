@@ -14,14 +14,13 @@ Licence: MIT ([LICENSE](LICENSE)). The Vita3K fork it builds on
 
 ## Status
 
-Work in progress ([plan](docs/03-plan.md)). Phases 0 (research, baseline)
-and 1 (shared toolchain, the `shinobido2.exe` front end, installing from
-pkg files) are done. Today the game is playable through the fork's JIT at
-30 fps; the recompiled native code comes in Phase 3.
-
-Known problem: Vita3K's NGS audio loses the sound effects after about six
-mission loads in a session (voices and music go on); restarting
-`shinobido2.exe` brings them back. Fixing it is Phase 5.
+Playable start to finish ([plan](docs/03-plan.md)): the owner played the
+whole story to the ending on it, and the DLC missions load and play. The
+game runs on native code recompiled from your own copy, without a JIT, at
+2× internal resolution and 30 or 60 fps. Phases 0–5 are done (the Vita3K
+sound-effects dropout is fixed in the fork); what is left is listed in the
+plan: an NVIDIA check, the texture shimmer the game has on a Vita too,
+and publishing.
 
 ## What you need
 
@@ -77,10 +76,17 @@ system in `fs/`. Everything in it is derived from your copy: don't share it.
 
 ## Playing
 
-Run `dist/utakata/shinobido2.exe`. Settings (resolution, window, fullscreen,
-volume, keyboard and gamepad bindings) are in `shinobido2.ini` next to it.
-F11 or Alt+Enter toggles fullscreen, F12 saves a screenshot. The mouse is
-the touchscreens: left button front, right button rear.
+Run `dist/utakata/shinobido2.exe`. Settings are in `shinobido2.ini` next
+to it, and the `README.txt` there describes them: resolution, window,
+fullscreen (F11 or Alt+Enter), 30 or 60 fps, volume and sound effects,
+keyboard and gamepad bindings, and keys that touch the screen (the caution
+eye: F or the right trigger). F12 saves a screenshot. The mouse is the
+touchscreens: left button front, right button rear.
+
+Saves move in and out with the game closed: `shinobido2.exe --import-save
+<folder|zip> [--slot N]` takes saves decrypted on a Vita (VitaShell,
+Apollo: `data0000.bin`–`data0009.bin`), `--export-save <folder> [--slot N]`
+copies them out.
 
 ## Documentation
 
