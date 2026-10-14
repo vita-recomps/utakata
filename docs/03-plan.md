@@ -356,10 +356,10 @@ rendering bugs.
   at twice the speed** while their audio stayed at normal speed. The
   cutscenes before and after missions were right. No movie file played
   mid-mission (the log), so these are real-time scenes whose animation
-  steps per frame (**hypothesis**). Fixed: scripted scenes now run at
-  30 fps (the script controller's scene flag, 01-research), checked on a
-  mission's opening scene; the two mid-mission scenes themselves are for
-  the owner to confirm when convenient (boss 1 of the last two missions).
+  steps per frame. Fixed: event scenes after a load (no scene flag) run
+  at 30 fps, everything else at 60; found from logged signals over four
+  owner tests, confirmed end to end on the second-to-last mission
+  (02-baseline). The final mission's scene is for the owner to confirm.
 
 **Exit:** a full playthrough is possible on keyboard/controller at ≥ 2×
 internal resolution, grappling hook included (native controls), at 60 fps or with 60 marked

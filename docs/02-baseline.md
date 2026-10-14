@@ -299,6 +299,13 @@ in `shinobido2.exe` only):
   all four signals in that log: a scene is an event scene with the HUD
   hidden or without the scene flag; replaying the log through it gives
   30 for each intro and outro and 60 for both fights.
+* The owner played the second-to-last mission through with that rule:
+  right end to end. On the owner's suggestion, only the event scenes that
+  ran fast (after a load, no scene flag) now run at 30; the others play
+  at 60 as in the playthrough. Replaying the log: 30 only for boss 2's
+  intro and a second or two while a scene loads. The opening scene plays
+  at 60 (30 for 1.8 s of its load). The final mission's scene between
+  its bosses is for the owner to confirm.
 
 **DLC mission** (the owner's New Game+ save, 2026-10-14, 60 fps): the
 mission list starts with "An Unsettling Shadow…" (gold frame, enemies
