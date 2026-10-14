@@ -457,7 +457,11 @@ NGS calls are in `0x8122b522`–`0x8122e8xx`:
   start. **Hypothesis**, the leading one for the SFX dropout, to prove in
   Phase 5 by tracing the slots and stopping list.
 
-**DLC.** `0x8114a156` mounts the add-on (`sceAppUtilDrmOpen
+**DLC.** Per the Japanese release notes ([famitsu](https://www.famitsu.com/news/201203/09011325.html),
+[gamer.ne.jp](https://www.gamer.ne.jp/news/201203090043/)), the Mirror
+Spirits missions (鏡の化身) are issued only in a save that has reached an
+ending: that explains their absence on the board in Phase 0.
+`0x8114a156` mounts the add-on (`sceAppUtilDrmOpen
 ("DLC001X000000000")`), reads 32 bytes of `RomImage/DLC/DLCVersion000.txt`
 and compares them with a key string in the eboot (`0x8140abe8`); a match
 sets the flag at `[obj+0x2b0]`. The installed add-on holds that key, so
@@ -465,6 +469,14 @@ the unlock succeeds; the missions' timing in the story is still unchecked.
 
 **Network Jar (Near).** All 17 SceNearUtil calls are in one function,
 `0x811bc526` (the "near_sub_thr" thread); Vita3K serves them as stubs.
+
+**Saves.** No save of this game is shared online (searched 2026-10-14:
+English and Japanese sites, GameFAQs, Apollo). The Apollo save patches
+for PCSE00015 ([bucanero](https://bucanero.github.io/apollo-patches/PSV/PCSE00015.html))
+give offsets in `data0000.bin` for money (`0x1434`), level (`0x1444`), SP,
+stamina, offence, defence and tool counts, but nothing for story
+progress. New Game+ keeps level, items, money and techniques
+([wiki FAQ](https://wikiwiki.jp/shinobido2/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E8%B3%AA%E5%95%8F)).
 
 **No debug menu.** No developer menu, stage select or boot option is left:
 the "mission select" strings are the normal board's labels and
