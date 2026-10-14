@@ -17,10 +17,10 @@ Licence: MIT ([LICENSE](LICENSE)). The Vita3K fork it builds on
 Playable start to finish ([plan](docs/03-plan.md)): the owner played the
 whole story to the ending on it, and the DLC missions load and play. The
 game runs on native code recompiled from your own copy, without a JIT, at
-2× internal resolution and 30 or 60 fps. Phases 0–5 are done (the Vita3K
-sound-effects dropout is fixed in the fork); what is left is listed in the
-plan: an NVIDIA check, the texture shimmer the game has on a Vita too,
-and publishing.
+2× internal resolution and 30 or 60 fps. Phases 0–5 and 8 are done (the
+Vita3K sound-effects dropout is fixed in the fork). Open: an NVIDIA check
+(Phase 6), whether generated mipmaps should be on by default for the
+texture shimmer the game has on a Vita too (Phase 7), and publishing.
 
 ## What you need
 
