@@ -304,9 +304,11 @@ rendering bugs.
     the owner confirmed the right trigger works in play (2026-10-14).
 * ☐ **Saves**: import/export of Vita saves (ss-delta's `--import-save`,
   with this game's ten slots).
-* ☐ **DLC**: the Mirror Spirits missions available (installed add-on +
+* ◐ **DLC**: the Mirror Spirits missions available (installed add-on +
   1.02), and checked in play. They are issued only after an ending, so
-  this needs a cleared save.
+  this needs a cleared save. The owner started New Game+ on the cleared
+  save and the DLC missions were in the list (2026-10-14); playing one
+  is still to check.
 * ☐ **Texture shimmer** (seen by the owner in the tutorial field,
   2026-10-13: the ground grains and shimmers while the camera moves). In
   ss-delta the same look was the game's own (a real Vita shimmers too), from
