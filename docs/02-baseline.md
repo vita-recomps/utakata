@@ -289,8 +289,12 @@ in `shinobido2.exe` only):
   player "frozen" through it. Memory dumps of the HUD manager, its widgets,
   the script controller and the player (scene and play) found the HUD's
   shown byte; a scene now needs the HUD hidden instead. The opening scene
-  runs at 30 with it, play at 60. The boss fight is for the owner to
-  confirm.
+  runs at 30 with it, play at 60. Owner's test: boss 1's intro at 30,
+  fight at 60, outro at 30; after the load, boss 2's intro at 60 and
+  twice as fast, with the HUD byte "shown" through it. Now a scene is the
+  script controller holding an event scene (`[*0x8146ac74+0x10]`): on
+  the opening scene it is set from the scene's load (2 s before the flag
+  and the HUD byte) to its end. For the owner to confirm on boss 2.
 
 **DLC mission** (the owner's New Game+ save, 2026-10-14, 60 fps): the
 mission list starts with "An Unsettling Shadow…" (gold frame, enemies
