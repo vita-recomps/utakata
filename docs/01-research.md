@@ -467,6 +467,18 @@ and compares them with a key string in the eboot (`0x8140abe8`); a match
 sets the flag at `[obj+0x2b0]`. The installed add-on holds that key, so
 the unlock succeeds; the missions' timing in the story is still unchecked.
 
+**Caution eyes** (the lock-on icons on the right). The HUD manager
+(`*0x8146c308`) keeps its widgets in a vector at `+0x10`; the caution
+widget has id 4. It holds up to 8 eyes, one per nearby enemy, stacked
+down the right edge: `[+0x4c]` of them, layout element *i* at
+`[+0x2c + 4i]`, its enemy at `[+0x58 + 4i]`. On a new touch (the touch
+report's flag 8), its update `0x8115849e` tests each eye in turn with
+`0x8115f51c` (element position `+0x24/+0x28`, scale `+0x30/+0x34`, shown
+when `+0x7c` and alpha `+0x44`), whose parts are tested by `0x8115dc1e`
+(`x, y, w, h` at `+0x24..+0x30`, offset `+0x34/+0x38`, scale
+`+0x40/+0x44`, pivot `+0x70/+0x74`); the first eye hit becomes the
+lock-on target (`Lock_on` animation, `0x811587f6`).
+
 **Network Jar (Near).** All 17 SceNearUtil calls are in one function,
 `0x811bc526` (the "near_sub_thr" thread); Vita3K serves them as stubs.
 

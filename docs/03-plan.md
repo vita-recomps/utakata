@@ -250,8 +250,10 @@ Results: [02-baseline, SFX dropout fixed](02-baseline.md#the-sfx-dropout-cause-a
   loudness per cycle). Restarting mission 1 alone leaks one voice per
   load but did not empty the pool in 12 loads; Phase 0's dropout came
   in mission 2, which uses more voices.
-* ☐ **Owner's playtest:** a long session (several different missions,
-  as in Phase 0) with sound on, to confirm the dropout is gone.
+* ◐ **Owner's playtest** (2026-10-14, the no-JIT install with the fix):
+  all tutorials and several missions in one session, a new save after
+  every mission; no audio loss, glitches or other issues seen. Further
+  sessions continue as the owner plays through.
 * ☐ Reverb, equalizer and `sceNgsModuleGetPreset` (still unimplemented;
   sound quality, not the dropout). Key-off still ends a voice at once,
   without the envelope's release tail.
@@ -286,7 +288,12 @@ rendering bugs.
     right stick or the mouse. This depends on what Phase 2 finds the game
     reads: an absolute point, a drag, or a hold;
   * front touch: the caution-icon lock-on and any menu touches, as keys
-    (ss-delta's held-finger bindings).
+    (ss-delta's held-finger bindings). ◐ Caution (owner's request,
+    2026-10-14): `caution_key = F`, `caution_gamepad = righttrigger`. The
+    eyes move (one per nearby enemy, stacked on the right), so the binding
+    puts its finger on the first eye wherever the game draws it, read from
+    the HUD's layout data (a new front-end feature: touch bindings with a
+    moving target). Waiting for the owner to try it in play.
 * ☐ **Saves**: import/export of Vita saves (ss-delta's `--import-save`,
   with this game's ten slots).
 * ☐ **DLC**: the Mirror Spirits missions available (installed add-on +
