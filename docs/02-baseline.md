@@ -234,6 +234,50 @@ in the samples; they share the frame (**hypothesis**: they match the
 same way). `v3kdrive.py` cannot press F for the game (front-end keys need
 the window focused), so this check focused the window by hand.
 
+## Sound effects and 60 fps (Phases 5 and 7, 2026-10-14)
+
+No-JIT build, test install with the `hub-day1` save, scale 2.
+
+**Effects** (`[audio] effects`, reverb and release fades, on by default
+in `shinobido2.exe` only):
+
+| Run | Cycles | SFX loudness per cycle |
+|---|---|---|
+| effects on | 6 | −26.8 to −27.5 dB, steady |
+| effects on (after the preset fix) | 2 | −27.2, −27.5 dB |
+| effects off | 2 | −27.6, −26.9 dB |
+
+* The first draft wrote the preset over the `SceNgsBufferInfo` on the
+  game's stack; fixed before these numbers.
+* With the fix the reverb buss gets preset 0 (decay 1.49 s, wet only),
+  but its input stayed silent: the game sends 0 to it in these scenes,
+  and no stop asked for a fade. Both effects are idle here; later areas
+  may use them (**hypothesis**).
+
+**60 fps** (`[display] frame_rate = 60`): the log shows
+`frame_rate: 60 fps` and one fixed step changed to 1/60 at boot.
+
+| Check | 30 | 60 |
+|---|---|---|
+| FPS in the field (23 samples per pass) | 30–31 | 57–60 |
+| Boot → hub → mission 1 (`to-mission.py`) | ok | ok (3 passes) |
+| Restart Mission | ok | ok |
+| Logo movies, no input | 7.3 s, 3.7 s | 7.2 s, 3.6 s |
+| Same inputs from the spawn (walk, side-step, jump, dash) | — | same positions as at 30 |
+
+* One 60 fps boot stalled on a black screen after the first logo: the
+  movie module's place (`0x805b4000`) was taken between its unload and
+  reload, and its next load had no native code. The place was freed and
+  reserved again a moment later, and other threads allocated in between;
+  three of four 60 fps boots showed the warning. Fixed in the fork (`c5dcca1c`):
+  the code segment stays allocated as the place and the next load takes
+  it over. Every movie load since went back to `0x805b4000`.
+* Not checked yet: the results screen's timers and HUD animations at 60
+  (twice as fast by the code), story cutscenes, Havok-heavy scenes.
+* `tools/to-mission.py` matched the hub by its banner, which shows the
+  hub's background; that changes, so the hub check now uses the menu,
+  the message bar and the button help.
+
 ## Upstream Vita3K on this machine (2026-10-13)
 
 The stock release in `extracted/vita3k` (`v0.2.1 4152-38bce160`, the

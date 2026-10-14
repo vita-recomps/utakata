@@ -27,7 +27,8 @@ SCREENS = {
     'load_list': [(0, 30, 960, 190)],        # the Load dialog's title and first row
     'load_confirm': [(130, 230, 830, 470)],  # "Do you want to load...?" and No / Yes
     'load_done': [(130, 230, 830, 470)],     # "Loading complete." and OK
-    'hub': [(0, 0, 260, 90), (60, 100, 330, 450)],  # Asuka Village banner and the menu
+    # the menu, the message bar and the button help (the banner shows the background, which changes)
+    'hub': [(60, 100, 330, 450), (0, 475, 700, 505), (0, 505, 960, 544)],
     'field': [(0, 410, 230, 544)],           # the HUD's tool diamond bottom left
 }
 LIMIT = 18.0

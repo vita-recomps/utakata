@@ -256,9 +256,12 @@ Results: [02-baseline, SFX dropout fixed](02-baseline.md#the-sfx-dropout-cause-a
   session (same day, with the caution binding): to day 16 of the story
   (~40%, 1:45 played, all ten save slots used), still no issues. Further
   sessions continue as the owner plays through.
-* ☐ Reverb, equalizer and `sceNgsModuleGetPreset` (still unimplemented;
-  sound quality, not the dropout). Key-off still ends a voice at once,
-  without the envelope's release tail.
+* ◐ Reverb, `sceNgsModuleGetPreset` and the release fade on key-off,
+  in the fork behind a per-game switch (`[audio] effects`, on for this
+  game, off for ss-delta; owner's choice, 2026-10-14). The soak stays
+  steady with them. In the scenes tested the game sends nothing to the
+  reverb and asks for no fades, so they still need a scene that uses
+  them (02-baseline). The EQ is left out: the game sets it flat.
 * ☐ Compare against a Vita (a recording by the owner) for envelopes and
   reverb in a few known scenes.
 
@@ -323,7 +326,7 @@ rendering bugs.
        changes the look, so it is a setting.
 
   Post-process AA (FXAA/SMAA) does little for texture shimmer.
-* ☐ **60 fps**, by ss-delta's method (its D16): find the frame pacing
+* ◐ **60 fps**, by ss-delta's method (its D16): find the frame pacing
   (frame timer period, vblank flip threshold) and change it as data in
   guest memory from the profile's frame-rate hook, so no game code is
   patched and native code stays on. Then check:
@@ -335,6 +338,14 @@ rendering bugs.
 
   If logic is frame-locked, 60 needs a game rewrite: mark it unplanned, as
   ss-delta's D16 allowed for.
+
+  Done (2026-10-14): `[display] frame_rate = 60` (default 30). Logic
+  steps by time, or by a fixed step the hook turns into 1/60; mission 1
+  plays at the right speed, movies at theirs, loads and a restart work
+  (02-baseline). The rate can't drop to 30 for loading screens (the run
+  loop reads it once). Known: HUD and menu animations and the results
+  screen's timers step by a literal 1/30 and run twice as fast. Next:
+  the owner tries 60 in play, including a mission's end.
 
 **Exit:** a full playthrough is possible on keyboard/controller at ≥ 2×
 internal resolution, grappling hook included (native controls), at 60 fps or with 60 marked
@@ -438,7 +449,7 @@ them against Phases 2–8.
 | R4 | Havok + NEON correctness (13.6% FP/SIMD) | physics desync | ss-delta's NEON layer and dynarmic tests already pass for these forms; differential runs |
 | R5 | PhyreEngine render-to-texture and readback | effects wrong at higher scale | surface sync on (ss-delta D4 update 4); Phase 6 sweep at scale 1 and 2 |
 | R6 | Shared toolchain changes break ss-delta | regressions in the finished port | D4: shared patches tested on both games; ss-delta's quick check in Phase 1's exit |
-| R7 | Frame-locked logic | no 60 fps | ss-delta D16's method (data-only change, loading screens at 30); otherwise 60 is marked unplanned |
+| R7 | Frame-locked logic | no 60 fps | Mostly not: logic steps by time (02-baseline); HUD/menu animations and result timers at 1/30 run fast at 60 |
 | R8 | GPL (Vita3K) | runtime can't be relicensed | the fork's source is published with any binary (D6); the recompiler has no Vita3K code |
 | R9 | No debug menu found | slow testing of late content | saves per chapter; Vita save import |
 | R10 | Game data or personal data in a pushed history | can't be taken back once public | D2; the history scan before the first push (Publishing); the scan as a pre-commit hook |

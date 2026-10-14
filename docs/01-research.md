@@ -482,6 +482,35 @@ widget 4 is not the eye stack (**hypothesis**: the on-target cursors).
 The touch binding therefore finds the eyes in the picture
 ([Caution binding](02-baseline.md#caution-binding)).
 
+**Sound effects** (static reading of the 1.02 eboot, 2026-10-14, checked
+at run time where noted). The racks (`0x8122b5bc`) hold Template1 and
+ATRAC9 voices and reverb, mixer, two compressor and master busses; a
+voice's output 0 goes to the mixer, output 1 to the reverb buss, then
+compressor A, B and master. The reverb buss is filled only by
+`sceNgsModuleGetPreset(sys, 0x5ce7, 0, info)` at `0x8122c17c`, where
+`info` is the `SceNgsBufferInfo` that `sceNgsVoiceLockParams` filled
+(not the parameters themselves). The send levels come from each sound's
+object (`[obj+0x18]`, `[obj+0x1c]`, applied by `0x8122dc32` from
+`0x8122fbca`); at run time every output-1 send was set to 0 in the
+title, the hub and mission 1 (~400 settings). Stops with a fade
+(`0x8122ded0`, `0x8122e392`) write the envelope's `uReleaseMsecs`
+(params `+0x38`) and key off; none came in six mission-1 restarts of
+combat. The EQ (`0x8122b522`) is un-bypassed with all four filters off,
+so it changes nothing.
+
+**Frame rate** (static reading, 2026-10-14; behaviour checked at 60).
+The application (pointer at `0x8146c2b0`) is constructed with a frame
+rate of 60 at `[app+8]`; `main` sets 30 (`0x810000d4`). The run loop
+`0x8114d024` reads it once on entry for both the period and the minimum
+vblanks and keeps them in registers, so it can't change per screen. It
+stores the vcount at `[app+0x1d8]` on entry (zero before). The time module
+`0x81054b6e` stores the step every update uses at `0x81468978`: the mean
+of the last 8 frame times capped at `[0x81468998]`, or in fixed mode
+(`[0x81538370] != 0`, set by `0x81054ee8`) `[0x81468998]` itself. App init
+`0x8114a778` and some scene changes select fixed steps of 1/30 s. HUD and
+menu animations (`0x8114e8ce`, ~40 widgets) and the results screen's
+timers (`0x811773c2`) step by a literal 1/30.
+
 **Network Jar (Near).** All 17 SceNearUtil calls are in one function,
 `0x811bc526` (the "near_sub_thr" thread); Vita3K serves them as stubs.
 
