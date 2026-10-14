@@ -321,7 +321,7 @@ the owner's NVIDIA PC).
   this needs a cleared save. The owner started New Game+ on the cleared
   save and the DLC missions were in the list (2026-10-14). ☑ The first
   DLC mission loads and plays (02-baseline).
-* ☐ **Texture shimmer** (seen by the owner in the tutorial field,
+* ◐ **Texture shimmer** (seen by the owner in the tutorial field,
   2026-10-13: the ground grains and shimmers while the camera moves). In
   ss-delta the same look was the game's own (a real Vita shimmers too), from
   repeating textures shipped without mips (its 02-baseline, "Ground shimmer
@@ -329,17 +329,18 @@ the owner's NVIDIA PC).
   1. ☑ Confirmed on hardware (the owner, 2026-10-13): the tutorial
      shimmers exactly the same on a Vita. It is more visible on PC because
      the 960×544 image is blown up to a large screen.
-  2. Find the cause with a sampler trace, as ss-delta did: mip levels, wrap
-     mode, filters and LOD bias of the ground textures.
+  2. ☑ Find the cause with a sampler trace, as ss-delta did: 34 of the 70
+     large textures in mission 1 are repeating UBC1/UBC3 without mips,
+     sampled trilinear (02-baseline).
   3. Options, cheapest first:
      * a higher internal resolution, which supersamples and reduces
        shimmer even without mips; it costs GPU time;
      * Vita3K's anisotropic filtering, which only helps textures that have
        mips;
-     * **mip chains built at upload** for mipless repeating textures.
-       ss-delta proposed this but never built it, so it is shared work for
-       both games ("Shared work after Phase 1"). It is an enhancement that
-       changes the look, so it is a setting.
+     * ☑ **mip chains built at upload** for mipless repeating textures:
+       in the fork (`State::generate_mips`, Vulkan), `[display] mipmaps`
+       in shinobido2.ini, off by default; the owner judges whether it
+       should be on. ss-delta can use it with a setting of its own.
 
   Post-process AA (FXAA/SMAA) does little for texture shimmer.
 * ☑ **60 fps**, by ss-delta's method (its D16): find the frame pacing

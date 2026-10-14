@@ -14,6 +14,9 @@ Settings are in shinobido2.ini; read when the game starts:
   mission results stay at 30, and so do the scenes that follow a loading
   screen, as their animation would run twice as fast. The pause menu and
   the HUD in a mission animate twice as fast at 60.
+- [display] mipmaps: smooths textures that shimmer in motion (the ground,
+  walls), as the game ships some without mip levels; off by default, as it
+  changes the look a little.
 - [audio] volume, and effects: the reverb and fade-outs the game asks for
   (false: the plain sound of earlier builds).
 - [keyboard], [gamepad]: bindings.

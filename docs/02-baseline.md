@@ -320,6 +320,30 @@ visit.
   hub's background; that changes, so the hub check now uses the menu,
   the message bar and the button help.
 
+## Texture shimmer: cause and generated mips (Phase 7, 2026-10-14)
+
+The owner saw the ground grain and shimmer in motion in the tutorial
+field; a Vita shows the same (2026-10-13). A temporary sampler trace in
+mission 1's street (each texture once, as the fork configures it):
+
+| Textures of 128 px or more | Count |
+|---|---|
+| swizzled, repeating, **no mips** (UBC1 21, UBC3 13) | 34 |
+| swizzled, repeating, full chains (8-11 levels) | 32 |
+| other (linear or tiled, clamped) | 4 |
+
+All but one ask for linear min/mag and linear mip filtering with LOD bias
+0. So half the repeating ground and wall textures alias at a distance, as
+in ss-delta (its 02-baseline, "Ground shimmer in motion").
+
+`[display] mipmaps = true` (fork: `renderer: generated mips`, off by
+default) gives such textures a full chain: decompressed at upload, each
+level blitted from the one above. In mission 1 with it: textures render
+correctly, the far walls fade smoothly instead of breaking up, 30 fps
+held (a dip to 25 on arrival while textures are decompressed). The two
+runs faced different ways at the spawn, so there is no like-for-like still;
+the owner judges it in motion.
+
 ## Upstream Vita3K on this machine (2026-10-13)
 
 The stock release in `extracted/vita3k` (`v0.2.1 4152-38bce160`, the
