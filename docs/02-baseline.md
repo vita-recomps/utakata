@@ -280,6 +280,12 @@ in `shinobido2.exe` only):
   scripted scenes at 30 fps`): a mission's opening scene from save 56 ran
   at 30 fps for its 20 s and play at 60 before and after. The two scenes
   themselves need boss 1 beaten; the owner can confirm them.
+* Owner's test of the second-to-last mission with that build: the
+  mission's opening scene at 30 then 60, but a boss's intro scene
+  switched to 30 and the fight stayed there (the scene flag stays set: the
+  intro leads into the fight without the scene's end). A scene now also
+  needs the player frozen; the opening scene still runs at 30 with it.
+  The boss fight is for the owner to confirm.
 
 **DLC mission** (the owner's New Game+ save, 2026-10-14, 60 fps): the
 mission list starts with "An Unsettling Shadow…" (gold frame, enemies
