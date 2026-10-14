@@ -286,9 +286,8 @@ rendering bugs.
   3D resolution (Phase 2) and check depth-reading effects at scale 2.
 * ☐ **Input**:
   * keyboard and gamepad bindings;
-  * **rear touch**: map grappling-hook aiming and first-person aim to the
-    right stick or the mouse. This depends on what Phase 2 finds the game
-    reads: an absolute point, a drag, or a hold;
+  * ☑ **rear touch**: not needed. The game itself aims the grappling
+    hook with R + Circle held and the left stick (owner, 2026-10-14);
   * front touch: the caution-icon lock-on and any menu touches, as keys
     (ss-delta's held-finger bindings). ☑ Caution (owner's request,
     2026-10-14): `caution_key = F`, `caution_gamepad = righttrigger`. The
@@ -338,7 +337,7 @@ rendering bugs.
   ss-delta's D16 allowed for.
 
 **Exit:** a full playthrough is possible on keyboard/controller at ≥ 2×
-internal resolution, grappling hook included, at 60 fps or with 60 marked
+internal resolution, grappling hook included (native controls), at 60 fps or with 60 marked
 unplanned.
 
 ## Phase 8 — Compatibility pass (M) ☐
@@ -435,7 +434,7 @@ them against Phases 2–8.
 |---|---|---|---|
 | R1 | NGS audio: SFX dropout, missing envelope/reverb/EQ | unplayable without sound effects | Phase 5; NGS tracing; hardware recording; the fix is upstreamable |
 | R2 | 1.00 vs 1.02 | wasted work if we start on 1.00 | **closed**: 1.02 installed and measured in Phase 0 (D3); the recompiler's code hash rejects a mismatched DLL anyway |
-| R3 | Rear-touch aiming has no natural PC control | grappling hook awkward | Phase 2 finds the semantics first; right stick or mouse; playtest |
+| R3 | ~~Rear-touch aiming has no natural PC control~~ | — | Closed: the game aims the hook with R + Circle and the left stick |
 | R4 | Havok + NEON correctness (13.6% FP/SIMD) | physics desync | ss-delta's NEON layer and dynarmic tests already pass for these forms; differential runs |
 | R5 | PhyreEngine render-to-texture and readback | effects wrong at higher scale | surface sync on (ss-delta D4 update 4); Phase 6 sweep at scale 1 and 2 |
 | R6 | Shared toolchain changes break ss-delta | regressions in the finished port | D4: shared patches tested on both games; ss-delta's quick check in Phase 1's exit |
