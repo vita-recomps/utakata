@@ -294,7 +294,11 @@ in `shinobido2.exe` only):
   twice as fast, with the HUD byte "shown" through it. Now a scene is the
   script controller holding an event scene (`[*0x8146ac74+0x10]`): on
   the opening scene it is set from the scene's load (2 s before the flag
-  and the HUD byte) to its end. For the owner to confirm on boss 2.
+  and the HUD byte) to its end. Owner's test: boss 2's intro right, but
+  both fights at 30 (the event scene stays loaded through a fight). With
+  all four signals in that log: a scene is an event scene with the HUD
+  hidden or without the scene flag; replaying the log through it gives
+  30 for each intro and outro and 60 for both fights.
 
 **DLC mission** (the owner's New Game+ save, 2026-10-14, 60 fps): the
 mission list starts with "An Unsettling Shadow…" (gold frame, enemies
