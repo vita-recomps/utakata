@@ -250,12 +250,14 @@ Results: [02-baseline, SFX dropout fixed](02-baseline.md#the-sfx-dropout-cause-a
   loudness per cycle). Restarting mission 1 alone leaks one voice per
   load but did not empty the pool in 12 loads; Phase 0's dropout came
   in mission 2, which uses more voices.
-* ◐ **Owner's playtest** (2026-10-14, the no-JIT install with the fix):
+* ☑ **Owner's playtest** (2026-10-14, the no-JIT install with the fix):
   all tutorials and several missions in one session, a new save after
   every mission; no audio loss, glitches or other issues seen. Second
   session (same day, with the caution binding): to day 16 of the story
-  (~40%, 1:45 played, all ten save slots used), still no issues. Further
-  sessions continue as the owner plays through.
+  (~40%, 1:45 played, all ten save slots used), still no issues. Then the
+  whole story to the ending the same day (Easy, 5:04, clear count 1), the
+  last part at 60 fps: no audio loss, glitches or crashes. Saves after
+  every mission are archived (four batches, the cleared save included).
 * ◐ Reverb, `sceNgsModuleGetPreset` and the release fade on key-off,
   in the fork behind a per-game switch (`[audio] effects`, on for this
   game, off for ss-delta; owner's choice, 2026-10-14). The soak stays
@@ -346,6 +348,14 @@ rendering bugs.
   loop reads it once). Known: HUD and menu animations and the results
   screen's timers step by a literal 1/30 and run twice as fast. Next:
   the owner tries 60 in play, including a mission's end.
+
+  Owner's play at 60 (2026-10-14, to the ending): gameplay right, UI at
+  twice the speed as expected, and **two mid-mission story cutscenes ran
+  at twice the speed** while their audio stayed at normal speed. The
+  cutscenes before and after missions were right. No movie file played
+  mid-mission (the log), so these are real-time scenes whose animation
+  steps per frame (**hypothesis**). Next: find which missions, reproduce
+  from the archived saves, find their step.
 
 **Exit:** a full playthrough is possible on keyboard/controller at ≥ 2×
 internal resolution, grappling hook included (native controls), at 60 fps or with 60 marked
