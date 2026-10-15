@@ -527,9 +527,34 @@ them against Phases 2–8.
   read from the toolchain folder): 3.0 min with 6 jobs, all verified in a
   quest at 56-57 fps, differential 11,285 calls with 0 mismatching.
 
-  Next for the setup: a fork build option for the single-game executables
-  without Qt; the frozen Python tools; the GitHub Actions release; the
-  setup's screens.
+  ☑ The setup, first version (2026-10-15):
+  * the fork's `VITA3K_GAMES_ONLY` (`build-vita3k.py --games-only`) builds
+    the game executables without Qt, in 9 min;
+  * the kit's `make-setup.py` lays out the setup (96 MB, 30 MB zipped):
+    * Python's embeddable distribution with capstone and PyYAML, pinned
+      to the development versions, since the recompiler's output depends on
+      capstone's;
+    * the kit;
+    * the game's front end;
+    * a release check that refuses anything that looks like game data;
+  * `setup.bat` asks for the dump and needs Microsoft's licence accepted.
+    It then downloads:
+    * the firmware from Sony (`fetch-firmware.py`; both PUPs match our
+      copies' SHA-256);
+    * the toolchain, into `%LOCALAPPDATA%\vita-recomps`.
+
+    Then it installs, captures, recompiles and compiles, and puts the VC++
+    runtime DLLs beside the exe.
+
+  Test: Shinobido 2 (game, 1.02, add-on), from a fresh unzip with no
+  Python, Git or Visual Studio on the path. Results:
+  * about 6 min to a playable folder;
+  * generated code byte-identical to the development build's;
+  * every loaded module verified and native in the first mission.
+
+  Next: the GitHub Actions release (needs a public game repo: ss-delta
+  first), the setup's screens instead of console questions, and a check
+  on a PC without Visual Studio or the VC++ runtime.
 * ☐ **Android**, after the desktop platforms. The port can't compile on a
   phone, so the APK is built on the player's PC from their own dump (the
   Android NDK's clang, ARM64) and sideloaded; a "Build for Android" step in
