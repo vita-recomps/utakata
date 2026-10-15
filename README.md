@@ -1,9 +1,10 @@
 # utakata
 
-A native PC port of **Shinobido 2: Revenge of Zen** (PS Vita, US PCSE00015)
-by static recompilation, built from the player's own dump. Utakata is the
-land the game is set in. It is a sibling of ss-delta (Soul Sacrifice
-Delta), whose recompiler, Vita3K fork and tools it shares.
+A native PC port of **Shinobido 2: Revenge of Zen** (PS Vita, US PCSE00015,
+update 1.02) by static recompilation, built from the player's own dump. The
+game's code, and the firmware modules it loads, are recompiled ahead of time
+to C++ and run natively inside a fork of Vita3K, which supplies the rest of
+the console. Utakata is the land the game is set in.
 
 Licence: MIT ([LICENSE](LICENSE)). The Vita3K fork it builds on
 (`third_party/vita3k`) is GPL-2.0-or-later.
@@ -14,13 +15,42 @@ Licence: MIT ([LICENSE](LICENSE)). The Vita3K fork it builds on
 
 ## Status
 
-Playable start to finish ([plan](docs/03-plan.md)): the owner played the
-whole story to the ending on it, and the DLC missions load and play. The
-game runs on native code recompiled from your own copy, without a JIT, at
-2× internal resolution and 30 or 60 fps, on AMD and NVIDIA GPUs. Every
-phase is done (the Vita3K sound-effects dropout is fixed in the fork);
-publishing is open. The texture shimmer the game has on a Vita too
-is smoothed by generated mipmaps, on by default.
+The whole story plays to the ending on native code, without a JIT, and the
+Mirror Spirits add-on's missions load and play; checked on AMD and NVIDIA
+GPUs ([compatibility](docs/06-compatibility.md)). Other endings and
+difficulties than the one played through are untested. Windows only for
+now; Linux and macOS builds are planned.
+
+## Features
+
+Compared with running the game in Vita3K:
+
+* **Native code.** The game's code, and the firmware modules it loads, are
+  recompiled ahead of time to C++ and run natively; the build ships without
+  the JIT. Each module is checked against the game in memory before its
+  native code runs.
+* **Sound effects that last.** In Vita3K the game's sound effects go silent
+  after a few missions: its sound manager waits for voices to finish
+  fading, and Vita3K never reported it. The fork tracks the fades, so no
+  voice is lost; reverb and fade-outs are implemented too (Phase 5 in the
+  [plan](docs/03-plan.md)).
+* **60 fps.** `frame_rate = 60` runs missions at 60 fps at the right
+  speed, by changing the game's frame pacing as data in memory, with no
+  code patch. Menus, the hub, mission results and the scenes that step
+  per frame stay at 30 so they keep their speed. Known: the HUD and pause
+  menu animate twice as fast at 60. The default, 30, is the Vita's rate.
+* **No texture shimmer.** Many ground textures ship without mipmaps and
+  shimmer in motion, on a Vita too. The fork builds the mipmaps at load
+  time, on by default ([D8](docs/decisions.md)).
+* **Higher resolution**: Vita3K's multiplier, tested at 2× (1920×1088).
+* **An in-game settings menu** (F1, or Select held on a gamepad) over the
+  paused game, and a commented `shinobido2.ini`.
+* **The caution eye on a key:** F or the right trigger touches the eye
+  that locks on to an enemy, wherever it is on screen; the mouse is the
+  touchscreens.
+* **Vita saves** imported and exported (`--import-save`, `--export-save`).
+* **One executable**, `shinobido2.exe`, without Vita3K's interface and
+  offline, installed from your own dump with one command.
 
 ## What you need
 
@@ -46,8 +76,7 @@ python -I third_party/recomp/tools/build-vita3k.py --target shinobido2
 
 The script finds MSVC (vswhere) and Qt (`Qt6_ROOT`, `--qt <dir>`, or the
 newest `C:\Qt\<version>\msvc20*_64`). The first build takes about ten
-minutes and puts `shinobido2.exe` (and `Vita3K.exe`, `ss-delta.exe`) in
-`build/vita3k/bin/RelWithDebInfo/`.
+minutes and puts `shinobido2.exe` in `build/vita3k/bin/RelWithDebInfo/`.
 
 ## Installing your game
 
@@ -94,7 +123,7 @@ copies them out.
 
 | Doc | Contents |
 |---|---|
-| [01-research](docs/01-research.md) | the dump, the FADEBABE archives, the eboot measured, prior work, differences from ss-delta |
+| [01-research](docs/01-research.md) | the dump, the FADEBABE archives, the eboot measured, prior work |
 | [02-baseline](docs/02-baseline.md) | how the game behaves today, the SFX dropout repro, and how to re-run it |
 | [03-plan](docs/03-plan.md) | phases, exit criteria, risks |
 | [06-compatibility](docs/06-compatibility.md) | what has been played and checked, and what not yet |

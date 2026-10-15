@@ -65,8 +65,7 @@ the measurements and a recorded SFX-dropout repro. **Met** (2026-10-13).
 ## Phase 1 — Shared repos, fork branch and front end (M) ☑
 
 Steps marked **(ss-delta)** change the ss-delta repo; the owner OKed
-Phase 1 (2026-10-13). The repos were in local stand-in hubs until they
-moved to the owner's private remote (D4, D6).
+Phase 1 (2026-10-13).
 
 * ☑ **Recompiler repo** `vita-recomp` (D4 item 2), extracted from a copy
   of ss-delta's history (`git filter-repo`; ss-delta itself untouched):
@@ -131,7 +130,7 @@ moved to the owner's private remote (D4, D6).
 ss-delta still builds and plays (title → a quest), so the shared changes
 broke nothing.
 **Met** (2026-10-13): a `--recurse-submodules` clone of
-this repo's hub configured and built from scratch in 9 min (after
+this repo configured and built from scratch in 9 min (after
 two fixes to `build-vita3k.py` it found: Boost's bootstrap and Qt), and its
 `shinobido2.exe` booted to the title at 30 fps. `dist/shinobido2-test`
 (installed from the pkg files) played a mission. ss-delta played a quest.
@@ -405,29 +404,22 @@ that the repo builds from a fresh clone.
 
 * ☑ Licences: MIT for this repo, ss-delta (its Vita3K patches stay GPL)
   and vita-recomp-kit; the fork GPL-2.0-or-later.
-* ☑ A private remote as `origin` for all four repos, private notes in a
-  separate repo (D6 update).
 * ☑ History: our commits rewritten to the no-reply address in all four
-  repos (fork: ours only), pushed to the private remote. Scans: no D2 file
-  types, no blobs over 1 MB, no personal email (the three gmail hits in
-  ss-delta are the Vita3K-Plus author's public attributions). The
-  pre-rewrite copies were deleted (2026-10-15). Every working copy and
-  submodule now commits with the no-reply address (ss-delta's local
-  config still had the old one until 2026-10-14; caught before a push).
+  repos (fork: ours only). Scans: no D2 file types, no blobs over 1 MB, no
+  personal email. The pre-rewrite copies were deleted (2026-10-15). Every
+  working copy and submodule commits with the no-reply address.
 * ☑ History scan of every commit: D2 file types, big blobs, zRIF-like
   base64, licence contents, personal paths and addresses
   (`tools/leak-scan.py`, run as the pre-push hook of every repo).
 * ☑ Docs made public-ready (2026-10-13), in this repo and ss-delta:
   repo-relative paths, relative submodule URLs (`../vita3k`), READMEs with
   requirements, a build guide from a fresh clone, "bring your own dump"
-  install steps and known issues. The owner's local details moved to the
-  private notes, imported through a git-ignored `CLAUDE.local.md`.
+  install steps and known issues. The owner's local details stay outside
+  the repos, brought to Claude Code by a git-ignored `CLAUDE.local.md`.
 * ☑ History scrubbed in this repo and ss-delta: no host name, local paths
   or user folders in any commit or message (`C:\...` project paths became
-  `<utakata>`, `<ss-delta>`, `<git>`); force-pushed to the private remote.
-  The fork's and vita-recomp-kit's histories had nothing to scrub. One old
-  doc line still quotes the former placeholder email (a reserved
-  `home.arpa` address, nothing personal).
+  `<utakata>`, `<ss-delta>`, `<git>`). The fork's and vita-recomp-kit's
+  histories had nothing to scrub.
 * ☑ Leak scan: vita-recomp-kit `tools/leak-scan.py`, a pre-push hook in
   every repo (game-data files, big files, licence strings, tokens, user
   folders, and the owner's private patterns kept outside the repos).
@@ -439,7 +431,7 @@ that the repo builds from a fresh clone.
   and an anonymous clone resolves both submodules on GitHub at the pinned
   commits. utakata is not pushed yet.
 * ◐ A fresh-clone check before each game repo goes public. ☑ ss-delta
-  (2026-10-15): cloned from Forgejo into an empty folder, built and
+  (2026-10-15): cloned into an empty folder, built and
   installed from the owner's dump with its README alone (clone 13 min,
   build 9 min, install 16 min), the result on native code; the README
   needed no change. utakata: when it is published.

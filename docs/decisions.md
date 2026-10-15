@@ -115,9 +115,9 @@ of the new repos are the owner's choice.
 
 **Done (Phase 1, 2026-10-13, owner's OK for Phase 1):**
 
-* Hubs: local bare repos, stand-ins until a real remote existed:
-  `vita3k.git` (the fork), `vita-recomp.git` (the shared toolchain),
-  `ss-delta.git` and `shinobido-2.git`. `vita-recomp` was a working name.
+* Four repos: `vita3k` (the fork), `vita-recomp-kit` (the shared
+  toolchain; `vita-recomp` was its working name), `ss-delta` and `utakata`
+  (`shinobido-2` was its working name).
 * The fork's integration branch is **`games`**: ss-delta's branch plus the
   shared single-game frontend (`vita3k/game-frontend/`, one exe per game
   in `vita3k/games/<id>/`). Both game repos track it. The old `ss-delta`
@@ -125,10 +125,6 @@ of the new repos are the owner's choice.
 * `vita-recomp` (history extracted from ss-delta) holds the recompiler,
   the analysis and driving tools, and the Python build, install and
   packaging scripts, which read each game's `game.json`.
-* Update (2026-10-13): the hubs moved to the owner's private git server
-  (D6); the repos are `vita3k`, `vita-recomp-kit` (was `vita-recomp`),
-  `ss-delta` and `utakata` (was `shinobido-2`). The local stand-ins are
-  retired.
 * ss-delta switched on 2026-10-13 (its D17): both submodules, its
   PowerShell build/install/dist scripts replaced, checked from Stage
   Select into a quest on native code with the 60 fps loading-screen
@@ -189,16 +185,14 @@ repos.
 
 **Update (owner, 2026-10-13):**
 
-* **Private remote first, GitHub later.** All repos live on the owner's
-  private git server as `origin`. GitHub comes as a second remote, pushed to
-  on purpose, after the docs cleanup; until then nothing goes public.
-  `.gitmodules` uses relative URLs (`../vita3k`), which resolve next to
-  wherever the superproject came from, so neither server is named.
+* **GitHub on purpose.** Nothing goes to GitHub before the docs cleanup
+  and the owner's go-ahead. `.gitmodules` uses relative URLs (`../vita3k`),
+  which resolve next to wherever the superproject came from.
 * **Nothing local in the repos** (owner, 2026-10-13): no host names,
   absolute paths, machine or user names, tokens, not even in history.
-  They live in the private notes repo, which `CLAUDE.local.md` (git-ignored)
-  imports for Claude Code. The history was scrubbed of them before the
-  GitHub pass.
+  They stay outside the repos; a git-ignored `CLAUDE.local.md` brings them
+  to Claude Code. The history was scrubbed of them before the GitHub
+  pass.
 * **Licences:** MIT for `utakata`, `ss-delta` (except its
   `patches/vita3k/`, GPL like Vita3K) and `vita-recomp-kit`; the fork
   stays GPL-2.0-or-later.
@@ -207,10 +201,7 @@ repos.
   our 49 commits only, with `--refs ... ^master`, so upstream's commits,
   signatures and IDs are unchanged). Submodule pointers and commit IDs
   quoted in docs and messages were remapped to the new IDs. The old
-  histories stay only in local reflogs and backups.
-* **Private notes** go in a separate private repo, never in
-  a branch of a repo that will be public (a push of all branches, or a
-  mirror, would publish it).
+  histories were deleted.
 
 ## D7 — Network Jar is unplanned (accepted, 2026-10-14)
 
