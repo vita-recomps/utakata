@@ -552,9 +552,26 @@ them against Phases 2–8.
   * generated code byte-identical to the development build's;
   * every loaded module verified and native in the first mission.
 
-  Next: the GitHub Actions release (needs a public game repo: ss-delta
-  first), the setup's screens instead of console questions, and a check
-  on a PC without Visual Studio or the VC++ runtime.
+  ☑ The setup's window (2026-10-15, kit `setupgui.py`). It uses Tk from
+  python.org's `tcltk.msi` and asks for:
+  * the game, its update and add-ons, with their licences (a pkg's
+    `work.bin` or `.rif` is found next to it);
+  * the playable folder;
+  * acceptance of Microsoft's licence.
+
+  It shows the stages and output, then Play and Open folder. Tested end to
+  end:
+  * Shinobido 2 through the window;
+  * an ss-delta setup from the console, which reached a quest at 56-58 fps
+    with every module native.
+
+  ☐ The GitHub Actions release. ss-delta's `.github/workflows/release.yml`
+  (its D18) makes a draft release from a tag `v*`: setup zip, SHA-256 and
+  build attestation. It is not on GitHub yet and has not run; utakata gets
+  the same workflow once it is public.
+
+  ☐ A check on a separate PC without Visual Studio or the VC++ runtime
+  (the owner).
 * ☐ **Android**, after the desktop platforms. The port can't compile on a
   phone, so the APK is built on the player's PC from their own dump (the
   Android NDK's clang, ARM64) and sideloaded; a "Build for Android" step in
