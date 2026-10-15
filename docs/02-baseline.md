@@ -376,6 +376,8 @@ build ss-delta compared against), 1.02, the `hub-day1` save, scale 1:
   fork).
 * No visible difference from the fork in these scenes.
 * Not run: the RTX 4090 (it needs the owner's other PC; see the plan).
+  Done later (2026-10-15): the owner played the NVIDIA package on the RTX
+  4090 PC, and the game worked with no issues seen.
 
 **DLC check, so far:** the hub up to day 4 lists only story missions, and
 the day-1 letters are regular ones. The Mirror Spirits missions didn't

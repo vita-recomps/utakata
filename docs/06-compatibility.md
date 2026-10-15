@@ -30,7 +30,7 @@ scale 2, a gamepad; the last missions at 60 fps) and the test runs in
 | Network Jar (Near) | unplanned | needs PS Vita "near" between players, only shares resources ([D7](decisions.md)) |
 | 60 fps | ✓ | missions at 60; menus, hub, results and post-load scenes at 30 |
 | Generated mipmaps | ✓ | on by default: the shimmer in motion is gone (the owner) ([D8](decisions.md)) |
-| NVIDIA GPUs | ? | the fork carries ss-delta's NVIDIA fixes; untested here |
+| NVIDIA GPUs | ✓ | the owner on the RTX 4090 (2026-10-15): works, no issues seen |
 | Native code against the JIT | ✓ | 0 mismatches in ~79,000 sampled calls |
 
 ## Native code against the JIT

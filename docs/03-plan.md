@@ -38,8 +38,8 @@ touch** and the **pkg install path**.
   and installed; ELFs dumped; `velf`/`imix`/inventory/recompile probe
   re-run (16,972 functions, 0 unsupported); hashes recorded; boots to the
   first in-engine cutscene at 30 fps, and the add-on is found at boot.
-* ◐ DLC: the add-on is found at boot, but its missions didn't appear on
-  the board up to day 4. Moved to Phase 7's DLC item: it needs play
+* → DLC: the add-on is found at boot, but its missions didn't appear on
+  the board up to day 4. Moved to Phase 7's DLC item (done there): it needs play
   further into the story, or Phase 2's look at the DLC check in the code.
 * ☑ Repository: branch `main`, first commit `393f883` (docs and tools
   only). The commit identity is the owner's GitHub no-reply address
@@ -84,7 +84,7 @@ moved to the owner's private remote (D4, D6).
   (branch `games`) and `third_party/recomp` (`main`).
 * ☑ **Fork**: branch `shinobido-2` from `4704fc6c`, built here in 12 min
   (`build/vita3k`).
-* ◐ **Scripts in Python** in `vita-recomp/tools`: `build-vita3k.py`
+* ☑ **Scripts in Python** in `vita-recomp/tools`: `build-vita3k.py`
   (MSVC found with vswhere, Qt found in its default folder), `install-game.py`,
   `make-dist.py`, read from the project's `game.json`. ss-delta's old
   PowerShell build/install/dist scripts are gone; its map sweep and RTX
@@ -111,7 +111,7 @@ moved to the owner's private remote (D4, D6).
 * ☑ **D5 shim retired**: `dist/shinobido2-test/shinobido2.exe` loaded the
   `hub-day1` save and played a mission at 30 fps (moved, swung), driven
   by the shared `v3kdrive.py`.
-* ◐ ss-delta on the new front end: `ss-delta.exe` from this build, with
+* ☑ ss-delta on the new front end: `ss-delta.exe` from this build, with
   ss-delta's recompiled modules, booted to the title, loaded a save into
   the hub on NativeCPU (all 10 modules placed where expected), 57 fps at
   scale 2, its hooks active (add-ons, `boot_config`, 60 fps). Run on a
@@ -273,7 +273,7 @@ SFX loss; envelope, reverb and EQ audible and plausible against hardware.
 Met (2026-10-14): the whole story played with no sound loss; the effects
 follow the game's requests (the EQ is flat in this game).
 
-## Phase 6 — Rendering correctness (M) ◐
+## Phase 6 — Rendering correctness (M) ☑
 
 * ☑ Sweep every mission area and the castle/hub screens: covered by the
   owner's playthrough (2026-10-14, AMD, scale 2): every story mission to
@@ -283,16 +283,18 @@ follow the game's requests (the EQ is flat in this game).
 * ☑ Cutscenes and FMV: the story movies and every story scene played in
   the playthrough; no stuck subtitles seen.
 * ☑ Effects: blood, smoke, water, night lighting: seen in play, no issue.
-* ☐ AMD and NVIDIA (ss-delta's two-reference rule, its D4 update 2). The
+* ☑ AMD and NVIDIA (ss-delta's two-reference rule, its D4 update 2). The
   fork's NVIDIA fixes come along, among them the USSE min/max NaN rule
   (patch 0039) behind SSD's white floor. PhyreEngine's fog and lighting
   may hit the same NaN path, so NVIDIA is checked early, not last.
+  The owner played the NVIDIA package (`utakata-nvidia-5e9ddf2`) on the
+  RTX 4090 PC (2026-10-15): the game works, no issues seen.
 
 **Exit:** a visual sweep of all areas and cutscenes with no known
-rendering bugs. Met on AMD by the playthrough; NVIDIA is open (it needs
-the owner's NVIDIA PC).
+rendering bugs. Met: on AMD by the playthrough, on NVIDIA by the
+owner's play on the RTX 4090 (2026-10-15).
 
-## Phase 7 — PC features (M) ◐
+## Phase 7 — PC features (M) ☑
 
 * ☑ **Internal resolution**: Vita3K's multiplier. The game renders 3D at
   the full 960×544 (Phase 2); the playthrough ran at scale 2 (1920×1088)
@@ -381,7 +383,8 @@ the owner's NVIDIA PC).
 **Exit:** a full playthrough is possible on keyboard/controller at ≥ 2×
 internal resolution, grappling hook included (native controls), at 60 fps or with 60 marked
 unplanned. Met (2026-10-14): the owner's playthrough at scale 2 on a gamepad,
-its last missions at 60. The texture shimmer is the open item.
+its last missions at 60. The texture shimmer, the last open item, is
+smoothed by generated mipmaps (D8).
 
 ## Phase 8 — Compatibility pass (M) ☑
 
@@ -447,7 +450,7 @@ that the repo builds from a fresh clone.
 **Exit:** the owner pushes to GitHub; a stranger can clone, build and
 install from their own dump with the README alone.
 
-## Shared work after Phase 1 (both games) ☐
+## Shared work after Phase 1 (both games) ◐
 
 ss-delta's remaining wishes, done once in the shared repos after Phase 1,
 so both games get them. Not on this game's critical path; the owner orders
