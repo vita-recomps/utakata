@@ -492,10 +492,28 @@ them against Phases 2–8.
     build attestations; SignPath's free signing for open source once the
     repos are public.
 
-  First a spike: ss-delta's modules built with `clang-cl` and `lld-link`
-  against the MSVC-built executable, played and checked with the
-  differential mode. Then Linux and macOS setups reuse the same pipeline
-  with a bundled or system clang.
+  ☑ Spike (2026-10-15): ss-delta's ten modules built with llvm-mingw
+  20261006 (clang 23.1.3) as `clang-cl` and `lld-link`, against the MSVC
+  runtime and Windows SDK on the dev PC, loaded by the MSVC-built
+  `ss-delta.exe`:
+
+  | | MSVC (cl) | clang-cl |
+  |---|---|---|
+  | compile, 10 modules, 6 jobs | 11.9 min | **2.7 min** |
+  | `ssd_aot_eboot.dll` | 98.4 MB | 83.8 MB |
+  | modules verified, quest fps | all, 56-58 | all, 56-58 |
+  | differential, quest and fight | — | **15,608 calls, 0 mismatching** |
+
+  What the toolchain needs: `clang-cl.exe` as a copy of `clang-23.exe`
+  (llvm-mingw's `clang.exe` is a wrapper that reads a target from its
+  name), `lld-link.exe` of `ld.lld.exe`, `llvm-lib.exe` of `llvm-ar.exe`,
+  `--target x86_64-pc-windows-msvc` (llvm-mingw defaults to MinGW) and
+  `-fuse-ld=lld`, no manifest tool. Still to do for the setup: the
+  Microsoft runtime and SDK downloaded rather than taken from an installed
+  Visual Studio, and CMake and Ninja (redistributable) bundled or replaced
+  by a small Python build driver. Linux and macOS setups reuse the same
+  pipeline with a bundled or system clang. The 4x shorter compile also
+  makes clang-cl worth offering for development builds.
 * ☐ **Android**, after the desktop platforms. The port can't compile on a
   phone, so the APK is built on the player's PC from their own dump (the
   Android NDK's clang, ARM64) and sideloaded; a "Build for Android" step in
