@@ -472,6 +472,38 @@ them against Phases 2–8.
   * Vulkan through MoltenVK on macOS (Vita3K's own path);
   * the scripts, already in Python after Phase 1;
   * Steam Deck as a Linux target.
+* ☐ **A setup for players** ([D9](decisions.md)): a download from GitHub
+  Releases that turns the player's own dump into a playable port without
+  cloning or building, on Nebula's model (github.com/keepvaibin/nebula):
+  * GitHub Actions builds the game's executable from a public tag of the
+    fork (a build option for the single-game executables without Qt) and
+    freezes the Python tools (install, ELF dump, recompile, packaging)
+    into the setup; release checks refuse any file that looks like game
+    data;
+  * on the player's PC the setup installs the game, firmware (downloaded
+    from Sony's servers, as Vita3K does) and add-ons, captures the modules
+    in a short run, recompiles them and compiles them with a toolchain it
+    downloads and pins by hash: `clang-cl`/`lld-link` (llvm-mingw) with
+    Microsoft's C++ runtime and Windows SDK packages, under Microsoft's
+    licence, so nothing of Microsoft's is redistributed;
+  * the setup's screens could be the game's own first start (the overlay
+    UI of the settings menu, a native file dialog), usable with a gamepad;
+  * unsigned at first ("Run anyway"), with SHA-256 checksums and GitHub
+    build attestations; SignPath's free signing for open source once the
+    repos are public.
+
+  First a spike: ss-delta's modules built with `clang-cl` and `lld-link`
+  against the MSVC-built executable, played and checked with the
+  differential mode. Then Linux and macOS setups reuse the same pipeline
+  with a bundled or system clang.
+* ☐ **Android**, after the desktop platforms. The port can't compile on a
+  phone, so the APK is built on the player's PC from their own dump (the
+  Android NDK's clang, ARM64) and sideloaded; a "Build for Android" step in
+  the PC setup could do it. Needs the `dlopen` loader and the ARM64 check
+  from the Linux and macOS work, an Android build of the single-game front
+  end (Vita3K runs on Android; the fork keeps its `android/`), on-screen
+  touch controls, and performance and GPU-driver testing. Test device:
+  AYN Thor (Snapdragon 8 Gen 2, Adreno 740).
 
 ## Later (deferred)
 

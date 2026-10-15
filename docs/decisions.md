@@ -230,3 +230,25 @@ upload changes the look slightly.
 **Decision:** `[display] mipmaps` is on by default in shinobido2.ini: the
 owner found the shimmer gone and the look right. ss-delta has the same
 setting, off, as it made no visible difference there.
+
+## D9 — Players get a setup that compiles the port on their own machine (accepted, 2026-10-15)
+
+**Context:** the owner wants players to get a playable port without
+cloning or building. Two published projects show two ways: Nebula (Super
+Mario Galaxy) ships a setup that compiles the game's recompiled code on the
+player's PC; Yakumo (Monster Hunter Portable 3rd HD) ships releases with
+the recompiled game code built in, which works on every platform, Android
+included, but distributes code derived from the game's executable.
+
+**Decision:**
+
+* Nebula's model: nothing derived from the game is distributed, as D2
+  says. The setup downloads a pinned compiler and builds the recompiled
+  modules on the player's machine from their own dump.
+* Releases are unsigned at first, with checksums and build attestations.
+* Android is built the same way: on the player's PC, for their own device
+  (plan, "Android").
+
+**Rejected:** shipping recompiled game code in releases (Yakumo's way):
+it makes every platform easy, but it distributes a derivative of the
+game's code.
