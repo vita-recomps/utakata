@@ -512,12 +512,24 @@ them against Phases 2–8.
   (llvm-mingw's `clang.exe` is a wrapper that reads a target from its
   name), `lld-link.exe` of `ld.lld.exe`, `llvm-lib.exe` of `llvm-ar.exe`,
   `--target x86_64-pc-windows-msvc` (llvm-mingw defaults to MinGW) and
-  `-fuse-ld=lld`, no manifest tool. Still to do for the setup: the
-  Microsoft runtime and SDK downloaded rather than taken from an installed
-  Visual Studio, and CMake and Ninja (redistributable) bundled or replaced
-  by a small Python build driver. Linux and macOS setups reuse the same
+  `-fuse-ld=lld`, no manifest tool. Linux and macOS setups reuse the same
   pipeline with a bundled or system clang. The 4x shorter compile also
   makes clang-cl worth offering for development builds.
+
+  ☑ The toolchain without Visual Studio (2026-10-15, vita-recomp-kit
+  `tools/toolchain.py`): llvm-mingw plus the MSVC 14.44 runtime and Windows
+  SDK 10.0.26100 packages from Microsoft's Visual Studio manifest, every
+  file pinned by SHA-256 in `tools/toolchain-windows.json`, fetched only
+  with `--accept-microsoft-license`; 444 MB to download, ~930 MB unpacked
+  (x64 desktop only). `build-recomp.py --toolchain <dir>` replaces CMake
+  and Ninja with a Python driver (same flags, incremental). ss-delta's ten
+  modules, nothing of Visual Studio on the path (every header and library
+  read from the toolchain folder): 3.0 min with 6 jobs, all verified in a
+  quest at 56-57 fps, differential 11,285 calls with 0 mismatching.
+
+  Next for the setup: a fork build option for the single-game executables
+  without Qt; the frozen Python tools; the GitHub Actions release; the
+  setup's screens.
 * ☐ **Android**, after the desktop platforms. The port can't compile on a
   phone, so the APK is built on the player's PC from their own dump (the
   Android NDK's clang, ARM64) and sideloaded; a "Build for Android" step in
