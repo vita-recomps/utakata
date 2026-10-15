@@ -430,12 +430,16 @@ that the repo builds from a fresh clone.
   folders, and the owner's private patterns kept outside the repos).
 * ◐ Published on GitHub (2026-10-13), org `vita-recomps`: the fork
   (`Vita3K`, a fork of Vita3K/Vita3K, default branch `games`) and
-  `vita-recomp-kit`. Both are behind Forgejo since (the fork at
-  e716378c). The game repos (utakata, ss-delta) are not pushed yet;
-  their relative submodule URLs will resolve there unchanged.
-* ☐ A fresh-clone check before the game repos go public: clone both from
-  Forgejo into an empty folder, build and install with the README alone,
-  and fix what it gets wrong.
+  `vita-recomp-kit`, brought up to date on 2026-10-15 (the fork at
+  e4a12593, the kit at 2492e89). **ss-delta published** (2026-10-15, its
+  `master` as GitHub's `main`): the whole history passed the leak scan,
+  and an anonymous clone resolves both submodules on GitHub at the pinned
+  commits. utakata is not pushed yet.
+* ◐ A fresh-clone check before each game repo goes public. ☑ ss-delta
+  (2026-10-15): cloned from Forgejo into an empty folder, built and
+  installed from the owner's dump with its README alone (clone 13 min,
+  build 9 min, install 16 min), the result on native code; the README
+  needed no change. utakata: when it is published.
 * ☐ A GitHub Actions build of the fork and the recompiler tests (no game
   data needed).
 * ☐ Release binaries only from a public tag of the fork.
