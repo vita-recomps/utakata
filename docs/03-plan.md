@@ -423,18 +423,22 @@ that the repo builds from a fresh clone.
 * ☑ Leak scan: vita-recomp-kit `tools/leak-scan.py`, a pre-push hook in
   every repo (game-data files, big files, licence strings, tokens, user
   folders, and the owner's private patterns kept outside the repos).
-* ◐ Published on GitHub (2026-10-13), org `vita-recomps`: the fork
-  (`Vita3K`, a fork of Vita3K/Vita3K, default branch `games`) and
-  `vita-recomp-kit`, brought up to date on 2026-10-15 (the fork at
-  e4a12593, the kit at 2492e89). **ss-delta published** (2026-10-15, its
-  `master` as GitHub's `main`): the whole history passed the leak scan,
-  and an anonymous clone resolves both submodules on GitHub at the pinned
-  commits. utakata is not pushed yet.
-* ◐ A fresh-clone check before each game repo goes public. ☑ ss-delta
-  (2026-10-15): cloned into an empty folder, built and
-  installed from the owner's dump with its README alone (clone 13 min,
-  build 9 min, install 16 min), the result on native code; the README
-  needed no change. utakata: when it is published.
+* ☑ Published on GitHub, org `vita-recomps`:
+  * the fork (`Vita3K`, a fork of Vita3K/Vita3K, default branch `games`)
+    and `vita-recomp-kit` (2026-10-13), both kept up to date since;
+  * **ss-delta** (2026-10-15), its `master` as GitHub's `main`;
+  * **utakata** (2026-10-15), after its README got a single status
+    paragraph and a Features section, and the docs lost the private-server
+    history.
+
+  Each repo's whole history passed the leak scan.
+* ☑ A fresh-clone check of each game repo:
+  * ss-delta (2026-10-15): cloned into an empty folder, then built and
+    installed from the owner's dump with its README alone (clone 13 min,
+    build 9 min, install 16 min). The result ran on native code.
+  * utakata (2026-10-15): an anonymous clone from GitHub, by its README
+    alone (clone 5 min, build 11 min, update fetch and install 7 min). It
+    reached the first mission with every module native.
 * ☐ A GitHub Actions build of the fork and the recompiler tests (no game
   data needed).
 * ☐ Release binaries only from a public tag of the fork.
@@ -560,10 +564,19 @@ them against Phases 2–8.
   * an ss-delta setup from the console, which reached a quest at 56-58 fps
     with every module native.
 
-  ☐ The GitHub Actions release. ss-delta's `.github/workflows/release.yml`
+  ◐ The GitHub Actions release. ss-delta's `.github/workflows/release.yml`
   (its D18) makes a draft release from a tag `v*`: setup zip, SHA-256 and
-  build attestation. It is not on GitHub yet and has not run; utakata gets
-  the same workflow once it is public.
+  build attestation; a manual run uploads the zip as an artifact.
+  * The first manual run (2026-10-15, 24 min) built fine, but the runner's
+    own OpenSSL 3 got linked and not shipped. Fixed in two places:
+    * the fork's games-only builds always take the pinned prebuilt
+      OpenSSL;
+    * `make-setup.py` refuses a setup whose exe imports a DLL it doesn't
+      carry.
+  * The second run (20 min) made a setup that installed and played here
+    from a fresh unzip: a quest at 56-58 fps, every module native.
+  * Next: the owner's test on a separate PC, a tag for the first draft
+    release, and the same workflow for utakata.
 
   ☐ A check on a separate PC without Visual Studio or the VC++ runtime
   (the owner).
