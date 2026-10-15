@@ -404,15 +404,16 @@ that the repo builds from a fresh clone.
   and vita-recomp-kit; the fork GPL-2.0-or-later.
 * ☑ A private remote as `origin` for all four repos, private notes in a
   separate repo (D6 update).
-* ◐ History: our commits rewritten to the no-reply address in all four
-  repos (fork: ours only), pushed to the private remote. Scans so far: no D2 file
+* ☑ History: our commits rewritten to the no-reply address in all four
+  repos (fork: ours only), pushed to the private remote. Scans: no D2 file
   types, no blobs over 1 MB, no personal email (the three gmail hits in
   ss-delta are the Vita3K-Plus author's public attributions). The
-  `leak-scan.py` hook is still to write.
-* ☐ History scan of every commit: D2 file types, blobs over a few MB,
-  zRIF-like base64, `work.bin`/`.rif` contents, personal paths and
-  addresses. A script (`tools/leak-scan.py`), also usable as a pre-commit
-  hook. Rewrite the history if anything is found, before the first push.
+  pre-rewrite copies were deleted (2026-10-15). Every working copy and
+  submodule now commits with the no-reply address (ss-delta's local
+  config still had the old one until 2026-10-14; caught before a push).
+* ☑ History scan of every commit: D2 file types, big blobs, zRIF-like
+  base64, licence contents, personal paths and addresses
+  (`tools/leak-scan.py`, run as the pre-push hook of every repo).
 * ☑ Docs made public-ready (2026-10-13), in this repo and ss-delta:
   repo-relative paths, relative submodule URLs (`../vita3k`), READMEs with
   requirements, a build guide from a fresh clone, "bring your own dump"
@@ -427,10 +428,14 @@ that the repo builds from a fresh clone.
 * ☑ Leak scan: vita-recomp-kit `tools/leak-scan.py`, a pre-push hook in
   every repo (game-data files, big files, licence strings, tokens, user
   folders, and the owner's private patterns kept outside the repos).
-* ☑ Published on GitHub (2026-10-13), org `vita-recomps`: the fork
+* ◐ Published on GitHub (2026-10-13), org `vita-recomps`: the fork
   (`Vita3K`, a fork of Vita3K/Vita3K, default branch `games`) and
-  `vita-recomp-kit`. The game repos (utakata, ss-delta) are not pushed
-  yet; their relative submodule URLs will resolve there unchanged.
+  `vita-recomp-kit`. Both are behind Forgejo since (the fork at
+  e716378c). The game repos (utakata, ss-delta) are not pushed yet;
+  their relative submodule URLs will resolve there unchanged.
+* ☐ A fresh-clone check before the game repos go public: clone both from
+  Forgejo into an empty folder, build and install with the README alone,
+  and fix what it gets wrong.
 * ☐ A GitHub Actions build of the fork and the recompiler tests (no game
   data needed).
 * ☐ Release binaries only from a public tag of the fork.
