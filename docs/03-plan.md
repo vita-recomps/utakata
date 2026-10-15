@@ -575,8 +575,15 @@ them against Phases 2–8.
       carry.
   * The second run (20 min) made a setup that installed and played here
     from a fresh unzip: a quest at 56-58 fps, every module native.
-  * Next: the owner's test on a separate PC, a tag for the first draft
-    release, and the same workflow for utakata.
+  * The owner's test on a separate PC (2026-10-15) found two problems,
+    both fixed:
+    * the template exe in the setup's own folder was easy to start by
+      mistake; it now sits in `kit\game\`, and the setup offers a desktop
+      shortcut;
+    * 47-50 fps on the RTX 4090, from surface sync reading back through
+      video memory; fixed in the fork (ss-delta's 02-baseline).
+  * utakata has the same workflow (`.github/workflows/release.yml`).
+  * Next: a tag for each game's first draft release.
 
   ☐ A check on a separate PC without Visual Studio or the VC++ runtime
   (the owner).

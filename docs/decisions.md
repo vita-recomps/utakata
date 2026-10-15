@@ -236,6 +236,18 @@ included, but distributes code derived from the game's executable.
 * Nebula's model: nothing derived from the game is distributed, as D2
   says. The setup downloads a pinned compiler and builds the recompiled
   modules on the player's machine from their own dump.
+* A release is a setup (vita-recomp-kit `make-setup.py`, 2026-10-15):
+  * Python's embeddable distribution with Tk, capstone and PyYAML;
+  * the kit's tools;
+  * `shinobido2.exe`, built without Qt (the fork's `VITA3K_GAMES_ONLY`).
+
+  On the player's PC it downloads the firmware from Sony and the compiler
+  (llvm-mingw's clang-cl with Microsoft's C++ runtime and Windows SDK,
+  under Microsoft's licence, which the player accepts). It then installs
+  the dump, recompiles and compiles the modules, and lays out the playable
+  folder. GitHub Actions builds the setup from a tag
+  (`.github/workflows/release.yml`) into a draft release with its SHA-256
+  and a build attestation, the same as ss-delta's (its D18).
 * Releases are unsigned at first, with checksums and build attestations.
 * Android is built the same way: on the player's PC, for their own device
   (plan, "Android").

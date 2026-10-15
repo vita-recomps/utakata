@@ -52,6 +52,27 @@ Compared with running the game in Vita3K:
 * **One executable**, `shinobido2.exe`, without Vita3K's interface and
   offline, installed from your own dump with one command.
 
+## The setup (no building)
+
+Each release on GitHub has a setup, `utakata-setup-<version>.zip`, for
+players who don't want to build anything. Unzip it, run `setup.bat`, and
+in its window:
+
+1. choose your dump: the game, update 1.02 and, if you have it, the Mirror
+   Spirits add-on (the parts described below);
+2. choose the folder to play from;
+3. accept Microsoft's licence.
+
+The setup downloads the PS Vita firmware from Sony and a compiler (about
+650 MB in all, kept in `%LOCALAPPDATA%\vita-recomps`). It then installs
+the game, translates its code and compiles it on your PC, which takes a
+few minutes. Play from the folder it made (by default `shinobido2`, next
+to the setup's folder) or from the desktop shortcut it offers; the setup's
+own folder can be deleted afterwards. Nothing of the game is in the setup
+or leaves your PC. The setup is not signed yet, so Windows may warn about
+it ("More info", "Run anyway"). Its SHA-256 and build attestation are on
+the release page.
+
 ## What you need
 
 * Windows 10 or 11, x64, a GPU with Vulkan.
@@ -59,8 +80,8 @@ Compared with running the game in Vita3K:
   licence `work.bin`, or a decrypted dump (folder, `.zip` or `.vpk`). The
   Mirror Spirits add-on (`.pkg` + `work.bin`) is optional.
 * The PS Vita firmware update files `PSVUPDAT.PUP` and `PSP2UPDAT.PUP` (as
-  for Vita3K; Sony publishes them).
-* To build: Git, Python 3.12 (`pip install capstone pyyaml numpy`), Visual
+  for Vita3K; Sony publishes them, and the setup downloads them).
+* To build (not needed with the setup): Git, Python 3.12 (`pip install capstone pyyaml numpy`), Visual
   Studio 2022 or its Build Tools with "Desktop development with C++" (MSVC
   x64, the Windows SDK, CMake and Ninja), Qt 6.11 for MSVC x64 (Vita3K's own
   interface is built too; e.g. with `aqtinstall` into `C:\Qt`), and the
