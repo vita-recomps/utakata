@@ -360,6 +360,22 @@ Havok and the AI run inside the eboot's native code, so the fights check
 them as far as sampling reaches; the owner's playthrough found no
 difference in play.
 
+## Colour outputs clamped (2026-10-18)
+
+ss-delta's fog colour leaves its vertex shaders through COLOR0/COLOR1 and
+goes above 1 (its 02-baseline, "Blue haze in ST02A"); clamped to [0, 1]
+it matched the Vita. The same switch here, against a hardware screenshot
+of mission 1's start (the street after the tutorial prompts):
+
+| Colour balance (R, G, B over their mean) | Vita | Unclamped | Clamped |
+|---|---|---|---|
+| whole frame | 1.01 0.94 1.05 | 0.91 0.88 1.21 | 1.03 0.93 1.05 |
+| right wall | 1.09 0.97 0.94 | 0.94 0.94 1.12 | 1.09 0.96 0.96 |
+
+Unclamped, the walls were also near black (10,10,12 against 29,26,25;
+clamped 33,29,29). `shinobido2.exe` sets `clamp_color_varyings` (fork
+`a32f1c4c`); `VITA3K_CLAMP_COLOR_VARYINGS=0` turns it off for comparison.
+
 ## Upstream Vita3K on this machine (2026-10-13)
 
 The stock release in `extracted/vita3k` (`v0.2.1 4152-38bce160`, the
