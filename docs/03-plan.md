@@ -661,8 +661,20 @@ with all three setups ([D10](decisions.md)).
   star, texts pinned with `textLength`) and badges; `docs/INSTALLING.md`
   for players and `docs/BUILDING.md` (the build, install and tools
   sections moved out of the README).
-* ☐ The workflow's three jobs on the new layout, and a Windows archive
-  from it run from its folder with the dump.
+* ☑ The workflow's three jobs on the new layout (run 44306621814, from
+  `583d67b`; archives: Windows 34 MB, macOS 45 MB). Windows, unattended
+  (`--dump` game + licence + 1.02 [+ add-on] `--accept-microsoft-license
+  --build-only`):
+  * a local layout of the same commit, downloads from a `--cache`: 181 s;
+  * the workflow's archive, downloads fresh into `setup/downloads`: 261 s,
+    3.3 GB at the peak, 1.4 GB after, `setup/` back to `kit` and `python`.
+
+  Both then went with `--import-save` (hub-day1, slot 1) and
+  `to-mission.py` to the first mission's field, every module native, 0
+  native-to-JIT calls; nothing was written to `%APPDATA%\Vita3K` or
+  elsewhere outside the folder. Linux and macOS archives not run on the
+  Deck or the M5 for this layout (ss-delta's 0.3.0 checked the same kit
+  and front end on both).
 * ☐ `v0.1.0` tagged again on the new layout (the first draft and tag
   deleted); the draft release left for the owner to publish.
 
