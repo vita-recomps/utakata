@@ -1,11 +1,25 @@
-shinobido2: Shinobido 2: Revenge of Zen (US, PCSE00015, 1.02) on PC.
+utakata: Shinobido 2: Revenge of Zen (US, PCSE00015, 1.02) on PC.
 
-The game runs in a fork of Vita3K on native code recompiled from your copy
-of the game (the ssd_aot_*.dll files here); see the project's
-docs/03-plan.md for its state.
+Start shinobido2.exe. The first time, it builds the game from your own dump: a
+window asks for it (a folder, .zip or .vpk of the game with its 1.02 update, or
+the PSN .pkg files with their licence; the Mirror Spirits add-on is optional),
+downloads the PS Vita firmware from Sony and a compiler (about 650 MB; accept
+Microsoft's licence for the C++ runtime and Windows SDK it uses), installs the
+game and compiles its code on this PC, which takes a few minutes. Play then
+starts the game, and from then on shinobido2.exe goes straight to it. Windows
+may warn the first time ("More info", "Run anyway"): shinobido2.exe isn't
+signed.
 
-shinobido2.exe runs the game installed in a Vita file system ([paths]
-vita_fs in shinobido2.ini; default: the fs folder next to this file).
+Everything stays in this folder: the game (fs), its code compiled for this PC
+(ssd_aot_*.dll), settings (shinobido2.ini), saves, logs and the shader cache.
+The downloads are deleted once the game is built; delete the folder and the
+game is gone. Nothing of the game leaves your PC.
+
+Command line (shinobido2.exe --help lists it all): --install opens the
+importer again (another dump, the add-on); --dump <file> builds without the
+window (add --accept-microsoft-license); --fullscreen or --windowed; --set
+section.key=value sets any setting of shinobido2.ini for one run; --game
+<folder> plays the game in another folder.
 
 Settings: press F1, or hold Select (Back/View) on a gamepad for a second, to
 open the settings menu over the paused game (Up/Down choose, Left/Right or

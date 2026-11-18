@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320">
+  <defs>
+    <radialGradient id="bg" cx="16%" cy="50%" r="95%">
+      <stop offset="0" stop-color="#1d2547"/><stop offset="0.5" stop-color="#0c0f1d"/><stop offset="1" stop-color="#05060a"/>
+    </radialGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8343c"/><stop offset="1" stop-color="#8c0f17"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1280" height="320" fill="url(#bg)"/>
+  <circle cx="205" cy="160" r="132" fill="#f0e7d8" opacity="0.07"/>
+  <path d="M204.1 110.9 L209.6 109.7 L215.2 108.3 L220.7 106.9 L226.1 105.2 L231.6 103.4 L237.1 101.4 L242.6 99.3 L248.1 97.0 L253.6 94.6 L259.1 92.0 L264.5 89.2 L270.0 86.3 L275.5 83.3 L281.0 80.0 L286.4 76.7 L291.9 73.1 L288.3 78.6 L285.0 84.0 L281.7 89.5 L278.7 95.0 L275.8 100.5 L273.0 105.9 L270.4 111.4 L268.0 116.9 L265.7 122.4 L263.6 127.9 L261.6 133.4 L259.8 138.9 L258.1 144.3 L256.7 149.8 L255.3 155.4 L254.1 160.9 Z M254.1 159.1 L255.3 164.6 L256.7 170.2 L258.1 175.7 L259.8 181.1 L261.6 186.6 L263.6 192.1 L265.7 197.6 L268.0 203.1 L270.4 208.6 L273.0 214.1 L275.8 219.5 L278.7 225.0 L281.7 230.5 L285.0 236.0 L288.3 241.4 L291.9 246.9 L286.4 243.3 L281.0 240.0 L275.5 236.7 L270.0 233.7 L264.5 230.8 L259.1 228.0 L253.6 225.4 L248.1 223.0 L242.6 220.7 L237.1 218.6 L231.6 216.6 L226.1 214.8 L220.7 213.1 L215.2 211.7 L209.6 210.3 L204.1 209.1 Z M205.9 209.1 L200.4 210.3 L194.8 211.7 L189.3 213.1 L183.9 214.8 L178.4 216.6 L172.9 218.6 L167.4 220.7 L161.9 223.0 L156.4 225.4 L150.9 228.0 L145.5 230.8 L140.0 233.7 L134.5 236.7 L129.0 240.0 L123.6 243.3 L118.1 246.9 L121.7 241.4 L125.0 236.0 L128.3 230.5 L131.3 225.0 L134.2 219.5 L137.0 214.1 L139.6 208.6 L142.0 203.1 L144.3 197.6 L146.4 192.1 L148.4 186.6 L150.2 181.1 L151.9 175.7 L153.3 170.2 L154.7 164.6 L155.9 159.1 Z M155.9 160.9 L154.7 155.4 L153.3 149.8 L151.9 144.3 L150.2 138.9 L148.4 133.4 L146.4 127.9 L144.3 122.4 L142.0 116.9 L139.6 111.4 L137.0 105.9 L134.2 100.5 L131.3 95.0 L128.3 89.5 L125.0 84.0 L121.7 78.6 L118.1 73.1 L123.6 76.7 L129.0 80.0 L134.5 83.3 L140.0 86.3 L145.5 89.2 L150.9 92.0 L156.4 94.6 L161.9 97.0 L167.4 99.3 L172.9 101.4 L178.4 103.4 L183.9 105.2 L189.3 106.9 L194.8 108.3 L200.4 109.7 L205.9 110.9 Z M155.8 160 a49.2 49.2 0 1 0 98.3 0 a49.2 49.2 0 1 0 -98.3 0 Z" fill="url(#red)" filter="url(#glow)"/>
+  <path d="M189.6 160 a15.4 15.4 0 1 0 30.7 0 a15.4 15.4 0 1 0 -30.7 0 Z" fill="#0c0f1d"/>
+  <text x="410" y="146" textLength="812" lengthAdjust="spacingAndGlyphs" font-family="Georgia, 'Times New Roman', serif" font-size="62" fill="#f0e7d8" letter-spacing="1">Shinobido 2: Revenge of Zen</text>
+  <text x="413" y="198" textLength="755" lengthAdjust="spacingAndGlyphs" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="27" fill="#b9bfd3">A native port by static recompilation, built from your own dump</text>
+  <text x="414" y="252" textLength="572" lengthAdjust="spacingAndGlyphs" font-family="Consolas, Menlo, monospace" font-size="21" fill="#e8343c" letter-spacing="4">WINDOWS · LINUX · STEAM DECK · macOS</text>
+</svg>

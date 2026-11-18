@@ -1,9 +1,10 @@
-# The players' setups (docs/decisions.md D9, D10): Windows builds shinobido2.exe without Qt, Linux
-# builds shinobido2.x86_64 in the Steam Runtime (sniper) SDK, macOS builds shinobido2.arm64 with
-# Apple's clang, and vita-recomp-kit's make-setup.py lays out each setup. A setup holds no game or
-# firmware data: on the player's computer it downloads the firmware from Sony and a compiler, and
-# builds the port from the player's own dump.
-# A tag v* makes a draft release with the three setups, their SHA-256 and build attestations; a
+# The players' releases (docs/decisions.md D9, D10, D11): Windows builds shinobido2.exe without Qt,
+# Linux builds shinobido2.x86_64 in the Steam Runtime (sniper) SDK, macOS builds shinobido2.arm64 with
+# Apple's clang, and vita-recomp-kit's make-setup.py lays out each one: the game's own folder, with
+# its importer in setup/. A release holds no game or firmware data: the first time it starts on the
+# player's computer, it downloads the firmware from Sony and a compiler, and builds the game from the
+# player's own dump, in its folder.
+# A tag v* makes a draft release with the three archives, their SHA-256 and build attestations; a
 # manual run only uploads them as workflow artifacts.
 name: Setup release
 
@@ -37,9 +38,10 @@ jobs:
       - name: Lay out the setup
         shell: pwsh
         run: |
-          $name = if ('${{ github.ref_type }}' -eq 'tag') { 'utakata-setup-${{ github.ref_name }}' } else { 'utakata-setup-${{ github.sha }}'.Substring(0, 29) }
+          $version = if ('${{ github.ref_type }}' -eq 'tag') { '${{ github.ref_name }}' } else { '${{ github.sha }}'.Substring(0, 7) }
+          $name = "utakata-$version-windows"
           python -I third_party/recomp/tools/make-setup.py build third_party/recomp/tools/setup-windows.json `
-            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out "build/release/$name" --zip
+            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out build/release/utakata --zip --archive "build/release/$name"
           $zip = "build/release/$name.zip"
           $hash = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLower()
           "$hash  $name.zip" | Out-File -Encoding ascii "build/release/$name.zip.sha256"
@@ -81,9 +83,10 @@ jobs:
 
       - name: Lay out the setup
         run: |
-          if [ "${{ github.ref_type }}" = tag ]; then name="utakata-setup-linux-${{ github.ref_name }}"; else name="utakata-setup-linux-$(echo ${{ github.sha }} | cut -c1-7)"; fi
+          if [ "${{ github.ref_type }}" = tag ]; then version="${{ github.ref_name }}"; else version="$(echo ${{ github.sha }} | cut -c1-7)"; fi
+          name="utakata-$version-linux"
           $PY -I third_party/recomp/tools/make-setup.py build third_party/recomp/tools/setup-linux.json \
-            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out "build/release/$name" --zip
+            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out build/release/utakata --zip --archive "build/release/$name"
           tgz="build/release/$name.tar.gz"
           (cd build/release && sha256sum "$name.tar.gz" > "$name.tar.gz.sha256")
           echo "TGZ=$tgz" >> "$GITHUB_ENV"
@@ -120,9 +123,10 @@ jobs:
 
       - name: Lay out the setup
         run: |
-          if [ "${{ github.ref_type }}" = tag ]; then name="utakata-setup-macos-${{ github.ref_name }}"; else name="utakata-setup-macos-$(echo ${{ github.sha }} | cut -c1-7)"; fi
+          if [ "${{ github.ref_type }}" = tag ]; then version="${{ github.ref_name }}"; else version="$(echo ${{ github.sha }} | cut -c1-7)"; fi
+          name="utakata-$version-macos"
           python -I third_party/recomp/tools/make-setup.py build third_party/recomp/tools/setup-macos.json \
-            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out "build/release/$name" --zip
+            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out build/release/utakata --zip --archive "build/release/$name"
           tgz="build/release/$name.tar.gz"
           (cd build/release && shasum -a 256 "$name.tar.gz" > "$name.tar.gz.sha256")
           echo "TGZ=$tgz" >> "$GITHUB_ENV"
@@ -154,4 +158,4 @@ jobs:
         run: |
           gh release create '${{ github.ref_name }}' dist/* --repo '${{ github.repository }}' --draft \
             --title 'utakata ${{ github.ref_name }}' \
-            --notes "Windows: unzip utakata-setup-${{ github.ref_name }}.zip and run setup.bat. Linux and Steam Deck (desktop mode): unpack utakata-setup-linux-${{ github.ref_name }}.tar.gz and run setup.sh. macOS 13.3 or newer on Apple Silicon: unpack utakata-setup-macos-${{ github.ref_name }}.tar.gz and open setup.command (macOS blocks it the first time: System Settings, Privacy & Security, Open Anyway; README.txt explains). Point it at your own dump of Shinobido 2: Revenge of Zen (US PCSE00015, with update 1.02; the Mirror Spirits add-on is optional). See README.txt in the playable folder it makes. SHA-256 and the build attestations: see the files attached and 'gh attestation verify'."
+            --notes "Unpack the archive for your system and start the game: Windows, shinobido2.exe in utakata-${{ github.ref_name }}-windows.zip; Linux and Steam Deck (desktop mode the first time), shinobido2.x86_64 in utakata-${{ github.ref_name }}-linux.tar.gz; macOS 13.3 or newer on Apple Silicon, the app in utakata-${{ github.ref_name }}-macos.tar.gz (macOS blocks it the first time: System Settings, Privacy & Security, Open Anyway). The first start builds the game from your own dump of Shinobido 2: Revenge of Zen (US PCSE00015, with update 1.02; the Mirror Spirits add-on is optional); everything stays in its folder. README.txt explains. SHA-256 and the build attestations: see the files attached and 'gh attestation verify'."

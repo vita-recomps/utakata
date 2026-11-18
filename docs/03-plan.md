@@ -646,10 +646,25 @@ with all three setups ([D10](decisions.md)).
     native, 0 native-to-JIT calls.
   * ☑ Its Linux setup on the Deck: 7.8 min, then the mission natively at
     60.0 fps.
-* ◐ Tag `v0.1.0` (`141d87f`, 2026-11-18): run 44286462267 passed and made
+* ☑ Tag `v0.1.0` (`141d87f`, 2026-11-18): run 44286462267 passed and made
   the draft release with the three setups (Windows zip 34 MB, Linux 88 MB,
-  macOS 45 MB), their SHA-256 and build attestations. Left: the owner
-  publishes it.
+  macOS 45 MB), their SHA-256 and build attestations. Held back, not
+  published: ss-delta's 0.3.0 changed what a release is the same day.
+* ☑ The release as the game's own folder, ss-delta's D22 ([D11](decisions.md)):
+  fork `430e30af` and kit `8220643`, plus fork `3c62a496` (the game's save
+  options in `--help`); the workflow makes
+  `utakata-<version>-{windows.zip,linux.tar.gz,macos.tar.gz}`, each
+  unpacking to `utakata/`; the three folder READMEs rewritten for the
+  importer and the command line. `shinobido2.exe` built on Windows
+  (games only) and `--help` checked.
+* ☑ README with a banner (`docs/assets/banner.svg`, the icon's throwing
+  star, texts pinned with `textLength`) and badges; `docs/INSTALLING.md`
+  for players and `docs/BUILDING.md` (the build, install and tools
+  sections moved out of the README).
+* ☐ The workflow's three jobs on the new layout, and a Windows archive
+  from it run from its folder with the dump.
+* ☐ `v0.1.0` tagged again on the new layout (the first draft and tag
+  deleted); the draft release left for the owner to publish.
 
 **Exit:** with their own dump, a player on each of the three platforms
 gets from the 0.1.0 release to a mission on native code.

@@ -1,17 +1,36 @@
-shinobido2: Shinobido 2: Revenge of Zen (US, PCSE00015, 1.02) on Linux
+utakata: Shinobido 2: Revenge of Zen (US, PCSE00015, 1.02) on Linux
 (x86-64; Steam Deck).
 
-shinobido2.x86_64 runs the game installed in a Vita file system ([paths]
-vita_fs in shinobido2.ini; default: the fs folder next to this file), with
-the game's code recompiled to native code (ssd_aot_*.so, built from your own
-dump). It needs Vulkan, glibc 2.30 or newer and nothing else from the system.
+Start shinobido2.x86_64 (from a file manager, or ./shinobido2.x86_64 in a
+terminal; on a Steam Deck in desktop mode the first time). The first time, it
+builds the game from your own dump: a window asks for it (a folder, .zip or
+.vpk of the game with its 1.02 update, or the PSN .pkg files with their
+licence; the Mirror Spirits add-on is optional), downloads the PS Vita
+firmware from Sony and a compiler (zig, about 240 MB in all), installs the
+game and compiles its code on this computer, which takes a few minutes (about
+20 on a Steam Deck). Play then starts the game, and from then on
+shinobido2.x86_64 goes straight to it. It needs Vulkan, glibc 2.30 or newer
+and nothing else from the system.
 
-Steam Deck: the setup adds the game to Steam as a non-Steam game (its "Add the
-game to Steam" box; Steam must be running), so it starts from Game Mode. If it
-didn't, add shinobido2.desktop from this folder with "Add a Non-Steam Game"
-(Steam, Games menu, in desktop mode). No compatibility tool is needed: it is a
-Linux program, not a Windows one. The Deck's controls are a gamepad to the
-game; the touchscreen is the Vita's front touchscreen.
+Everything stays in this folder: the game (fs), its code compiled for this
+computer (ssd_aot_*.so), settings (shinobido2.ini), saves, logs and the shader
+cache. The downloads are deleted once the game is built; delete the folder and
+the game is gone (apart from the menu entry and Steam entry, if you let the
+importer add them). Nothing of the game leaves your computer.
+
+Command line (./shinobido2.x86_64 --help lists it all): --install opens the
+importer again (another dump, the add-on); --dump <file> builds without the
+window; --add-to-steam adds the game to Steam; --fullscreen or --windowed;
+--set section.key=value sets any setting of shinobido2.ini for one run; --game
+<folder> plays the game in another folder.
+
+Steam Deck: the importer adds the game to Steam as a non-Steam game (its "Add
+the game to Steam" box; Steam must be running), so it starts from Game Mode. If
+it didn't, run ./shinobido2.x86_64 --add-to-steam, or add shinobido2.desktop
+from this folder with "Add a Non-Steam Game" (Steam, Games menu, in desktop
+mode). No compatibility tool is needed: it is a Linux program, not a Windows
+one. The Deck's controls are a gamepad to the game; the touchscreen is the
+Vita's front touchscreen.
 
 Settings: press F1, or hold Select (the View button) on a gamepad for a
 second, to open the settings menu over the paused game (Up/Down choose,

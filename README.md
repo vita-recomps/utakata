@@ -1,17 +1,43 @@
-# utakata
+<div align="center">
 
-A native PC port of **Shinobido 2: Revenge of Zen** (PS Vita, US PCSE00015,
-update 1.02) by static recompilation, built from the player's own dump. The
-game's code, and the firmware modules it loads, are recompiled ahead of time
-to C++ and run natively inside a fork of Vita3K, which supplies the rest of
-the console. Utakata is the land the game is set in.
+<img src="docs/assets/banner.svg" alt="utakata: Shinobido 2: Revenge of Zen, recompiled to native code" width="100%">
 
-Licence: MIT ([LICENSE](LICENSE)). The Vita3K fork it builds on
-(`third_party/vita3k`) is GPL-2.0-or-later.
+**A native port of Shinobido 2: Revenge of Zen (PS Vita) to Windows, Linux and the Steam Deck, and macOS, by static recompilation.**
 
-> This repository contains *no* game data, *no* firmware and *no* code
-> derived from the game. You bring your own dump; everything game-derived is
-> generated locally from it ([D2](docs/decisions.md)).
+[![Release](https://img.shields.io/github/v/release/vita-recomps/utakata?style=flat-square&label=release)](https://github.com/vita-recomps/utakata/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/vita-recomps/utakata/total?style=flat-square)](https://github.com/vita-recomps/utakata/releases)
+[![Stars](https://img.shields.io/github/stars/vita-recomps/utakata?style=flat-square)](https://github.com/vita-recomps/utakata/stargazers)
+[![Licence](https://img.shields.io/badge/licence-MIT%20%C2%B7%20Vita3K%20fork%20GPL--2.0-blue?style=flat-square)](#licence)
+[![Last commit](https://img.shields.io/github/last-commit/vita-recomps/utakata/main?style=flat-square)](https://github.com/vita-recomps/utakata/commits/main)
+[![Issues](https://img.shields.io/github/issues/vita-recomps/utakata?style=flat-square)](https://github.com/vita-recomps/utakata/issues)
+
+![Windows x64](https://img.shields.io/badge/Windows-x64-0078D6?style=flat-square&logo=windows&logoColor=white)
+![Linux x64](https://img.shields.io/badge/Linux-x64-FCC624?style=flat-square&logo=linux&logoColor=black)
+![Steam Deck](https://img.shields.io/badge/Steam%20Deck-Game%20Mode-1A9FFF?style=flat-square&logo=steamdeck&logoColor=white)
+![macOS Apple Silicon](https://img.shields.io/badge/macOS-Apple%20Silicon-000000?style=flat-square&logo=apple&logoColor=white)
+![Vulkan](https://img.shields.io/badge/Vulkan-AC162C?style=flat-square&logo=vulkan&logoColor=white)
+![Metal](https://img.shields.io/badge/Metal-MoltenVK-444444?style=flat-square&logo=apple&logoColor=white)
+
+**[Download the latest release](https://github.com/vita-recomps/utakata/releases/latest)** ·
+[Installation guide](docs/INSTALLING.md) ·
+[Build from source](docs/BUILDING.md) ·
+[Compatibility](docs/06-compatibility.md) ·
+[Report an issue](https://github.com/vita-recomps/utakata/issues)
+
+</div>
+
+## About
+
+utakata runs **Shinobido 2: Revenge of Zen** (PS Vita, US PCSE00015,
+update 1.02) natively. The game's code, and the firmware modules it loads,
+are recompiled ahead of time to C++ and run natively inside a fork of
+Vita3K, which supplies the rest of the console. Utakata is the land the
+game is set in.
+
+> This repository and its releases contain *no* game data, *no* firmware and
+> *no* code derived from the game. You bring your own dump; everything
+> game-derived is generated on your computer from it. See
+> [D2](docs/decisions.md).
 
 ## Status
 
@@ -56,130 +82,41 @@ Compared with running the game in Vita3K:
   that locks on to an enemy, wherever it is on screen; the mouse is the
   touchscreens.
 * **Vita saves** imported and exported (`--import-save`, `--export-save`).
-* **One executable** per platform (`shinobido2.exe`, `shinobido2.x86_64`,
-  `shinobido2.arm64`), without Vita3K's interface and offline, installed
-  from your own dump by the setup.
+* **One program** per platform (`shinobido2.exe`, `shinobido2.x86_64`, the
+  macOS app), without Vita3K's interface and offline, which builds itself
+  from your own dump on its first start, in its own folder.
 
-## The setup (no building)
+## Download and play
 
-Each release on GitHub has a setup per platform, for players who don't
-want to build anything:
+Download the archive for your system from the
+**[latest release](https://github.com/vita-recomps/utakata/releases/latest)**.
+It unpacks to the game's folder, `utakata`, with one program to start:
 
-| Platform | Download | Start |
+| System | Download | Start |
 |---|---|---|
-| Windows | `utakata-setup-<version>.zip` | unzip, run `setup.bat` |
-| Linux, Steam Deck (desktop mode) | `utakata-setup-linux-<version>.tar.gz` | unpack, run `setup.sh` |
-| macOS (Apple Silicon) | `utakata-setup-macos-<version>.tar.gz` | unpack, open `setup.command` |
+| Windows 10/11, x64 | `utakata-<version>-windows.zip` | `shinobido2.exe` |
+| Linux x64, Steam Deck | `utakata-<version>-linux.tar.gz` | `shinobido2.x86_64` |
+| macOS 13.3+, Apple Silicon | `utakata-<version>-macos.tar.gz` | `Shinobido 2 - Revenge of Zen.app` |
 
-In its window:
+The first start builds the game from your own dump of it (the US game with
+update 1.02; the Mirror Spirits add-on is optional): its importer asks for
+the dump, downloads the PS Vita firmware from Sony and a compiler, and
+compiles the game's code on your computer, in a few minutes. From then on
+the program goes straight to the game. Everything stays in that folder
+([D11](docs/decisions.md)), and the command line covers everything
+(`--help`).
 
-1. choose your dump: the game, update 1.02 and, if you have it, the Mirror
-   Spirits add-on (the parts described below). A decrypted dump that
-   already holds the update and licence isn't asked for them again;
-2. choose the folder to play from;
-3. on Windows, accept Microsoft's licence for the compiler.
-
-The setup downloads the PS Vita firmware from Sony and a compiler: on
-Windows about 650 MB (Microsoft's compiler, kept in
-`%LOCALAPPDATA%\vita-recomps`), on Linux and macOS about 240 MB (zig,
-kept in `~/.cache/vita-recomps` or `~/Library/Caches/vita-recomps`). It
-then installs the game, translates its code and compiles it on your
-computer, which takes a few minutes (about 20 on a Steam Deck). Play from
-the folder it made (by default `shinobido2`, next to the setup's folder),
-or from what it offers to add:
-* Windows: a desktop shortcut;
-* Linux: an applications-menu entry, and the game in Steam, so a Steam
-  Deck starts it from Game Mode;
-* macOS: the app in Applications, which runs in macOS's Game Mode when
-  fullscreen.
-
-The setup's own folder can be deleted afterwards. Nothing of the game is
-in the setup or leaves your computer.
-
-The setups are not signed with a publisher's certificate:
-* Windows may warn ("More info", "Run anyway");
-* macOS refuses `setup.command` the first time: System Settings, Privacy &
-  Security, "Open Anyway" (the setup's `README.txt` explains).
-
-The SHA-256 and build attestation of each setup are on the release page.
-
-## What you need
-
-* A computer with a Vulkan GPU:
-  * Windows 10 or 11, x64;
-  * Linux, x64, glibc 2.31 or newer (any current distribution; SteamOS);
-  * macOS 13.3 or newer on Apple Silicon (Metal, through MoltenVK).
-* Your own copy of the game, US version (PCSE00015), and update 1.02: the
-  PSN `.pkg` with its licence `work.bin` plus the 1.02 patch pkg, or a
-  decrypted dump (folder, `.zip` or `.vpk`). The Mirror Spirits add-on
-  (`.pkg` + `work.bin`) is optional.
-* The PS Vita firmware update files `PSVUPDAT.PUP` and `PSP2UPDAT.PUP` (as
-  for Vita3K; Sony publishes them, and the setup downloads them).
-* To build (not needed with the setup): Git, Python 3.12 (`pip install capstone pyyaml numpy`), Visual
-  Studio 2022 or its Build Tools with "Desktop development with C++" (MSVC
-  x64, the Windows SDK, CMake and Ninja), Qt 6.11 for MSVC x64 (Vita3K's own
-  interface is built too; e.g. with `aqtinstall` into `C:\Qt`), and the
-  Vulkan SDK. These are Vita3K's build requirements.
-
-## Building from a fresh clone
-
-```
-git clone --recurse-submodules <this repository's URL> utakata
-cd utakata
-python -I third_party/recomp/tools/build-vita3k.py --target shinobido2
-```
-
-The script finds MSVC (vswhere) and Qt (`Qt6_ROOT`, `--qt <dir>`, or the
-newest `C:\Qt\<version>\msvc20*_64`). The first build takes about ten
-minutes and puts `shinobido2.exe` in `build/vita3k/bin/RelWithDebInfo/`.
-
-## Installing your game
-
-The game needs update 1.02, the final one. Sony's update server still has
-it; this fetches it (21 MB) into `downloads/`:
-
-```
-python -I third_party/recomp/tools/fetch-update.py PCSE00015 downloads
-```
-
-Then install the firmware, the game, the update and (optionally) the add-on
-into a self-contained folder, `dist/utakata/`:
-
-```
-python -I third_party/recomp/tools/install-game.py --name utakata ^
-    --firmware PSVUPDAT.PUP PSP2UPDAT.PUP ^
-    --install "<game>.pkg" --license "<game's work.bin>" ^
-    --install downloads/UP0700-PCSE00015_00-APP0000000000000-A0102-V0100-<...>-PE.pkg ^
-    --install "<add-on>.pkg" --license "<add-on's work.bin>"
-```
-
-The update needs no `--license`: it uses the game's. The script checks that
-the installed `eboot.bin` is 1.02, then lays out `dist/utakata/` with
-`shinobido2.exe`, its DLLs, a commented `shinobido2.ini` and the Vita file
-system in `fs/`. Everything in it is derived from your copy: don't share it.
-
-## Playing
-
-Run `shinobido2.exe` in the playable folder (`dist/utakata/` when built
-as above; on Linux `shinobido2.x86_64` or its menu entry, on macOS the
-app the setup made). F1, or holding Select (Back/View) on a
-gamepad for a second, opens the settings menu over the paused game. The
-settings live in `shinobido2.ini` next to it, and the `README.txt` there
-describes them: resolution, window,
-fullscreen (F11 or Alt+Enter), 30 or 60 fps, volume and sound effects,
-keyboard and gamepad bindings, and keys that touch the screen (the caution
-eye: F or the right trigger). F12 saves a screenshot. The mouse is the
-touchscreens: left button front, right button rear.
-
-Saves move in and out with the game closed: `shinobido2.exe --import-save
-<folder|zip> [--slot N]` takes saves decrypted on a Vita (VitaShell,
-Apollo: `data0000.bin`–`data0009.bin`), `--export-save <folder> [--slot N]`
-copies them out. Saves are the same files on every platform.
+The **[installation guide](docs/INSTALLING.md)** has the details for each
+system: what dumps work, the Steam Deck's Game Mode, macOS's Gatekeeper,
+saves, files, command-line options and updating. To build it yourself, see
+**[BUILDING](docs/BUILDING.md)**.
 
 ## Documentation
 
 | Doc | Contents |
 |---|---|
+| [INSTALLING](docs/INSTALLING.md) | for players: requirements, each system, the first start, saves, files, command line |
+| [BUILDING](docs/BUILDING.md) | building from source, installing a game into a build, making a release, the toolchain and tools |
 | [01-research](docs/01-research.md) | the dump, the FADEBABE archives, the eboot measured, prior work |
 | [02-baseline](docs/02-baseline.md) | how the game behaves today, the SFX dropout repro, and how to re-run it |
 | [03-plan](docs/03-plan.md) | phases, exit criteria, risks |
@@ -187,18 +124,11 @@ copies them out. Saves are the same files on every platform.
 | [decisions](docs/decisions.md) | decision log |
 | [hashes](docs/hashes.md) | input hashes and pins |
 
-## Tools
+utakata shares its recompiler, tools and Vita3K fork with
+[ss-delta](https://github.com/vita-recomps/ss-delta) (Soul Sacrifice
+Delta), whose docs hold most of the know-how.
 
-This game's own:
+## Licence
 
-| Script | What |
-|---|---|
-| `tools/fadebabe.py` | Acquire's FADEBABE archives: stats, table listing, raw members |
-
-The shared toolchain is a submodule, `third_party/recomp`
-(vita-recomp-kit; its README lists everything): the recompiler
-(`recomp/recompile.py`), the build, install and packaging scripts,
-`velf.py`, `inventory.py`, `imix.py`, `v3kdrive.py` (drives the game for
-tests), `sfo.py`, `mkzrif.py`, `fetch-update.py`, `proccap` (records one
-process's audio) and `wavstats.py` (loudness over time). The Vita3K fork is
-the other submodule, `third_party/vita3k`.
+MIT ([LICENSE](LICENSE)). The Vita3K fork it builds on
+(`third_party/vita3k`) is GPL-2.0-or-later.

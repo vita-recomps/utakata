@@ -283,3 +283,33 @@ and the kit's setup compiles them on the player's machine with zig.
 **Rejected:** a Windows release only, with Linux players on Proton: the
 setup would have to compile under Wine (ss-delta's 07-linux), and macOS
 would have nothing.
+
+
+## D11 — One program per platform, a portable folder: ss-delta's D22 for 0.1.0 (accepted, 2026-11-18)
+
+**Context:** ss-delta changed what a release is (its D22, 0.3.0), after an
+open letter from RecompLauncher's lead asking recomp ports for one
+executable, everything in its folder, a tarball and a flag for everything.
+The work is in the shared fork (`430e30af`) and kit (`8220643`). utakata's
+0.1.0 had been tagged as a draft with the old layout (a setup that built a
+separate playable folder) and not yet published.
+
+**Decision:**
+
+* utakata follows D22 unchanged: the release is the game's folder,
+  `utakata`, in `utakata-<version>-{windows.zip, linux.tar.gz,
+  macos.tar.gz}`. The one thing to start is `shinobido2.exe`,
+  `shinobido2.x86_64` or `Shinobido 2 - Revenge of Zen.app`; not built yet,
+  it opens the importer in `setup/`, which builds the game in that folder
+  and hands back to it. Everything stays in the folder; the VC++ runtime
+  ships beside `shinobido2.exe`; the command line is the front end's
+  (`--game`, `--install`, `--dump`, `--set`, `--help`, ...).
+* The game's own options (`--import-save`, `--export-save`, `--slot`,
+  `--quiet`) are listed by `--help` (fork `games/shinobido2/`,
+  `profile.usage`).
+* 0.1.0 is tagged again on the new layout; the earlier draft and its tag
+  are deleted, as nobody downloaded them.
+
+**Rejected:** publishing the first 0.1.0 draft and moving to D22 in a
+0.2.0: players would have had to move their saves between layouts once
+for nothing.

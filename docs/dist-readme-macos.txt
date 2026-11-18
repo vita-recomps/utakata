@@ -1,15 +1,32 @@
-shinobido2: Shinobido 2: Revenge of Zen (US, PCSE00015, 1.02) on macOS
+utakata: Shinobido 2: Revenge of Zen (US, PCSE00015, 1.02) on macOS
 (13.3 or newer, Apple Silicon).
 
-"Shinobido 2 - Revenge of Zen.app" in this folder starts the game:
-double-click it, or keep it in the Dock. It runs the game installed in a
-Vita file system ([paths] vita_fs in shinobido2.ini; default: the fs folder
-next to this file), with the game's code recompiled to native code
-(ssd_aot_*.dylib, built on this Mac from your own dump). shinobido2.arm64
-here is the same program, for Terminal. Graphics go through MoltenVK
-(Vulkan over Metal, libMoltenVK.dylib here). Keep the app, shinobido2.arm64
-and the files next to it together: moving the folder needs the setup run
-again (or a new app).
+"Shinobido 2 - Revenge of Zen.app" in this folder is the game: double-click
+it, or keep it in the Dock. macOS refuses it the first time, as it does
+anything downloaded that isn't signed by a registered Apple developer: click
+Done, open System Settings > Privacy & Security, scroll down to "Shinobido 2 -
+Revenge of Zen was blocked" and click Open Anyway (once).
+
+The first time, it builds the game from your own dump: a window asks for it (a
+folder, .zip or .vpk of the game with its 1.02 update, or the PSN .pkg files
+with their licence; the Mirror Spirits add-on is optional), downloads the PS
+Vita firmware from Sony and a compiler (zig, about 240 MB in all), installs
+the game and compiles its code on this Mac, which takes a few minutes. Play
+then starts the game, and from then on the app goes straight to it.
+
+Everything stays in this folder: the game (fs), its code compiled for this Mac
+(ssd_aot_*.dylib), settings (shinobido2.ini), saves, logs and the shader
+cache. The downloads are deleted once the game is built; delete the folder and
+the game is gone (apart from the copy in Applications, if you let the importer
+make one). Keep the app and the files next to it together; the folder itself
+can move. Graphics go through MoltenVK (Vulkan over Metal, inside the app).
+
+Command line (in Terminal: "Shinobido 2 - Revenge of
+Zen.app/Contents/MacOS/shinobido2" --help lists it all): --install opens the
+importer again (another dump, the add-on); --dump <file> builds without the
+window; --fullscreen or --windowed; --set section.key=value sets any setting
+of shinobido2.ini for one run; --game <folder> plays the game in another
+folder.
 
 Settings: press F1, or hold Select (the View button) on a gamepad for a
 second, to open the settings menu over the paused game (Up/Down choose,
@@ -46,8 +63,8 @@ controllers answer faster.
 Saves (ten slots, 0-9) are in the Vita file system
 (ux0/user/00/savedata/PCSE00015) and can be copied in and out, with the
 game closed, in Terminal, in this folder:
-  ./shinobido2.arm64 --import-save <folder or zip> [--slot N]
-  ./shinobido2.arm64 --export-save <folder> [--slot N]
+  "Shinobido 2 - Revenge of Zen.app/Contents/MacOS/shinobido2" --import-save <folder or zip> [--slot N]
+  "Shinobido 2 - Revenge of Zen.app/Contents/MacOS/shinobido2" --export-save <folder> [--slot N]
 A save decrypted on a Vita (VitaShell, Apollo) has data0000.bin to
 data0009.bin, one per slot; saves from the Windows or Linux port are the
 same files. Without --slot every file goes to its own slot; with it, one
