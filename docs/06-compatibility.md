@@ -31,6 +31,8 @@ scale 2, a gamepad; the last missions at 60 fps) and the test runs in
 | 60 fps | ✓ | missions at 60; menus, hub, results and post-load scenes at 30 |
 | Generated mipmaps | ✓ | on by default: the shimmer in motion is gone (the owner) ([D8](decisions.md)) |
 | NVIDIA GPUs | ✓ | the owner on the RTX 4090 (2026-10-15): works, no issues seen |
+| Linux: Steam Deck (SteamOS 3.9, RADV) | ◐ | the setup from the pkgs, then the first mission natively at 30 and 60 fps (2026-11-18, over SSH); Game Mode, a long session and the touchscreen not tried yet |
+| macOS: Apple Silicon (M5, MoltenVK) | ◐ | the setup from the pkgs, then the first mission natively at 30 and 60 fps (2026-11-18); a long session not played yet |
 | Native code against the JIT | ✓ | 0 mismatches in ~79,000 sampled calls |
 
 ## Native code against the JIT

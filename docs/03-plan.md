@@ -613,10 +613,39 @@ with all three setups ([D10](decisions.md)).
   (`docs/dist-readme-linux.txt`, `docs/dist-readme-macos.txt`).
 * ☑ The release workflow with Windows, Linux and macOS jobs and one draft
   release, as ss-delta's.
-* ☐ The Linux setup on the Steam Deck, from the pkgs to a mission on
-  native code.
-* ☐ The macOS setup on the M5, from the pkgs to a mission on native code.
-* ☐ The workflow run on GitHub; the Windows setup from its artifact.
+* ☑ The Linux setup on the Steam Deck (2026-11-18): built in WSL 2's sniper
+  SDK, run over SSH in console mode from the game pkg, the 1.02 patch pkg
+  and the add-on (firmware and zig downloaded by a first attempt that
+  failed for lack of a display over SSH): **7.8 min** to a playable folder
+  of 1.35 GB with its desktop entry and icon (`<out>-work` keeps 1.4 GB).
+  From a hub save, the first mission's field on native code: the five
+  modules that load verified, 0 native-to-JIT calls, rendered as on
+  Windows; 30.0 fps at the default settings, 60.0 fps (worst frame 17 ms)
+  at `frame_rate = 60`, scale 1.
+* ☑ The macOS setup on the M5 (2026-11-18): built on the Mac (the fork in
+  1.6 min), run in console mode: **2.5 min** to a playable folder with
+  `Shinobido 2 - Revenge of Zen.app` (firmware and zig already in the
+  cache). The same mission natively: 30.0 fps by default, 60.0 fps (worst
+  16.7 ms) at 60.
+* ☑ The workflow run on GitHub (2026-11-18, run 44277535729, from a
+  `release-0.1.0` branch): all three jobs passed (Linux 18 min, macOS 17,
+  Windows 31).
+  * ☑ Its macOS setup on the M5, from a quarantined tarball: 145 s, then
+    the mission natively at 60.0 fps.
+  * The Windows setup failed to download llvm-mingw:
+    `CERTIFICATE_VERIFY_FAILED`. GitHub's release-asset servers chain to
+    Let's Encrypt's Root YR, which this PC's Windows store didn't hold;
+    Python trusts only the roots already there, while Windows' own TLS
+    (System32 `curl.exe`) fetches a missing root and downloaded the file.
+    Every Windows setup was exposed (ss-delta's too). Fixed in the kit
+    (`0923a76`): on that error, `toolchain.py` downloads with `curl.exe`;
+    the SHA-256 is checked as before.
+  * ☑ Its Windows setup with that fix: 3.6 min to a playable folder (the
+    MSVC packages already downloaded by the failed run), then
+    `to-mission.py` to the first mission's field, every loaded module
+    native, 0 native-to-JIT calls.
+  * ☑ Its Linux setup on the Deck: 7.8 min, then the mission natively at
+    60.0 fps.
 * ☐ Tag `v0.1.0`: a draft release with the three setups; the owner
   publishes it.
 
