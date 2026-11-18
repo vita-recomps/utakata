@@ -646,7 +646,9 @@ with all three setups ([D10](decisions.md)).
     native, 0 native-to-JIT calls.
   * ☑ Its Linux setup on the Deck: 7.8 min, then the mission natively at
     60.0 fps.
-* ☐ Tag `v0.1.0`: a draft release with the three setups; the owner
+* ◐ Tag `v0.1.0` (`141d87f`, 2026-11-18): run 44286462267 passed and made
+  the draft release with the three setups (Windows zip 34 MB, Linux 88 MB,
+  macOS 45 MB), their SHA-256 and build attestations. Left: the owner
   publishes it.
 
 **Exit:** with their own dump, a player on each of the three platforms
