@@ -18,8 +18,15 @@ Licence: MIT ([LICENSE](LICENSE)). The Vita3K fork it builds on
 The whole story plays to the ending on native code, without a JIT, and the
 Mirror Spirits add-on's missions load and play; checked on AMD and NVIDIA
 GPUs ([compatibility](docs/06-compatibility.md)). Other endings and
-difficulties than the one played through are untested. Windows only for
-now; Linux and macOS builds are planned.
+difficulties than the one played through are untested.
+
+Since 0.1.0 it runs on three platforms, each on native code:
+
+* **Windows** 10 or 11, x64;
+* **Linux** x64, the **Steam Deck** among them (desktop mode to set up,
+  then Game Mode to play);
+* **macOS** 13.3 or newer on **Apple Silicon** (M1 and later, tested on an
+  M5).
 
 ## Features
 
@@ -49,36 +56,63 @@ Compared with running the game in Vita3K:
   that locks on to an enemy, wherever it is on screen; the mouse is the
   touchscreens.
 * **Vita saves** imported and exported (`--import-save`, `--export-save`).
-* **One executable**, `shinobido2.exe`, without Vita3K's interface and
-  offline, installed from your own dump with one command.
+* **One executable** per platform (`shinobido2.exe`, `shinobido2.x86_64`,
+  `shinobido2.arm64`), without Vita3K's interface and offline, installed
+  from your own dump by the setup.
 
 ## The setup (no building)
 
-Each release on GitHub has a setup, `utakata-setup-<version>.zip`, for
-players who don't want to build anything. Unzip it, run `setup.bat`, and
-in its window:
+Each release on GitHub has a setup per platform, for players who don't
+want to build anything:
+
+| Platform | Download | Start |
+|---|---|---|
+| Windows | `utakata-setup-<version>.zip` | unzip, run `setup.bat` |
+| Linux, Steam Deck (desktop mode) | `utakata-setup-linux-<version>.tar.gz` | unpack, run `setup.sh` |
+| macOS (Apple Silicon) | `utakata-setup-macos-<version>.tar.gz` | unpack, open `setup.command` |
+
+In its window:
 
 1. choose your dump: the game, update 1.02 and, if you have it, the Mirror
-   Spirits add-on (the parts described below);
+   Spirits add-on (the parts described below). A decrypted dump that
+   already holds the update and licence isn't asked for them again;
 2. choose the folder to play from;
-3. accept Microsoft's licence.
+3. on Windows, accept Microsoft's licence for the compiler.
 
-The setup downloads the PS Vita firmware from Sony and a compiler (about
-650 MB in all, kept in `%LOCALAPPDATA%\vita-recomps`). It then installs
-the game, translates its code and compiles it on your PC, which takes a
-few minutes. Play from the folder it made (by default `shinobido2`, next
-to the setup's folder) or from the desktop shortcut it offers; the setup's
-own folder can be deleted afterwards. Nothing of the game is in the setup
-or leaves your PC. The setup is not signed yet, so Windows may warn about
-it ("More info", "Run anyway"). Its SHA-256 and build attestation are on
-the release page.
+The setup downloads the PS Vita firmware from Sony and a compiler: on
+Windows about 650 MB (Microsoft's compiler, kept in
+`%LOCALAPPDATA%\vita-recomps`), on Linux and macOS about 240 MB (zig,
+kept in `~/.cache/vita-recomps` or `~/Library/Caches/vita-recomps`). It
+then installs the game, translates its code and compiles it on your
+computer, which takes a few minutes (about 20 on a Steam Deck). Play from
+the folder it made (by default `shinobido2`, next to the setup's folder),
+or from what it offers to add:
+* Windows: a desktop shortcut;
+* Linux: an applications-menu entry, and the game in Steam, so a Steam
+  Deck starts it from Game Mode;
+* macOS: the app in Applications, which runs in macOS's Game Mode when
+  fullscreen.
+
+The setup's own folder can be deleted afterwards. Nothing of the game is
+in the setup or leaves your computer.
+
+The setups are not signed with a publisher's certificate:
+* Windows may warn ("More info", "Run anyway");
+* macOS refuses `setup.command` the first time: System Settings, Privacy &
+  Security, "Open Anyway" (the setup's `README.txt` explains).
+
+The SHA-256 and build attestation of each setup are on the release page.
 
 ## What you need
 
-* Windows 10 or 11, x64, a GPU with Vulkan.
-* Your own copy of the game, US version (PCSE00015): the PSN `.pkg` with its
-  licence `work.bin`, or a decrypted dump (folder, `.zip` or `.vpk`). The
-  Mirror Spirits add-on (`.pkg` + `work.bin`) is optional.
+* A computer with a Vulkan GPU:
+  * Windows 10 or 11, x64;
+  * Linux, x64, glibc 2.31 or newer (any current distribution; SteamOS);
+  * macOS 13.3 or newer on Apple Silicon (Metal, through MoltenVK).
+* Your own copy of the game, US version (PCSE00015), and update 1.02: the
+  PSN `.pkg` with its licence `work.bin` plus the 1.02 patch pkg, or a
+  decrypted dump (folder, `.zip` or `.vpk`). The Mirror Spirits add-on
+  (`.pkg` + `work.bin`) is optional.
 * The PS Vita firmware update files `PSVUPDAT.PUP` and `PSP2UPDAT.PUP` (as
   for Vita3K; Sony publishes them, and the setup downloads them).
 * To build (not needed with the setup): Git, Python 3.12 (`pip install capstone pyyaml numpy`), Visual
@@ -126,7 +160,9 @@ system in `fs/`. Everything in it is derived from your copy: don't share it.
 
 ## Playing
 
-Run `dist/utakata/shinobido2.exe`. F1, or holding Select (Back/View) on a
+Run `shinobido2.exe` in the playable folder (`dist/utakata/` when built
+as above; on Linux `shinobido2.x86_64` or its menu entry, on macOS the
+app the setup made). F1, or holding Select (Back/View) on a
 gamepad for a second, opens the settings menu over the paused game. The
 settings live in `shinobido2.ini` next to it, and the `README.txt` there
 describes them: resolution, window,
@@ -138,7 +174,7 @@ touchscreens: left button front, right button rear.
 Saves move in and out with the game closed: `shinobido2.exe --import-save
 <folder|zip> [--slot N]` takes saves decrypted on a Vita (VitaShell,
 Apollo: `data0000.bin`–`data0009.bin`), `--export-save <folder> [--slot N]`
-copies them out.
+copies them out. Saves are the same files on every platform.
 
 ## Documentation
 

@@ -255,3 +255,31 @@ included, but distributes code derived from the game's executable.
 **Rejected:** shipping recompiled game code in releases (Yakumo's way):
 it makes every platform easy, but it distributes a derivative of the
 game's code.
+
+
+## D10 — Linux and macOS: ss-delta's native builds and setups, shared (accepted, 2026-11-18)
+
+**Context:** the owner asked for utakata on Linux and macOS for a 0.1.0
+release on GitHub. ss-delta did the work in the shared repos (its Phases
+11 and 12, D20 and D21): the fork builds every single-game executable on
+Linux (`<id>.x86_64`, in the Steam Runtime 3 SDK) and on Apple Silicon
+(`<id>.arm64`, with MoltenVK), the recompiled modules load with `dlopen`,
+and the kit's setup compiles them on the player's machine with zig.
+
+**Decision:**
+
+* utakata takes all of it unchanged: the same fork and kit, the same
+  setups (`setup.sh` with a desktop entry and the game added to Steam;
+  `setup.command` with an app in the playable folder, Game Mode, no
+  notarization), and a release workflow with three jobs, as ss-delta's.
+  Nothing game-specific was needed beyond `game.json`'s Linux and macOS
+  READMEs.
+* The executable gets its own icon (fork `games/shinobido2/`): a throwing
+  star drawn by `tools/make-icon.py`, no game artwork, as ss-delta's
+  delta. The Linux desktop entry and the macOS app take theirs from it;
+  the window still shows the game's `icon0.png` on Windows and Linux.
+* The first release with all three setups is **0.1.0**.
+
+**Rejected:** a Windows release only, with Linux players on Proton: the
+setup would have to compile under Wine (ss-delta's 07-linux), and macOS
+would have nothing.

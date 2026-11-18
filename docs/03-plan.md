@@ -464,7 +464,9 @@ them against Phases 2–8.
 * ☑ **Mip chains for mipless textures** (a setting): generated at texture
   upload for repeating textures with one level, against ground shimmer in
   both games (Phase 7, "Texture shimmer").
-* ☐ **Linux and macOS builds**:
+* ☑ **Linux and macOS builds**: done in the shared repos by ss-delta
+  (its Phases 11 and 12, 07-linux and 08-macos), taken by utakata in
+  Phase 9 below. The original list:
   * the AOT loader: `dlopen` beside `LoadLibrary` (it is Windows-only
     today);
   * the recompiler's CMake: `.so`/`.dylib` instead of DLLs, GCC/Clang
@@ -595,6 +597,31 @@ them against Phases 2–8.
   end (Vita3K runs on Android; the fork keeps its `android/`), on-screen
   touch controls, and performance and GPU-driver testing. Test device:
   AYN Thor (Snapdragon 8 Gen 2, Adreno 740).
+
+## Phase 9 — Linux, macOS and the 0.1.0 release (M) ◐
+
+The owner asked for it on 2026-11-18: utakata on today's fork and kit,
+with ss-delta's Linux and macOS builds, towards a 0.1.0 release on GitHub
+with all three setups ([D10](decisions.md)).
+
+* ☑ The submodules at fork `bc449f9a` and kit `2b39018` (ss-delta 0.3.0's);
+  `shinobido2.exe` rebuilt on Windows and checked: the day-57 hub and the
+  last mission's field on native code, 0 native-to-JIT calls.
+* ☑ The game's own icon and version resource (fork, `tools/make-icon.py`);
+  `fmt::join`'s header in `saves.cpp`, which g++ needed.
+* ☑ `game.json`: the Linux and macOS READMEs
+  (`docs/dist-readme-linux.txt`, `docs/dist-readme-macos.txt`).
+* ☑ The release workflow with Windows, Linux and macOS jobs and one draft
+  release, as ss-delta's.
+* ☐ The Linux setup on the Steam Deck, from the pkgs to a mission on
+  native code.
+* ☐ The macOS setup on the M5, from the pkgs to a mission on native code.
+* ☐ The workflow run on GitHub; the Windows setup from its artifact.
+* ☐ Tag `v0.1.0`: a draft release with the three setups; the owner
+  publishes it.
+
+**Exit:** with their own dump, a player on each of the three platforms
+gets from the 0.1.0 release to a mission on native code.
 
 ## Later (deferred)
 

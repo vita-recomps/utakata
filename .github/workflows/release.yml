@@ -1,8 +1,10 @@
-# The players' setup (docs/decisions.md D9): builds shinobido2.exe without Qt and lays out the setup
-# with vita-recomp-kit's make-setup.py. The setup holds no game or firmware data: on the player's PC it
-# downloads the firmware from Sony and a compiler, and builds the port from the player's own dump.
-# A tag v* makes a draft release with the zip, its SHA-256 and a build attestation; a manual run
-# only uploads the zip as a workflow artifact.
+# The players' setups (docs/decisions.md D9, D10): Windows builds shinobido2.exe without Qt, Linux
+# builds shinobido2.x86_64 in the Steam Runtime (sniper) SDK, macOS builds shinobido2.arm64 with
+# Apple's clang, and vita-recomp-kit's make-setup.py lays out each setup. A setup holds no game or
+# firmware data: on the player's computer it downloads the firmware from Sony and a compiler, and
+# builds the port from the player's own dump.
+# A tag v* makes a draft release with the three setups, their SHA-256 and build attestations; a
+# manual run only uploads them as workflow artifacts.
 name: Setup release
 
 on:
@@ -42,7 +44,6 @@ jobs:
           $hash = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLower()
           "$hash  $name.zip" | Out-File -Encoding ascii "build/release/$name.zip.sha256"
           "ZIP=$zip" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
-          "NAME=$name" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
 
       - uses: actions/attest-build-provenance@v3
         with:
@@ -50,17 +51,107 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: ${{ env.NAME }}
+          name: setup-windows
           path: |
             ${{ env.ZIP }}
             ${{ env.ZIP }}.sha256
 
+  linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    # the SDK the Deck's Steam Runtime matches: glibc 2.31, g++ 14 (docs/07-linux.md)
+    container: registry.gitlab.steamos.cloud/steamrt/sniper/sdk:3.0.20261021.266025
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Python 3.12 (the setup's own, python-build-standalone; the SDK has 3.9)
+        run: |
+          read -r url sha <<EOF
+          $(python3 -c "import json; f = next(f for f in json.load(open('third_party/recomp/tools/setup-linux.json'))['files'] if f['kind'] == 'python'); print(f['url'], f['sha256'])")
+          EOF
+          curl -sSL --retry 3 -o /tmp/python.tar.gz "$url"
+          echo "$sha  /tmp/python.tar.gz" | sha256sum -c -
+          mkdir -p /opt/python && tar -xzf /tmp/python.tar.gz -C /opt/python --strip-components=1
+          echo "PY=/opt/python/bin/python3" >> "$GITHUB_ENV"
+
+      - name: Build shinobido2.x86_64
+        run: $PY -I third_party/recomp/tools/build-vita3k.py --target shinobido2
+
+      - name: Lay out the setup
+        run: |
+          if [ "${{ github.ref_type }}" = tag ]; then name="utakata-setup-linux-${{ github.ref_name }}"; else name="utakata-setup-linux-$(echo ${{ github.sha }} | cut -c1-7)"; fi
+          $PY -I third_party/recomp/tools/make-setup.py build third_party/recomp/tools/setup-linux.json \
+            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out "build/release/$name" --zip
+          tgz="build/release/$name.tar.gz"
+          (cd build/release && sha256sum "$name.tar.gz" > "$name.tar.gz.sha256")
+          echo "TGZ=$tgz" >> "$GITHUB_ENV"
+
+      - uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: ${{ env.TGZ }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: setup-linux
+          path: |
+            ${{ env.TGZ }}
+            ${{ env.TGZ }}.sha256
+
+  macos:
+    # Apple Silicon; the build targets macOS 13.3 (the fork's CMAKE_OSX_DEPLOYMENT_TARGET)
+    runs-on: macos-15
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Ninja
+        run: brew install ninja
+
+      - name: Build shinobido2.arm64
+        run: python -I third_party/recomp/tools/build-vita3k.py --target shinobido2
+
+      - name: Lay out the setup
+        run: |
+          if [ "${{ github.ref_type }}" = tag ]; then name="utakata-setup-macos-${{ github.ref_name }}"; else name="utakata-setup-macos-$(echo ${{ github.sha }} | cut -c1-7)"; fi
+          python -I third_party/recomp/tools/make-setup.py build third_party/recomp/tools/setup-macos.json \
+            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out "build/release/$name" --zip
+          tgz="build/release/$name.tar.gz"
+          (cd build/release && shasum -a 256 "$name.tar.gz" > "$name.tar.gz.sha256")
+          echo "TGZ=$tgz" >> "$GITHUB_ENV"
+
+      - uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: ${{ env.TGZ }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: setup-macos
+          path: |
+            ${{ env.TGZ }}
+            ${{ env.TGZ }}.sha256
+
+  release:
+    if: github.ref_type == 'tag'
+    needs: [windows, linux, macos]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          path: dist
+          merge-multiple: true
+
       - name: Draft release
-        if: github.ref_type == 'tag'
-        shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create '${{ github.ref_name }}' "$env:ZIP" "$env:ZIP.sha256" --draft `
-            --title 'utakata ${{ github.ref_name }}' `
-            --notes "Unzip, run setup.bat and point it at your own dump of Shinobido 2: Revenge of Zen (PCSE00015, with update 1.02; the Mirror Spirits add-on is optional). See README.txt in the playable folder it makes. SHA-256 and the build attestation: see the files attached and 'gh attestation verify'."
+          gh release create '${{ github.ref_name }}' dist/* --repo '${{ github.repository }}' --draft \
+            --title 'utakata ${{ github.ref_name }}' \
+            --notes "Windows: unzip utakata-setup-${{ github.ref_name }}.zip and run setup.bat. Linux and Steam Deck (desktop mode): unpack utakata-setup-linux-${{ github.ref_name }}.tar.gz and run setup.sh. macOS 13.3 or newer on Apple Silicon: unpack utakata-setup-macos-${{ github.ref_name }}.tar.gz and open setup.command (macOS blocks it the first time: System Settings, Privacy & Security, Open Anyway; README.txt explains). Point it at your own dump of Shinobido 2: Revenge of Zen (US PCSE00015, with update 1.02; the Mirror Spirits add-on is optional). See README.txt in the playable folder it makes. SHA-256 and the build attestations: see the files attached and 'gh attestation verify'."
