@@ -12,7 +12,9 @@ owner's machine-specific notes, kept in a private repo.
 - Never commit anything derived from the dump or the firmware: pkgs,
   extracted or decrypted files, ELFs, licences (`work.bin`, `.rif`, zRIFs),
   generated C++, screenshots, logs, PUPs. Check `git status` before every
-  commit. Hashes, addresses and notes are fine.
+  commit. Hashes, addresses and notes are fine. The one exception (D12):
+  the README's screenshots in `docs/assets/screenshots/`, added only on the
+  owner's request.
 - Never commit anything local either (D6): no absolute paths, host names,
   user or machine names, tokens. Those go in the private notes. Use
   repo-relative paths, or `<ss-delta>` for the sibling checkout.

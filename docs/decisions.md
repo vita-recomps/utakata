@@ -27,6 +27,8 @@ runs the game to gameplay at 30 fps.
 files, pkgs, licences (`work.bin`, `.rif`, zRIFs), ELFs, generated C++,
 analysis databases, screenshots or logs of the game, firmware. Hashes,
 addresses, names and notes are fine. `.gitignore` enforces the file types.
+Amended by D12: a few screenshots for the README, in
+`docs/assets/screenshots/`.
 
 ## D3 — Target the US 1.02 update (accepted, 2026-10-12)
 
@@ -313,3 +315,30 @@ separate playable folder) and not yet published.
 **Rejected:** publishing the first 0.1.0 draft and moving to D22 in a
 0.2.0: players would have had to move their saves between layouts once
 for nothing.
+
+
+## D12 — Screenshots of the game in the README (accepted, 2026-11-18)
+
+**Context:** the owner asked for screenshots in the README: the main menu
+and a few from missions. D2 kept every screenshot of the game out of git.
+
+**Decision:**
+
+* A few screenshots for the README are committed, in
+  `docs/assets/screenshots/`: JPEGs at 1280×725, taken from the port
+  (`shinobido2.exe` at scale 2, from the release workflow's archive) with
+  `v3kdrive.py`'s `frame:` and `record:`, from copies of the owner's
+  saves: the main menu, the first mission, a fight and the opening scene
+  of the second-to-last mission. The README links them under
+  "Screenshots".
+* The pre-push leak scan blocks images as game data; a clone lets these
+  through with `git config leakscan.allow 'docs/assets/screenshots/*.jpg
+  docs/assets/screenshots/*.png'` (kit `fb2a5cb`; a clone's setting, never
+  pushed). ss-delta's clone has the same, for screenshots it may add.
+* Everything else D2 lists stays out, including any other screenshot
+  (references for `tools/to-mission.py`, test captures: `build/`).
+* The README's note says the repository holds no game data *apart from
+  these screenshots*; the releases still hold none.
+
+**Rejected:** hosting the pictures outside the repository (release assets):
+the owner chose committing them.

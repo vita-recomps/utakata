@@ -35,9 +35,10 @@ Vita3K, which supplies the rest of the console. Utakata is the land the
 game is set in.
 
 > This repository and its releases contain *no* game data, *no* firmware and
-> *no* code derived from the game. You bring your own dump; everything
+> *no* code derived from the game, apart from the README's
+> [screenshots](#screenshots). You bring your own dump; everything
 > game-derived is generated on your computer from it. See
-> [D2](docs/decisions.md).
+> [D2](docs/decisions.md) and [D12](docs/decisions.md).
 
 ## Status
 
@@ -132,3 +133,15 @@ Delta), whose docs hold most of the know-how.
 
 MIT ([LICENSE](LICENSE)). The Vita3K fork it builds on
 (`third_party/vita3k`) is GPL-2.0-or-later.
+
+## Screenshots
+
+Taken from the port at 2× resolution (1920×1088, scaled down here), on
+native code.
+
+| | |
+|---|---|
+| ![The main menu](docs/assets/screenshots/main-menu.jpg) | ![The first mission: a night alley in autumn](docs/assets/screenshots/mission-alley.jpg) |
+| The main menu | A night alley in the first mission |
+| ![A scene in a shrine, from the second-to-last mission](docs/assets/screenshots/cutscene-shrine.jpg) | ![A sword fight](docs/assets/screenshots/mission-combat.jpg) |
+| The opening scene of the second-to-last mission | A fight, at low health |
