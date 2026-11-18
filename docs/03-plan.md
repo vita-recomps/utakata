@@ -675,13 +675,16 @@ with all three setups ([D10](decisions.md)).
   elsewhere outside the folder. Linux and macOS archives not run on the
   Deck or the M5 for this layout (ss-delta's 0.3.0 checked the same kit
   and front end on both).
-* ◐ `v0.1.0` tagged again on the new layout (`40b516a`, 2026-11-18; the
+* ☑ `v0.1.0` tagged again on the new layout (`40b516a`, 2026-11-18; the
   first draft and tag deleted): run 44311171344 made the draft release
   with `utakata-v0.1.0-windows.zip` (33 MB), `-linux.tar.gz` (84 MB) and
   `-macos.tar.gz` (44 MB), their SHA-256 and build attestations. Its
   macOS job was cancelled the first time without starting (GitHub had
-  no macOS arm64 runner free); re-running the failed jobs passed. Left:
-  the owner publishes it.
+  no macOS arm64 runner free); re-running the failed jobs passed. The
+  owner published it on 2026-11-18.
+* ☐ The published Linux and macOS archives run on the Deck and the M5 to
+  a mission (the Windows one was, from the workflow's earlier run of the
+  same layout).
 
 **Exit:** with their own dump, a player on each of the three platforms
 gets from the 0.1.0 release to a mission on native code.
