@@ -589,8 +589,9 @@ them against Phases 2–8.
 
   ☐ A check on a separate PC without Visual Studio or the VC++ runtime
   (the owner).
-* ☐ **Android**, after the desktop platforms. The port can't compile on a
-  phone, so the APK is built on the player's PC from their own dump (the
+* ☐ **Android**, now [Phase 11](#phase-11--android-targeting-the-ayn-thor-l-).
+  The original note, written before ss-delta's Phase 14 built the game on
+  the device itself: the port can't compile on a phone, so the APK is built on the player's PC from their own dump (the
   Android NDK's clang, ARM64) and sideloaded; a "Build for Android" step in
   the PC setup could do it. Needs the `dlopen` loader and the ARM64 check
   from the Linux and macOS work, an Android build of the single-game front
@@ -689,10 +690,173 @@ with all three setups ([D10](decisions.md)).
 **Exit:** with their own dump, a player on each of the three platforms
 gets from the 0.1.0 release to a mission on native code.
 
+## Phase 10 — ss-delta's 0.4.0 features on the desktop (M) ☐
+
+The owner asked on 2026-11-21: feature parity with ss-delta, apart from
+multiplayer (this game has none). ss-delta's Phase 8 additions and the
+fork's front end since `bbca8b81` (28 commits on `games`, up to
+`36e098b3`; kit `fb2a5cb` → `dd07e72`). Most of the machinery is in the
+shared front end already; what is new here is each feature's game side
+(addresses, textures, the stick table) and its tests. Cheapest first.
+
+* ☐ **10a Today's fork and kit.** Submodules to fork `36e098b3` and kit
+  `dd07e72`; `shinobido2.exe` rebuilt, `to-mission.py` to the first
+  mission's field on native code, 0 native-to-JIT calls, and the day-57
+  hub save loads. What comes without game work:
+  * the settings menu's Exit page; the discrete-GPU exports (laptops with
+    two GPUs, ss-delta issue #4);
+  * the settings menu over a system dialog (Vita3K's overlay input
+    queue): check it over this game's Load and Save dialogs;
+  * add-ons after the build (`--dump=<file>`, `setup.py` installs an
+    add-on alone without a rebuild), NoNpDrm dumps laid out as ux0, the
+    setup's `--progress` and `setup.log`;
+  * the input pipe's `memwrite:` and `mouse:` steps (front end, so
+    `shinobido2.exe` gets them; needed by 10e and 10f).
+
+  Also, as ss-delta has it: `recomplauncher.json` in every release
+  (ss-delta D24; inputs: the game pkg with its `work.bin`, the 1.02 pkg,
+  the optional add-on), `CHANGELOG.md`, and release notes in
+  `.github/release-notes/<tag>.md` for the workflow's draft.
+* ☐ **10b Language** (ss-delta's fork `b403534e`). The eboot reads
+  `SCE_SYSTEM_PARAM_ID_LANG` once at boot (`0x8114ce96`): French (2)
+  becomes the game's language 3, Spanish (3) language 4, anything else
+  English (stored at `+0x1e0` of its object) [local, 2026-11-21]. So the
+  US game has three text languages; that the French and Spanish data is
+  really in the dump is a **hypothesis**. `[game] language` (`english`,
+  `french`, `spanish`), on the settings menu's Game page, restart needed;
+  system dialogs follow the same setting. Check the title, the options,
+  a mission briefing and the subtitles in each. (The other system read,
+  `SCE_SYSTEM_PARAM_ID_ENTER_BUTTON` at `0x8114da68`, only configures
+  the common dialogs.)
+* ☐ **10c rePatch mods** (fork `dda265d9`): `layout::repatch()` in the
+  profile, "Mods (rePatch)" in the settings menu. Generic and cheap; it
+  only overrides loose files (`RomImage/...`, the stream packs, the
+  movies), not members of `volume.dat`. No Shinobido 2 mod is known, so
+  the test is a hand-made one (a replaced movie or stream pack in a test
+  folder). An undub needs the JP release's voice packs at the US paths
+  (the eboot hard-codes `<NP>/US/Sound/*.stm`): see Later.
+* ☐ **10d Skip the intro logos** (ss-delta's `skip_intro`, its GitHub
+  issue #6). 1.02's logos take about 40 s before the title accepts
+  Start (1.00's less). They are `logo_acquire.mp4` and `logo_spike.mp4`
+  through SceMp4, plus whatever else precedes the title (a health
+  warning?): find the boot sequence's state in memory and step it past
+  the logos as data, so native code stays on, as ss-delta does. The
+  opening FMV (`S000_00_opening.mp4`) is story and stays. `[game]
+  skip_intro`, off by default. Check: no logo frame recorded
+  (`record:`), title → Continue → slot 1 → hub.
+* ☐ **10e Mouse camera** (fork `36e098b3`). The shared part is done;
+  the game gives `profile.stick_response`, its right stick's push → turn
+  speed table. Measure it as ss-delta did (steady pushes through the
+  pipe, the camera's yaw read from memory or from frames), in the field
+  and the hub. Check against the game's own Y/X-axis camera options
+  (their inversion applies on top of ours), the hook's aim (R + Circle,
+  left stick) and any first-person aim. The pitch's table: measure it
+  rather than assume the yaw's.
+* ☐ **10f Cheats** (ss-delta's `[cheats]`, its GitHub issue #7): a
+  Cheats page, all off, switched while the game runs; values set in
+  guest memory each frame through the game's own pointers, after checking
+  vtables and plausible values, so native code stays on. No VitaCheat or
+  CWCheat codes are known for this game (to check again); Apollo's save
+  patches give the save record's layout (private notes): money, level,
+  SP, stamina, offence, defence, zankoku, ninja tool counts. Find the
+  live copies with `memdump:` from a known money value. Candidates:
+  * Infinite health; Infinite ninja tools (counts kept up in a mission);
+  * Max money (9,999,999, as Apollo's patch); Max stats (level 99,
+    SP 255, stamina 200, offence, defence and zankoku 100);
+  * One-hit kills (bosses may cap a hit, as ss-delta's did);
+  * **hypotheses**, if the game keeps such a value: enemies never alert,
+    no mission timer.
+
+  Check each in a mission, through a save and reload, and whether the
+  mission rank or Zankoku records react.
+* ☐ **10g Xbox button labels** (fork `e6bc116c`, `0673577b`; ss-delta's
+  `[game] button_labels`, `auto`). The front end redraws textures as
+  they upload, found by a hash of their data. Research first:
+  * where the game draws PlayStation buttons: the HUD's prompts, the UI
+    textures (`<P>/US/UIPhyreTexture`), the pause menu's Controls page,
+    the tutorial's pictures, and in text (the `*.fgen.GXM.phyre` fonts,
+    if buttons are glyphs there);
+  * `volume.dat`'s kinds 2–5 can't be unpacked yet (Phase 2), so collect
+    the textures as the game uploads them (Vita3K's texture export, or a
+    hash log) on the screens above, rather than from the archive;
+  * the painting: ss-delta's is drawn for symbols as light strokes in a
+    dark ink blot. If this game's buttons look different, the shared
+    `button_labels.cpp` gets a second style, checked on ss-delta too
+    (D4, shared work).
+
+  Then the table (`games/shinobido2/button_atlases.inc`), the test command
+  on dumped textures for review, and a playtest by the owner (prompts,
+  Controls page, tutorial).
+
+**Exit:** each feature above in the settings menu (rePatch, language,
+skip intro, button labels, mouse, cheats), checked on Windows and played
+by the owner; the Linux and macOS builds checked to a mission. No
+release before Phase 11: both ship together as v0.2.0 (the owner,
+2026-11-21).
+
+## Phase 11 — Android, targeting the AYN Thor (L) ☐
+
+ss-delta's Phase 14 built the shared pieces: the single-game APK
+(`game-frontend/android/`, parameterised by `-Pgame`), the modules built
+with zig for Android (its D25), the on-device build with Python, capstone
+and zig in the APK (its D27), Turnip on Adreno, on-screen controls and
+the release workflow's `android` job. Research in ss-delta's
+`09-android.md`. What is left is this game's side. Record the choice as a
+decision (ss-delta's D25 and D27 for this game) when the owner accepts it.
+
+* ☐ **11a The APK on the JIT**: `libshinobido2.so` from `add_game` on
+  `ANDROID` (built in WSL with the NDK, as ss-delta's), Gradle with
+  `-Pgame=shinobido2`, `io.github.vitarecomps.shinobido2`, the game's
+  icon and name. On the Thor, from a test file system pushed over adb:
+  logos → title → hub → first mission; the built-in controls as a
+  gamepad.
+* ☐ **11b Native code on Android**: the seven modules with
+  `build-recomp.py --android` (zig), copied with `android.py push`; the
+  first mission on NativeCPU with 0 native-to-JIT calls; the kit's
+  differential and dynarmic tests on the device. Fewer instructions than
+  ss-delta (1.37 M against 3.8 M), so the build should be shorter
+  (**hypothesis**).
+* ☐ **11c Rendering and sound on the Adreno**: Turnip T23 as on
+  ss-delta (Qualcomm's driver may break PhyreEngine's effects in its own
+  ways); Phase 6's rendering pictures against Windows' (missions, hub,
+  DLC); frame rate at 30 and 60, scale 1 and 2. NGS on Android: the fork's
+  voice and fade tracking (Phase 5) is host-independent, but run
+  `sfx-soak.py`'s mission restarts there (a pipe over adb) to show that
+  sound effects last.
+* ☐ **11d Input on a handheld and a phone**: the on-screen controls
+  (shared, fork `1f51f2ec`) with a latch button for an action held
+  long: L (focus, guard) or R (crouch, cling), chosen in play. The
+  caution eyes are on the real touchscreen, so a finger works as on a
+  Vita; check the right-trigger binding's frame read-back on the device.
+  Rear touch stays unneeded (the game's option can be Off). Select held
+  opens the settings menu.
+* ☐ **11e The setup on the device and from a PC**: this game's dump is
+  pkgs with licences (game, 1.02, add-on), not ss-delta's zip, so the
+  setup screen's picker must take several files with their `work.bin`
+  or `.rif` beside them, or a folder (check `dumpinfo.py` and
+  `android-setup.py` on pkgs). The PC route too: `setup.py --android`.
+  The full build on the Thor, timed; a rebuild after an APK update keeps
+  the saves; `--import-save` or a save picker for players bringing a
+  Vita save.
+* ☐ **11f Release**: the workflow's `android` job feeding every
+  archive, signed with the vita-recomps release key (the secrets set on
+  this repo by the owner), INSTALLING's Android section, the README.
+  Battery and performance modes measured as ss-delta did.
+
+**Exit:** with a Thor and their own dump, and no PC, a player gets from
+the release's APK to a mission on native code; with a PC, the
+`setup.py --android` route works too. Then v0.2.0, with Phase 10.
+
 ## Later (deferred)
 
 * Other regions (EU PCSB00049, JP PCSG00019): the same profile with another
-  title ID; regenerate per eboot.
+  title ID; regenerate per eboot. ss-delta supports both its regions
+  (its D19). Needs the owner's EU or JP dump. The EU game may have more
+  text languages for 10b (**hypothesis**).
+* An undub (a rePatch mod with the JP release's voice packs at the US
+  paths): needs a JP dump and a check that the packs hold the same lines
+  in the same order. No such mod is known.
+* iOS and iPadOS, after ss-delta's Phase 15 (not started there).
 * Modding: loose-file overrides, if the engine has them (unknown), and
   FADEBABE repacking; `tools/fadebabe.py` names and kinds 2–5
   decompression (from Phase 2).
