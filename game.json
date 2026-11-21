@@ -17,6 +17,7 @@
   },
   "load_bases": {},
   "dump_seconds": 45,
+  "android_build_minutes": 8,
   "dist_readme": "docs/dist-readme.txt",
   "dist_readme_linux": "docs/dist-readme-linux.txt",
   "dist_readme_macos": "docs/dist-readme-macos.txt",

@@ -427,6 +427,42 @@ the same build and settings, was normal, and it didn't come back in about
 fifteen later boots. Not understood (**hypothesis:** a race at boot,
 unrelated to the new settings, all of which were off or data-only then).
 
+## Android on the AYN Thor (Phase 11, 2026-11-21)
+
+The AYN Thor Max (Snapdragon 8 Gen 2, Adreno 740, Android 13) over
+wireless adb, its built-in controls driven with `sendevent` (as in
+ss-delta's 09-android). `libshinobido2.so` from the NDK r29 games build in
+WSL (fork `95693020`, then `14684f22`; 68 MB stripped), the APK from the
+shared Gradle project (`-Pgame=shinobido2`, 22.7 MB without the build
+tools, 108 MB with them). Defaults: scale 1, 30 fps.
+
+| Check | Result |
+|---|---|
+| Debug APK, no modules (JIT), Qualcomm's driver, the test folder's `fs/` pushed with `android.py push` (1.3 GB, 1.8 min) | opening movie → title → Continue → Load dialog → hub → first mission's field; **30.2 fps** in the field |
+| From a release folder of this commit: `setup.py --android --console` (the PC route, D25) | the seven modules recompiled and compiled with zig for Android, the APK installed, `fs/` and modules copied: **6.4 min** in all (eboot module 29 MB) |
+| That app from its launcher icon: the Turnip offer, Download | Turnip T23 injected; every module verified, **NativeCPU, 0 native-to-JIT calls**; the field at **30.0 fps** (longest frame 33 ms) |
+| Qualcomm's driver (JIT) against Turnip (native), the field's first picture | the same picture: 0.1% of pixels differ by more than 40, from animation (leaves, the idle pose) |
+| A test package (`.devtest`) with the build tools, from its launcher: the game's pkg + `work.bin`, the 1.02 pkg, the add-on's pkg + `work.bin` picked in Android's file picker (from `Download/`, after a media scan: files pushed over adb aren't listed until then), Build | firmware from Sony, install, version check and module dump in **2 min**, recompiling and compiling **5.4 min** (83 files, 5 at a time): **about 7½ min** from Build to Play; the add-on installed (`addcont/PCSE00015/DLC001X000000000`); 150 MB in the app's storage, 1.2 GB in its shared folder |
+| The modules built on the device against the PC's | all seven **byte-identical** (SHA-256) |
+| Play, Turnip, `hub-day1` copied in, the first mission | NativeCPU, 0 native-to-JIT calls, **30.0 fps** |
+| The same package updated (a new `versionCode`) | the setup came back without asking for the dump, rebuilt in **5.3 min**; the save stayed; the mission again |
+| On-screen controls switched on over the built-in gamepad (Controls page) | the Vita's buttons, sticks and menu button; **CROUCH** beside R; a tap holds R (the ninja crouches and stays down), the next tap lets go |
+| System dialogs' icons | the log's "Image resource file 'icons/cross.png' could not be opened" (the APK lacked Vita3K's `icons/`); packed since fork `14684f22` |
+
+Found on the way:
+
+* Holding Select for the settings menu also opens the game's own Select
+  action (Manage Tools in a mission, Help on the hub) underneath, as on a
+  PC with the gamepad (the menu opens after the hold). Harmless; closing
+  both takes two presses.
+* The controls overlap the HUD's corners (the map under L, the tool belt
+  under the left stick) and the right-hand caution eyes lie under the
+  face buttons; a finger on an eye goes to the game (the shared rule for
+  touch spots), so Circle's upper edge gives way to the eye there.
+* The Turnip offer's text (black rectangles in fog and smoke) is
+  ss-delta's finding; whether Qualcomm's driver draws anything of this
+  game wrong waits for the rendering sweep (Phase 11c).
+
 ## How to re-run
 
 ```

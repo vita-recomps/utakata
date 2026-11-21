@@ -112,6 +112,19 @@ owner's machine-specific notes, kept in a private repo.
   `build/vita3k-games/bin/RelWithDebInfo/` before building.
 - `tools/to-mission.py` matches English screens; with `[game] language`
   set to French or Spanish, drive with `v3kdrive.py` steps and screenshots.
+- Android (Phase 11, ss-delta's 09-android has the rest): `libshinobido2.so`
+  is built in WSL with the NDK (`cmake --build <android build> --target
+  shinobido2`, then `llvm-strip --strip-debug` into `build/android/jniLibs/
+  arm64-v8a/` with libadrenotools' hook libraries); the APK on Windows with
+  `third_party/vita3k/android/gradlew.bat -p third_party/vita3k/vita3k/
+  game-frontend/android assembleDebug "-Pgame=shinobido2" ...` (from
+  PowerShell, quote every `-P...=...`: unquoted, cmd splits them at the
+  dots), adding `-PbuildToolsDir=` (kit `android-build-tools.py`) for the
+  setup on the device. Test packages (`-PapplicationId=...devtest`) keep
+  the real one untouched. Files pushed over adb into `Download/` need a
+  media scan before Android's file picker lists them. The kit's
+  `setup.py --android` stops adb's server at the end: reconnect wireless
+  adb afterwards. `uiautomator dump` fails on the Thor; tap by screenshot.
 - Guest memory the front end reads and writes (the record at `0x8153b530`,
   the player, the camera matrix, the opening scene) is in 01-research,
   "ss-delta's 0.4.0 features"; `memdump:`/`memwrite:` only in test folders.

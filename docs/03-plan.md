@@ -780,58 +780,93 @@ by the owner; the Linux and macOS builds checked to a mission. No
 release before Phase 11: both ship together as v0.2.0 (the owner,
 2026-11-21). Open: the owner's playtest, Linux and macOS.
 
-## Phase 11 — Android, targeting the AYN Thor (L) ☐
+**The owner's playtest, for later** (the owner, 2026-11-21: "I will test
+this later"; before v0.2.0 is tagged). On Windows, `shinobido2.exe` of
+this phase:
+
+* ☐ Mouse camera with a real mouse (Tab or a middle click): turning,
+  looking up and down, the hook's aim (R + Circle), the game's own Y/X
+  camera options, the Mouse page's sensitivity and inversion.
+* ☐ Cheats: One-hit kills in fights and on a boss; a whole mission with
+  the others on; a save and reload; the mission rank with cheats on.
+* ☐ Xbox button prompts: `xbox`, and `auto` with a real pad (the
+  prompts, START/SELECT, L/R, the HUD, the Basic Controls page); any
+  picture still showing PlayStation symbols (the tutorial, help screens,
+  mission prompts) noted, with `UTAKATA_TEXTURE_DUMP` set if possible.
+* ☐ The settings menu (Select held or F1) over the game's Load and Save
+  dialogs: does it still respond?
+* ☐ Language (French, Spanish) and Skip intro logos, in normal play.
+* ☐ Android, on the Thor (Phase 11): the APK from the release (or a
+  test build), the setup screen from the dump, a mission with the
+  built-in controls; the on-screen controls and CROUCH on the
+  touchscreen.
+
+## Phase 11 — Android, targeting the AYN Thor (L) ◐
 
 ss-delta's Phase 14 built the shared pieces: the single-game APK
 (`game-frontend/android/`, parameterised by `-Pgame`), the modules built
 with zig for Android (its D25), the on-device build with Python, capstone
 and zig in the APK (its D27), Turnip on Adreno, on-screen controls and
 the release workflow's `android` job. Research in ss-delta's
-`09-android.md`. What is left is this game's side. Record the choice as a
-decision (ss-delta's D25 and D27 for this game) when the owner accepts it.
+`09-android.md`. What is left is this game's side, recorded as
+[D14](decisions.md) (the owner, 2026-11-21: proceed with Android). Tests
+in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
 
-* ☐ **11a The APK on the JIT**: `libshinobido2.so` from `add_game` on
-  `ANDROID` (built in WSL with the NDK, as ss-delta's), Gradle with
-  `-Pgame=shinobido2`, `io.github.vitarecomps.shinobido2`, the game's
-  icon and name. On the Thor, from a test file system pushed over adb:
-  logos → title → hub → first mission; the built-in controls as a
-  gamepad.
-* ☐ **11b Native code on Android**: the seven modules with
-  `build-recomp.py --android` (zig), copied with `android.py push`; the
-  first mission on NativeCPU with 0 native-to-JIT calls; the kit's
-  differential and dynarmic tests on the device. Fewer instructions than
-  ss-delta (1.37 M against 3.8 M), so the build should be shorter
-  (**hypothesis**).
-* ☐ **11c Rendering and sound on the Adreno**: Turnip T23 as on
-  ss-delta (Qualcomm's driver may break PhyreEngine's effects in its own
-  ways); Phase 6's rendering pictures against Windows' (missions, hub,
-  DLC); frame rate at 30 and 60, scale 1 and 2. NGS on Android: the fork's
-  voice and fade tracking (Phase 5) is host-independent, but run
-  `sfx-soak.py`'s mission restarts there (a pipe over adb) to show that
-  sound effects last.
-* ☐ **11d Input on a handheld and a phone**: the on-screen controls
-  (shared, fork `1f51f2ec`) with a latch button for an action held
-  long: L (focus, guard) or R (crouch, cling), chosen in play. The
-  caution eyes are on the real touchscreen, so a finger works as on a
-  Vita; check the right-trigger binding's frame read-back on the device.
-  Rear touch stays unneeded (the game's option can be Off). Select held
-  opens the settings menu.
-* ☐ **11e The setup on the device and from a PC**: this game's dump is
-  pkgs with licences (game, 1.02, add-on), not ss-delta's zip, so the
-  setup screen's picker must take several files with their `work.bin`
-  or `.rif` beside them, or a folder (check `dumpinfo.py` and
-  `android-setup.py` on pkgs). The PC route too: `setup.py --android`.
-  The full build on the Thor, timed; a rebuild after an APK update keeps
-  the saves; `--import-save` or a save picker for players bringing a
-  Vita save.
-* ☐ **11f Release**: the workflow's `android` job feeding every
-  archive, signed with the vita-recomps release key (the secrets set on
-  this repo by the owner), INSTALLING's Android section, the README.
-  Battery and performance modes measured as ss-delta did.
+* ☑ **11a The APK on the JIT** (2026-11-21): `libshinobido2.so` from
+  `add_game` on `ANDROID` (NDK r29 in WSL, 68 MB stripped), Gradle with
+  `-Pgame=shinobido2`, `io.github.vitarecomps.shinobido2`, "Shinobido 2".
+  On the Thor, from the test folder's `fs/` pushed over adb: logos →
+  title → hub → first mission at 30 fps on Qualcomm's driver; the
+  built-in controls as a gamepad. No icon of the game's own (game data,
+  D2): the system's default, as ss-delta's.
+* ◐ **11b Native code on Android** (2026-11-21): the seven modules with
+  zig, from a release folder (`setup.py --android`, 6.4 min with the
+  copy); the first mission on NativeCPU with 0 native-to-JIT calls, 30
+  fps, on Turnip T23.
+  * ☐ The kit's differential and dynarmic tests on the device.
+* ◐ **11c Rendering and sound on the Adreno**: Turnip T23 offered and
+  used as on ss-delta. In the first mission's field Qualcomm's driver and
+  Turnip draw the same picture.
+  * ☐ Phase 6's rendering pictures against Windows' (missions, hub,
+    DLC), on both drivers: does this game need Turnip at all? The offer's
+    text (black rectangles in fog) is ss-delta's.
+  * ☐ Frame rate at 60 and at scale 2.
+  * ☐ `sfx-soak.py`'s mission restarts on the device (sound effects
+    last).
+* ◐ **11d Input on a handheld and a phone** (2026-11-21): the on-screen
+  controls with a **CROUCH** latch beside R (R held: crouch, sneak, cling;
+  the shared latch now sits beside the shoulder it holds), checked on the
+  Thor with the controls switched on over its gamepad. Holding Select
+  opens the settings menu (the game's own Select action opens under it).
+  * ☐ A phone without a gamepad; the caution eyes by finger (they lie
+    under the face buttons; a finger on one goes to the game); the
+    right-trigger binding's frame read-back on the device.
+* ◐ **11e The setup on the device and from a PC** (2026-11-21): the
+  setup screen takes this game's pkgs with their licences (game,
+  1.02, add-on) as they are; on the Thor, Build to Play in about 7½ min
+  (5.4 to compile), the modules byte-identical to the PC's; an update
+  rebuilds in 5.3 min without the dump and keeps the saves
+  (`game.json` `android_build_minutes` = 8 for the screen's estimate,
+  a new shared key). The PC route (`setup.py --android`) works too.
+  * ☐ The settings menu over the Load and Save dialogs on Android.
+  * ☐ A Vita save brought to the device (no `--import-save` on Android;
+    the saves folder by hand, or a picker).
+* ◐ **11f Release**: the workflow's `android` job feeding every
+  archive (`.github/workflows/release.yml`, as ss-delta's), signed with
+  the vita-recomps release key.
+  * ☐ The release key's secrets on this repository (the owner:
+    `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`,
+    `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, as on ss-delta), then a
+    manual run on GitHub.
+  * ☐ INSTALLING's Android section and the README (drafted with this
+    phase), battery and performance modes measured as ss-delta did.
+  * ☐ The owner's playtest on the Thor (added to the list under
+    Phase 10).
 
 **Exit:** with a Thor and their own dump, and no PC, a player gets from
-the release's APK to a mission on native code; with a PC, the
-`setup.py --android` route works too. Then v0.2.0, with Phase 10.
+the release's APK to a mission on native code (☑ with a debug APK,
+2026-11-21); with a PC, the `setup.py --android` route works too (☑).
+Then v0.2.0, with Phase 10.
 
 ## Later (deferred)
 

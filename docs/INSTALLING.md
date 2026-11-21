@@ -1,7 +1,7 @@
 # Installing utakata
 
 utakata runs **Shinobido 2: Revenge of Zen** natively on Windows, Linux (and
-the Steam Deck) and macOS on Apple Silicon. The downloads contain no game
+the Steam Deck), macOS on Apple Silicon and Android. The downloads contain no game
 files and no code derived from the game: the first start builds the game on
 your computer from **your own dump** of it.
 
@@ -11,6 +11,7 @@ your computer from **your own dump** of it.
 * [Windows](#windows)
 * [Linux and the Steam Deck](#linux-and-the-steam-deck)
 * [macOS (Apple Silicon)](#macos-apple-silicon)
+* [Android](#android)
 * [The first start: building the game](#the-first-start-building-the-game)
 * [Playing](#playing)
 * [Saves](#saves)
@@ -27,6 +28,7 @@ your computer from **your own dump** of it.
 | Windows | Windows 10 or 11, x64, a GPU with Vulkan |
 | Linux | x64, glibc 2.30 or newer (any current distribution, SteamOS), a GPU with Vulkan |
 | macOS | macOS 13.3 or newer on Apple Silicon (M1 and later) |
+| Android | Android 9 or newer, 64-bit ARM, Vulkan (made for Snapdragon handhelds; tested on an AYN Thor) |
 | Disk space | about 1.5 GB for the game's folder, and up to 2 GB more while it builds |
 | Internet | the first start downloads the PS Vita firmware from Sony and a compiler |
 
@@ -94,6 +96,75 @@ Vita's front touchscreen.
    It can also put the game in Applications (Launchpad and Spotlight list it).
 
 In fullscreen the game runs in macOS's Game Mode.
+
+## Android
+
+The game builds itself on the device from your dump: no PC needed. Made
+for Snapdragon handhelds (tested on an AYN Thor: Snapdragon 8 Gen 2); the
+device needs a 64-bit ARM chip, Vulkan, Android 9 or newer, and a few GB of
+free space while it builds.
+
+1. Download `utakata-<version>-android.apk` from the release onto the
+   device and install it (allow installing from your browser or file
+   manager when Android asks).
+2. Copy your dump to the device (for example into `Download`): the game's
+   `.pkg` with its licence file (`work.bin` or `.rif`), the 1.02 update's
+   `.pkg`, and the add-on's `.pkg` with its licence if you have it; or a
+   decrypted dump as a `.zip` or `.vpk` (zip a dumped folder first).
+3. Start **Shinobido 2**. Its setup screen asks for the files: **Add the
+   game's files** (the game's `.pkg`), then **Add a licence** (its
+   `work.bin`); the same for the update's `.pkg` (it needs no licence) and
+   the add-on. Then **Build**.
+4. The app downloads the PS Vita firmware from Sony, installs it and the
+   game, runs the game for a moment to find its code, and builds the native
+   code: about 8 minutes on a Snapdragon 8 Gen 2. Keep the device charging;
+   you may leave the app meanwhile (a notification says when it is done).
+5. **Play**. On a Snapdragon device the game offers Turnip, an open-source
+   GPU driver, the first time: Download.
+
+After an app update the setup screen comes back and builds the native code
+again (your dump isn't needed; about 5 minutes). The game's files live in
+`Android/data/io.github.vitarecomps.shinobido2/files/` on the device
+(`shinobido2.ini` there holds the settings, `setup.log` the setup's log);
+uninstalling the app deletes them, saves included. Holding Select opens
+the settings menu, as on PCs (the game's own Select action opens under
+it: close both).
+
+**On-screen controls.** Without a gamepad (a phone), the game shows the
+Vita's buttons, D-pad and both sticks on the touchscreen, a **CROUCH**
+button beside R (tap it to crouch and keep crouching, tap again to stand:
+no need to hold R), and a menu button at the top that opens the settings
+menu. A finger anywhere else touches the game's own touchscreen, as on a
+Vita: tap a caution eye on the right to lock on. They hide while a gamepad
+is used, and come back when it is disconnected. Size, opacity and On/Off
+are on the settings menu's **Controls** page; switched off, only the menu
+button stays.
+
+### From a PC instead
+
+A PC that has built the game (as above) can copy it to the device too:
+
+1. On the device, turn on **Developer options** (Settings > About device:
+   tap the build number seven times), then in Developer options either
+   **USB debugging** (and connect the cable), or **Wireless debugging**
+   (the same Wi-Fi network as the PC).
+2. On the PC, start the game with `--android` (Windows: `shinobido2.exe
+   --android`, from a command prompt in the game's folder; Linux:
+   `./shinobido2.x86_64 --android`; macOS:
+   `"Shinobido 2 - Revenge of Zen.app/Contents/MacOS/shinobido2" --android`).
+   A window asks how the device is connected. Over Wi-Fi: on the device,
+   Wireless debugging > **Pair device with pairing code**, and type the IP
+   address, port and code it shows. Accept Google's licence for adb (the
+   tool that copies the game) and click **Copy to the device**.
+3. The PC builds the game's code for Android (a few minutes), downloads adb
+   from Google, installs the app (`setup/android/shinobido2.apk`, also
+   attached to each release) and copies the game's files (about 1.3 GB:
+   a few minutes over Wi-Fi) and code to the device.
+
+Saves already on the device stay when you copy again. Without the window:
+`--android --accept-android-sdk-license` and the device as `--serial <adb
+serial>` or `--pair <ip:port> --code <code>`; `--push-only` copies again
+what was built before.
 
 ## The first start: building the game
 

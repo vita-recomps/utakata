@@ -373,3 +373,26 @@ command line for everything.
 **Rejected:** as in ss-delta's D24, an unchanging `prepare.version` and key
 bindings in the launcher.
 
+
+## D14 — Android: ss-delta's D25 and D27 for this game (accepted, 2026-11-21)
+
+**Context:** Phase 11. The owner asked for feature parity with ss-delta,
+whose Phase 14 made the APK, the modules built with zig, Turnip on Adreno
+and the setup on the device, all in the shared front end and kit. The
+owner (2026-11-21): proceed with the Android build; v0.2.0 waits for it.
+
+**Decision:** as ss-delta's D25 and D27, with this game's names:
+
+* The APK of the fork's single-game front end, `libshinobido2.so`
+  (built with NDK r29 on Linux), package `io.github.vitarecomps.shinobido2`,
+  shown as "Shinobido 2", signed with the vita-recomps release key (the
+  same key as ss-delta's: the repository's secrets).
+* The APK builds the game on the device from the player's dump (Python,
+  capstone and zig in the APK, D27); a PC that has built the game can
+  also build the Android modules with zig and copy everything over adb
+  (`shinobido2 --android`, D25).
+* Turnip offered on Adreno 7xx, as in ss-delta.
+* On-screen controls on, with a latch for R (crouch) held.
+
+**Not shipped:** the game's own icon (the dump's `icon0.png` is game data,
+D2); the app uses the system's default icon, as ss-delta's.

@@ -22,7 +22,104 @@ permissions:
   attestations: write
 
 jobs:
+  # The game's APK (docs/decisions.md D14, ss-delta's D25 and D27): libshinobido2.so built with the NDK
+  # on Linux, packed by Gradle with the tools that build the game's modules on the device. It goes into
+  # every PC archive (setup/android/shinobido2.apk), from where the setup's --android step puts it on a
+  # device, and into the release by itself. Signed with the vita-recomps release key from the
+  # repository's secrets (ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS,
+  # ANDROID_KEY_PASSWORD): an installed APK can only be updated by one signed with the same key. A tag
+  # needs the key; a manual run without it signs with a throwaway debug key.
+  android:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      NDK_VERSION: 29.0.14206865
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      # Vita3K's language catalog generator needs Python 3.12
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: NDK r29, platform 35, build-tools 35, Ninja
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q ninja-build
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "ndk;$NDK_VERSION" "platforms;android-35" "build-tools;35.0.0" > /dev/null
+          echo "NDK=$ANDROID_HOME/ndk/$NDK_VERSION" >> "$GITHUB_ENV"
+
+      - name: Build libshinobido2.so (NDK, games only)
+        run: |
+          cmake -S third_party/vita3k -B build/vita3k-android -G Ninja \
+            -DCMAKE_TOOLCHAIN_FILE="$NDK/build/cmake/android.toolchain.cmake" -DANDROID_ABI=arm64-v8a \
+            -DANDROID_PLATFORM=28 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DVITA3K_GAMES_ONLY=ON \
+            -DUSE_DISCORD_RICH_PRESENCE=OFF
+          cmake --build build/vita3k-android --target shinobido2
+          # the game's library and libadrenotools' hooks beside it (add_game), without debug info
+          mkdir -p build/android/jniLibs/arm64-v8a
+          for f in build/vita3k-android/bin/*.so; do
+            "$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" --strip-debug -o "build/android/jniLibs/arm64-v8a/$(basename "$f")" "$f"
+          done
+          ls -la build/android/jniLibs/arm64-v8a
+
+      # the tools the APK builds the game's modules with on the device: python.org's Python, capstone,
+      # PyYAML, zig for aarch64-linux and the kit, pinned in android-build-tools.json
+      - name: The build tools for the device
+        run: |
+          python -I third_party/recomp/tools/android-build-tools.py third_party/recomp/tools/android-build-tools.json \
+            build/android/buildtools --ndk "$NDK" --project .
+
+      - name: Pack and sign the APK
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ "${{ github.ref_type }}" = tag ]; then version="${{ github.ref_name }}"; else version="$(echo ${{ github.sha }} | cut -c1-7)"; fi
+          # versionCode: v<major>.<minor>.<patch> as major*10000 + minor*100 + patch, else the run number
+          code=$(echo "$version" | sed -nE 's/^v([0-9]+)\.([0-9]+)\.([0-9]+)$/\1 \2 \3/p' | awk '{ print $1 * 10000 + $2 * 100 + $3 }')
+          code=${code:-${{ github.run_number }}}
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+            export ANDROID_KEYSTORE="$RUNNER_TEMP/release.jks"
+          elif [ "${{ github.ref_type }}" = tag ]; then
+            echo "::error::no release key (secrets.ANDROID_KEYSTORE_BASE64): a release APK must be signed with it"; exit 1
+          else
+            echo "::warning::no release key: the APK is signed with a debug key and can't update a release's install"
+          fi
+          bash third_party/vita3k/android/gradlew -p third_party/vita3k/vita3k/game-frontend/android assembleRelease \
+            --console=plain -Pgame=shinobido2 -PapplicationId=io.github.vitarecomps.shinobido2 -PappName="Shinobido 2" \
+            -PversionName="${version#v}" -PversionCode="$code" -PjniLibsDir="$PWD/build/android/jniLibs" \
+            -PbuildToolsDir="$PWD/build/android/buildtools"
+          rm -f "$RUNNER_TEMP/release.jks"
+          name="utakata-$version-android.apk"
+          mkdir -p build/release
+          cp third_party/vita3k/vita3k/game-frontend/android/build/outputs/apk/release/game-frontend-release.apk "build/release/$name"
+          (cd build/release && sha256sum "$name" > "$name.sha256")
+          echo "APK=build/release/$name" >> "$GITHUB_ENV"
+
+      - uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: ${{ env.APK }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: setup-android
+          path: |
+            ${{ env.APK }}
+            ${{ env.APK }}.sha256
+
   windows:
+    needs: android
     runs-on: windows-2025
     timeout-minutes: 180
     steps:
@@ -34,6 +131,11 @@ jobs:
         with:
           python-version: '3.12'
 
+      - uses: actions/download-artifact@v7
+        with:
+          name: setup-android
+          path: build/apk
+
       - name: Build shinobido2.exe (games only, no Qt)
         shell: pwsh
         run: python -I third_party/recomp/tools/build-vita3k.py --games-only --target shinobido2
@@ -44,11 +146,12 @@ jobs:
           $version = if ('${{ github.ref_type }}' -eq 'tag') { '${{ github.ref_name }}' } else { '${{ github.sha }}'.Substring(0, 7) }
           $name = "utakata-$version-windows"
           python -I tools/stamp-recomplauncher.py recomplauncher.json $version
+          $apk = (Get-ChildItem build/apk/*.apk | Select-Object -First 1).FullName
           python -I third_party/recomp/tools/make-setup.py build third_party/recomp/tools/setup-windows.json `
-            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out build/release/utakata --zip --archive "build/release/$name"
+            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out build/release/utakata --apk $apk --zip --archive "build/release/$name"
           $zip = "build/release/$name.zip"
           $hash = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLower()
-          "$hash  $name.zip" | Out-File -Encoding ascii "build/release/$name.zip.sha256"
+          [IO.File]::WriteAllText("$PWD/build/release/$name.zip.sha256", "$hash  $name.zip`n")  # LF, for sha256sum -c
           "ZIP=$zip" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
 
       - uses: actions/attest-build-provenance@v3
@@ -63,6 +166,7 @@ jobs:
             ${{ env.ZIP }}.sha256
 
   linux:
+    needs: android
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     # the SDK the Deck's Steam Runtime matches: glibc 2.31, g++ 14 (docs/07-linux.md)
@@ -82,6 +186,11 @@ jobs:
           mkdir -p /opt/python && tar -xzf /tmp/python.tar.gz -C /opt/python --strip-components=1
           echo "PY=/opt/python/bin/python3" >> "$GITHUB_ENV"
 
+      - uses: actions/download-artifact@v7
+        with:
+          name: setup-android
+          path: build/apk
+
       - name: Build shinobido2.x86_64
         run: $PY -I third_party/recomp/tools/build-vita3k.py --target shinobido2
 
@@ -91,7 +200,8 @@ jobs:
           name="utakata-$version-linux"
           $PY -I tools/stamp-recomplauncher.py recomplauncher.json "$version"
           $PY -I third_party/recomp/tools/make-setup.py build third_party/recomp/tools/setup-linux.json \
-            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out build/release/utakata --zip --archive "build/release/$name"
+            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out build/release/utakata \
+            --apk "$(ls build/apk/*.apk | head -1)" --zip --archive "build/release/$name"
           tgz="build/release/$name.tar.gz"
           (cd build/release && sha256sum "$name.tar.gz" > "$name.tar.gz.sha256")
           echo "TGZ=$tgz" >> "$GITHUB_ENV"
@@ -108,6 +218,7 @@ jobs:
             ${{ env.TGZ }}.sha256
 
   macos:
+    needs: android
     # Apple Silicon; the build targets macOS 13.3 (the fork's CMAKE_OSX_DEPLOYMENT_TARGET)
     runs-on: macos-15
     timeout-minutes: 180
@@ -123,6 +234,11 @@ jobs:
       - name: Ninja
         run: brew install ninja
 
+      - uses: actions/download-artifact@v7
+        with:
+          name: setup-android
+          path: build/apk
+
       - name: Build shinobido2.arm64
         run: python -I third_party/recomp/tools/build-vita3k.py --target shinobido2
 
@@ -132,7 +248,8 @@ jobs:
           name="utakata-$version-macos"
           python -I tools/stamp-recomplauncher.py recomplauncher.json "$version"
           python -I third_party/recomp/tools/make-setup.py build third_party/recomp/tools/setup-macos.json \
-            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out build/release/utakata --zip --archive "build/release/$name"
+            --project . --bin build/vita3k-games/bin/RelWithDebInfo --out build/release/utakata \
+            --apk "$(ls build/apk/*.apk | head -1)" --zip --archive "build/release/$name"
           tgz="build/release/$name.tar.gz"
           (cd build/release && shasum -a 256 "$name.tar.gz" > "$name.tar.gz.sha256")
           echo "TGZ=$tgz" >> "$GITHUB_ENV"
@@ -150,7 +267,7 @@ jobs:
 
   release:
     if: github.ref_type == 'tag'
-    needs: [windows, linux, macos]
+    needs: [android, windows, linux, macos]
     runs-on: ubuntu-24.04
     steps:
       # the release's notes: .github/release-notes/<tag>.md when there is one (written when the release
@@ -172,7 +289,7 @@ jobs:
           if [ -f "$notes" ]; then
             set -- --notes-file "$notes"
           else
-            set -- --notes "Unpack the archive for your system and start the game: Windows, shinobido2.exe in utakata-${{ github.ref_name }}-windows.zip; Linux and Steam Deck (desktop mode the first time), shinobido2.x86_64 in utakata-${{ github.ref_name }}-linux.tar.gz; macOS 13.3 or newer on Apple Silicon, the app in utakata-${{ github.ref_name }}-macos.tar.gz (macOS blocks it the first time: System Settings, Privacy & Security, Open Anyway). The first start builds the game from your own dump of Shinobido 2: Revenge of Zen (US PCSE00015, with update 1.02; the Mirror Spirits add-on is optional); everything stays in its folder. README.txt explains. SHA-256 and the build attestations: see the files attached and 'gh attestation verify'."
+            set -- --notes "Unpack the archive for your system and start the game: Windows, shinobido2.exe in utakata-${{ github.ref_name }}-windows.zip; Linux and Steam Deck (desktop mode the first time), shinobido2.x86_64 in utakata-${{ github.ref_name }}-linux.tar.gz; macOS 13.3 or newer on Apple Silicon, the app in utakata-${{ github.ref_name }}-macos.tar.gz (macOS blocks it the first time: System Settings, Privacy & Security, Open Anyway). Android (64-bit ARM with Vulkan; made for Snapdragon handhelds such as the AYN Thor): install utakata-${{ github.ref_name }}-android.apk and start it; its setup screen builds the game on the device from your dump (a PC that has built the game can also put it on the device with --android). The first start builds the game from your own dump of Shinobido 2: Revenge of Zen (US PCSE00015, with update 1.02; the Mirror Spirits add-on is optional); everything stays in its folder. README.txt explains. SHA-256 and the build attestations: see the files attached and 'gh attestation verify'."
           fi
           gh release create '${{ github.ref_name }}' dist/* --repo '${{ github.repository }}' --draft \
             --title 'utakata ${{ github.ref_name }}' "$@"
