@@ -107,6 +107,14 @@ owner's machine-specific notes, kept in a private repo.
   `start` on the title.
 - In Bash heredocs and `python -c`, backslashes get mangled. Use the Write
   tool for scripts, or `chr(92)`.
+- Relinking `shinobido2.exe` incrementally fails with LNK1201 once its PDB
+  nears 1 GB (every second link): delete `shinobido2.pdb` and `.ilk` in
+  `build/vita3k-games/bin/RelWithDebInfo/` before building.
+- `tools/to-mission.py` matches English screens; with `[game] language`
+  set to French or Spanish, drive with `v3kdrive.py` steps and screenshots.
+- Guest memory the front end reads and writes (the record at `0x8153b530`,
+  the player, the camera matrix, the opening scene) is in 01-research,
+  "ss-delta's 0.4.0 features"; `memdump:`/`memwrite:` only in test folders.
 
 ## Keep docs current
 

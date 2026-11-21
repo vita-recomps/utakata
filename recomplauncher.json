@@ -1,0 +1,220 @@
+{
+  "$schema": "https://recomplauncher.com/schema/recomplauncher.json",
+  "format": 1,
+  "name": "Shinobido 2: Revenge of Zen (utakata)",
+  "repo": "vita-recomps/utakata",
+  "inputs": [
+    {
+      "id": "game",
+      "label": "Your own copy of Shinobido 2: Revenge of Zen, US (PCSE00015): its decrypted folder, .zip or .vpk, or the PSN .pkg with its work.bin or .rif beside it.",
+      "role": "game",
+      "formats": [
+        { "type": "folder" },
+        { "type": "file", "extensions": ["zip", "vpk", "pkg"] }
+      ]
+    },
+    {
+      "id": "update",
+      "label": "The 1.02 update's .pkg (PCSE00015, 21 MB; Sony's update server still has it), unless your dump already holds 1.02.",
+      "role": "dlc",
+      "optional": true,
+      "formats": [
+        { "type": "folder" },
+        { "type": "file", "extensions": ["zip", "vpk", "pkg"] }
+      ]
+    },
+    {
+      "id": "addon",
+      "label": "Optional: the Mirror Spirits add-on (its decrypted folder or .zip, or its .pkg with its work.bin or .rif beside it). Its missions appear after an ending.",
+      "role": "dlc",
+      "optional": true,
+      "formats": [
+        { "type": "folder" },
+        { "type": "file", "extensions": ["zip", "vpk", "pkg"] }
+      ]
+    },
+    {
+      "id": "mod",
+      "label": "Optional: a rePatch mod: the folder that holds its rePatch folder, or a .zip of it (extract a .7z first).",
+      "role": "dlc",
+      "optional": true,
+      "formats": [
+        { "type": "folder" },
+        { "type": "file", "extensions": ["zip"] }
+      ]
+    }
+  ],
+  "start": {
+    "program": ["shinobido2.exe", "shinobido2.x86_64", "Shinobido 2 - Revenge of Zen.app/Contents/MacOS/shinobido2"]
+  },
+  "prepare": {
+    "program": ["shinobido2.exe", "shinobido2.x86_64", "Shinobido 2 - Revenge of Zen.app/Contents/MacOS/shinobido2"],
+    "args": ["--dump", "{input:game}", "--dump={input:update}", "--dump={input:addon}", "--dump={input:mod}", "--build-only", "--progress"],
+    "label": "Building the game from your dump: the PS Vita firmware from Sony and a compiler are downloaded, and the game's code is compiled on this PC",
+    "timeout": 3600,
+    "version": "v0.1.0",
+    "options": [
+      {
+        "id": "microsoft",
+        "label": "Accept Microsoft's licence for the compiler's C++ runtime and Windows SDK",
+        "note": "Downloaded from Microsoft to compile the game's code on this PC.",
+        "args": ["--accept-microsoft-license"],
+        "os": ["windows"],
+        "license": { "name": "Visual Studio Build Tools licence", "url": "https://go.microsoft.com/fwlink/?LinkId=2179911" },
+        "required": true
+      }
+    ]
+  },
+  "config": [
+    {
+      "id": "main",
+      "format": "ini",
+      "file": [{ "path": "{install}/shinobido2.ini" }]
+    }
+  ],
+  "saves": [
+    "{install}/fs/ux0/user/00/savedata",
+    "{install}/shinobido2.ini"
+  ],
+  "folders": {
+    "saves": [{ "path": "{install}/fs/ux0/user/00/savedata" }],
+    "logs": [{ "path": "{install}/shinobido2" }],
+    "screenshots": [{ "path": "{install}/shinobido2/screenshots" }],
+    "cache": [{ "path": "{install}/cache" }]
+  },
+  "settings": [
+    {
+      "id": "window", "label": "Window", "group": "Display",
+      "help": "Fullscreen or a window. F11 or Alt+Enter switches while playing.",
+      "choices": [
+        { "label": "Windowed", "set": { "display/fullscreen": "false" } },
+        { "label": "Fullscreen", "set": { "display/fullscreen": "true" } }
+      ],
+      "defaults": { "display/fullscreen": "false" }
+    },
+    {
+      "id": "window_size", "label": "Window size", "group": "Display",
+      "help": "The window's size in Windowed mode, as a multiple of the Vita's screen.",
+      "choices": [
+        { "label": "960 x 544", "set": { "display/window_scale": "1" } },
+        { "label": "1920 x 1088", "set": { "display/window_scale": "2" } },
+        { "label": "2880 x 1632", "set": { "display/window_scale": "3" } },
+        { "label": "3840 x 2176", "set": { "display/window_scale": "4" } }
+      ],
+      "defaults": { "display/window_scale": "1", "display/fullscreen": "false" },
+      "when": { "display/fullscreen": "false" }
+    },
+    {
+      "id": "resolution", "label": "Resolution", "group": "Display",
+      "help": "What the game draws at. 960 x 544 is the Vita's screen; higher needs a faster graphics card.",
+      "choices": [
+        { "label": "960 x 544", "set": { "display/scale": "1" } },
+        { "label": "1920 x 1088", "set": { "display/scale": "2" } },
+        { "label": "2880 x 1632", "set": { "display/scale": "3" } },
+        { "label": "3840 x 2176", "set": { "display/scale": "4" } }
+      ],
+      "defaults": { "display/scale": "1" }
+    },
+    {
+      "id": "frame_rate", "label": "Frame rate", "group": "Display",
+      "help": "60 in missions (the title, menus, hub and the scenes after a loading screen stay at 30; the pause menu and HUD animate twice as fast). 30 is the Vita's rate.",
+      "choices": [
+        { "label": "30 FPS, as on the Vita", "set": { "display/frame_rate": "30" } },
+        { "label": "60 FPS in missions", "set": { "display/frame_rate": "60" } }
+      ],
+      "defaults": { "display/frame_rate": "30" }
+    },
+    {
+      "id": "vsync", "label": "V-Sync", "group": "Display",
+      "help": "Waits for the screen's refresh, so the picture never tears.",
+      "choices": [
+        { "label": "On", "set": { "display/vsync": "true" } },
+        { "label": "Off", "set": { "display/vsync": "false" } }
+      ],
+      "defaults": { "display/vsync": "true" }
+    },
+    {
+      "id": "filter", "label": "Scaling filter", "group": "Display",
+      "help": "How the picture is fitted to the window. FSR sharpens it; FXAA smooths edges; Nearest keeps pixels sharp.",
+      "choices": [
+        { "label": "Bilinear", "set": { "display/filter": "Bilinear" } },
+        { "label": "Bicubic", "set": { "display/filter": "Bicubic" } },
+        { "label": "FSR", "set": { "display/filter": "FSR" } },
+        { "label": "FXAA", "set": { "display/filter": "FXAA" } },
+        { "label": "Nearest", "set": { "display/filter": "Nearest" } }
+      ],
+      "defaults": { "display/filter": "Bilinear" }
+    },
+    {
+      "id": "mipmaps", "label": "Smooth textures", "group": "Display",
+      "help": "Stops the ground shimmering in motion. Off looks as on the Vita.",
+      "choices": [
+        { "label": "On", "set": { "display/mipmaps": "true" } },
+        { "label": "Off", "set": { "display/mipmaps": "false" } }
+      ],
+      "defaults": { "display/mipmaps": "true" }
+    },
+    {
+      "id": "volume", "label": "Volume", "group": "Audio",
+      "slider": { "key": "audio/volume", "min": 0, "max": 100, "step": 5, "format": "%d" },
+      "defaults": { "audio/volume": "100" }
+    },
+    {
+      "id": "language", "label": "Language", "group": "Game",
+      "help": "The game's text and its system dialogs.",
+      "choices": [
+        { "label": "English", "set": { "game/language": "english" } },
+        { "label": "French", "set": { "game/language": "french" } },
+        { "label": "Spanish", "set": { "game/language": "spanish" } }
+      ],
+      "defaults": { "game/language": "english" }
+    },
+    {
+      "id": "skip_intro", "label": "Intro logos", "group": "Game",
+      "help": "Skip the company logos at start: the opening movie follows the loading screen at once (Start skips it).",
+      "choices": [
+        { "label": "Shown", "set": { "game/skip_intro": "false" } },
+        { "label": "Skipped", "set": { "game/skip_intro": "true" } }
+      ],
+      "defaults": { "game/skip_intro": "false" }
+    },
+    {
+      "id": "button_labels", "label": "Button prompts", "group": "Game",
+      "help": "PlayStation's symbols, an Xbox pad's letters, or whichever the connected gamepad has.",
+      "choices": [
+        { "label": "PlayStation", "set": { "game/button_labels": "playstation" } },
+        { "label": "Xbox", "set": { "game/button_labels": "xbox" } },
+        { "label": "As the gamepad", "set": { "game/button_labels": "auto" } }
+      ],
+      "defaults": { "game/button_labels": "playstation" }
+    },
+    {
+      "id": "repatch", "label": "Mods", "group": "Game",
+      "help": "rePatch mods added in the setup. Off plays the game as installed.",
+      "choices": [
+        { "label": "On", "set": { "game/repatch": "true" } },
+        { "label": "Off", "set": { "game/repatch": "false" } }
+      ],
+      "defaults": { "game/repatch": "true" }
+    },
+    {
+      "id": "log_level", "label": "Log detail", "group": "Game", "advanced": true,
+      "help": "How much goes into shinobido2/vita3k.log. More helps with a bug report.",
+      "choices": [
+        { "label": "Normal", "set": { "debug/log_level": "info" } },
+        { "label": "Detailed", "set": { "debug/log_level": "debug" } },
+        { "label": "Warnings only", "set": { "debug/log_level": "warn" } }
+      ],
+      "defaults": { "debug/log_level": "info" }
+    }
+  ],
+  "actions": [
+    { "id": "saves", "label": "Saves", "help": "Your saves: the game's ten slots.", "open": "saves" },
+    { "id": "screenshots", "label": "Screenshots", "help": "F12 in the game saves one here.", "open": "screenshots" },
+    { "id": "logs", "label": "Log", "help": "vita3k.log, for a bug report.", "open": "logs" },
+    { "id": "shaders", "label": "Shader cache", "help": "Shaders the game has built, so later missions don't stutter. Clear it only if graphics look wrong after an update.", "clear": "cache/shaders" }
+  ],
+  "looks": {
+    "graphics": "vulkan"
+  }
+}

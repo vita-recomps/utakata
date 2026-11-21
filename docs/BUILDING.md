@@ -132,6 +132,7 @@ This game's own:
 | `tools/xref.py` | a dumped ELF explored: disassembly with names, callers, strings |
 | `tools/memwatch.ps1` | the game's and the system's memory as CSV, for long runs |
 | `tools/make-icon.py` | draws the executable's icon (a throwing star, no game artwork) |
+| `tools/stamp-recomplauncher.py` | the release's version into `recomplauncher.json` (the release workflow, D13) |
 | `game.json` | this game for the shared scripts: title, supported eboot, modules to recompile, the folder's README per platform |
 
 From the shared toolchain (`third_party/recomp/`; its README lists
@@ -144,7 +145,14 @@ everything, and each script's docstring has its options):
 | `tools/make-setup.py`, `tools/setup.py` | a release, and its importer |
 | `tools/fetch-update.py`, `tools/fetch-firmware.py` | the game's update and the firmware from Sony's servers |
 | `tools/velf.py`, `tools/inventory.py`, `tools/imix.py` | Vita ELFs: segments, imports and exports; the code inventory; the instruction mix |
-| `tools/v3kdrive.py` | drive Vita3K or `shinobido2.exe` without focus: launch, buttons, touches, FPS sampling, screenshots |
+| `tools/v3kdrive.py` | drive Vita3K or `shinobido2.exe` without focus: launch, buttons, touches, FPS sampling, screenshots; with the front end also `memdump:`/`memwrite:` (guest memory, test folders only) and `mouse:` (the mouse camera) |
 | `tools/sfo.py`, `tools/mkzrif.py` | `param.sfo` fields; a zRIF from a `work.bin` |
 | `tools/proccap`, `tools/wavstats.py` | record one process's audio; loudness over time |
 | `recomp/recompile.py` | recompile a module to C++ in `generated/<module>/` |
+
+`UTAKATA_TEXTURE_DUMP=<folder>` (development) makes `shinobido2.exe` write
+every texture it uploads in the UI's formats, once, as a PNG named
+`<format>-<width>x<height>-<hash>.png` (the hash the Xbox button labels
+match), decoded as swizzled; the game keeps its pictures upside down. The
+button labels are off while it is set. The PNGs are game data: keep them
+in `build/`.

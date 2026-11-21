@@ -130,7 +130,27 @@ shinobido2.exe --dump "<game>" --dump "<1.02 update>" --accept-microsoft-license
 ```
 
 A `.pkg` takes its licence after it: `--dump "<game>.pkg" --license
-"<work.bin>"`. `--build-only` builds and quits instead of playing.
+"<work.bin>"`. `--build-only` builds and quits instead of playing;
+`--progress` adds `progress <0-1> <text>` lines for a launcher's progress
+bar.
+
+**Add-ons and mods later.** Once the game is built, the Mirror Spirits
+add-on or a mod is added on its own, without building the game again (it
+takes seconds): start the game with `--install` and add only that in the
+importer (leave the game's rows empty), or run `shinobido2.exe --dump
+"<it>"`. **Mods made for rePatch** are given as the folder that holds
+their `rePatch` folder, or a `.zip` of it (unpack a `.7z` first). The mod
+stays beside the game, in `fs/ux0/rePatch/`, read in place of the game's
+own loose files; **Mods (rePatch)** on the settings menu's Game page turns
+them off, and deleting its folder there removes one. No mod for this game
+is known yet.
+
+**RecompLauncher:** each release carries a `recomplauncher.json`, so
+[RecompLauncher](https://recomplauncher.com) can install the game, build
+it from the dump you pick (the same importer, without its window), show
+the main settings of `shinobido2.ini` on the game's page, and back up the
+saves. After an update it builds the game again from the same dump. Its
+setup also takes the update, the add-on and a mod (optional).
 
 ## Playing
 
@@ -151,6 +171,25 @@ A `.pkg` takes its licence after it: `--dump "<game>.pkg" --license
   that shimmer in motion, on a Vita too.
 * **Sound:** `[audio] effects` turns the reverb and fade-outs the game asks
   for on or off.
+* **Language:** English, French or Spanish (**Language** on the Game
+  page, `[game] language`), the game's text and the system dialogs; it
+  takes effect at the next start.
+* **Intro logos:** **Skip intro logos** (`[game] skip_intro`) goes from
+  the loading screen straight to the opening movie, which Start skips.
+* **Button prompts:** PlayStation's symbols, an Xbox pad's letters (the
+  gamepad button `[gamepad]` binds to each Vita button, and Xbox's Menu
+  and View for START and SELECT), or as the connected gamepad
+  (`[game] button_labels`), in the prompts, the HUD and the pause menu's
+  Basic Controls page.
+* **Mouse camera** (PC): Tab or a middle click captures the cursor, and
+  the mouse turns the camera; the same again or Esc lets it go. The
+  game's camera turns at most 120°/s sideways and 60°/s up and down, so a
+  fast flick takes a moment to finish. Sensitivity and inverted vertical
+  on the settings menu's Mouse page (`[mouse]`).
+* **Cheats:** the settings menu's Cheats page (`[cheats]`, all off):
+  infinite health and ninja tools, one-hit kills, maximum money and
+  stats. Money and stats are kept when the game saves; export your saves
+  first if you want to go back.
 * **Screenshots:** F12, into `shinobido2/screenshots`.
 
 `README.txt` in the game's folder describes every setting.

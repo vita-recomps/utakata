@@ -400,6 +400,33 @@ the day-1 letters are regular ones. The Mirror Spirits missions didn't
 appear yet; they may unlock later in the story (**hypothesis**). The
 add-on itself is found at boot.
 
+## ss-delta's 0.4.0 features (Phase 10, 2026-11-21)
+
+`shinobido2.exe` built games-only on Windows (fork `36e098b3` and later,
+kit `dd07e72`, then `f7f6f91`), run from the v0.1.0 test folder
+(`build/release-ci/utakata`, `hub-day1` in slot 1), scale 2, 30 fps,
+native code throughout; findings in
+[01-research](01-research.md#ss-deltas-040-features-phase-10-2026-11-21-local).
+
+| Check | Result |
+|---|---|
+| Today's fork and kit, `to-mission.py` | first mission's field; eboot, libc, libfios2, libscemp4, sysmodule verified; 0 native-to-JIT calls; 30 fps |
+| `[game] language = french`, `spanish` | title, menu, Load dialog, hub, mission board, briefing and Basic Controls in that language; mission names stay English |
+| rePatch: Spike's logo movie as `logo_acquire.mp4` (`--install-content`) | "1 file ... read in place of the game's own"; Spike's logo played twice |
+| `[game] skip_intro` | the opening movie at about 26 s instead of 46; Start → title → Continue → hub → mission as before |
+| Mouse camera through the pipe (`mouse:`), yaw read from the camera matrix | asked / turned: 10° / 9.6°, 90° / 93.6–100°, 2° / 2.7–4°, 1° / 1.6°; pitch 10° / 11–15°; diagonal 15°+15° / 14.7°+14.5°; at the pitch limit, 150° asked gave the limit and the next move answered at once |
+| Cheats, all on | money 9,999,999; both characters' level 99, SP 255, stamina 200, offence, defence and zankoku 100 (the player's maximum health 200 in the next mission); health written to 10 came back to 200; other characters at 1; a placed board kept its count |
+| `[game] button_labels = xbox` | the prompt bar's "A OK B Back", SELECT as View on the hub, Basic Controls' X Y B A in English and French |
+| A release folder from this commit (`make-setup.py`), `setup.py --install` game + 1.02 + add-on, downloads from the shared cache | built in 3.1 min; `recomplauncher.json` at the top with the stamped version |
+| `shinobido2.exe --dump=<mod folder> --build-only` with the game built | the mod alone installed in 1 s, no rebuild (v0.1.0's kit couldn't) |
+| That folder, `--import-save hub-day1`, `to-mission.py` | the mission natively, every loaded module verified, the mod read |
+
+Seen once: a boot that stayed black with the window at 30 fps, its log
+ending 2 s after start (in the application's init). The next start, with
+the same build and settings, was normal, and it didn't come back in about
+fifteen later boots. Not understood (**hypothesis:** a race at boot,
+unrelated to the new settings, all of which were off or data-only then).
+
 ## How to re-run
 
 ```

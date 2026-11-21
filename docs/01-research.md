@@ -544,6 +544,110 @@ progress. New Game+ keeps level, items, money and techniques
 the "mission select" strings are the normal board's labels and
 "DebugPrint" a script command. Late-game tests need saves (risk R9).
 
+## ss-delta's 0.4.0 features (Phase 10, 2026-11-21) [local]
+
+What the game side of each Phase 10 feature rests on, read from the 1.02
+eboot (`tools/xref.py`) and checked in the running game through the input
+pipe's `memdump:`/`memwrite:` steps.
+
+### Text language
+
+* The application's init (`0x8114ce00`) reads `SCE_SYSTEM_PARAM_ID_LANG`
+  once (`sceAppUtilSystemParamGetInt` at `0x8114ce96`): French (2) gives
+  the game's language 3, Spanish (3) language 4, anything else English
+  (1), kept at `+0x1e0` of the application object (`*0x8146c2b0`). The
+  game has no language option of its own.
+* The US data holds French and Spanish text: the title, the menus, the
+  hub, the mission board and briefings, the Basic Controls picture (one
+  per language) and Vita3K's system dialogs all follow. Mission names stay
+  in English in both (the game's data or the save; not looked into).
+* The other system read, `SCE_SYSTEM_PARAM_ID_ENTER_BUTTON` at
+  `0x8114da68`, only feeds `sceCommonDialogSetConfigParam`.
+
+### Boot logos
+
+* After the boot's loading screen (about 22 s on the test PC, which stays)
+  comes the opening scene, vtable `0x81441534`, update `0x810040ae`, a
+  state machine: state at `+8`, "enter" byte at `+0xc`, timer at `+0x10`.
+  States 0–1 the Bandai Namco picture (`OP_BNG_logo.dds`, 3 s or a
+  button), 2–3 Spike's logo movie, 4–5 Acquire's, 6–7 the Havok picture
+  (1.5 s), 8–9 the opening movie (`S000_00_opening.mp4`, a button skips
+  it), 10 the title (`0x81149dd0(3)`).
+* The scene manager is at `+0x1e4` of the application, the current scene
+  at `+4` of the manager (the application's update `0x81149e6e` passes it
+  to `0x81000932`).
+* Moving the scene to state 8 while the first picture is up skips the
+  four logos: the opening movie starts at about 26 s instead of 46, and
+  Start then reaches the title.
+
+### Mouse camera
+
+Measured in the first mission's field, 30 fps, native code; the
+camera's world matrix is at `+0xc0` of the application (row 0 the right
+vector `(sin yaw, 0, -cos yaw)`, row 2 the back vector, whose y is the
+sine of the pitch, looking down positive; row 3 the position).
+
+* **The right stick is on or off.** Nothing up to 76 steps of 127 from
+  the centre (push 0.598), then one speed whatever the push: 120°/s left
+  and right, 60°/s up and down. Stick down looks down.
+* **It speeds up while held:** each frame turns 0.27° more than the last
+  (at 30 fps) until 4° a frame, after 0.5 s; 100 / 200 / 300 / 500 ms
+  holds turned 1.6 / 5.6 / 12 / 32°. It stops at once when let go. A
+  mouse mapped to stick pulses therefore turned 18–23° for 90° asked.
+* So the mouse camera reads the camera's angles from that matrix and holds
+  the stick until the camera has turned as far as the mouse asked (the
+  shared front end's `MouseCamera::CameraAngles`). Measured through the
+  pipe: 10° → 9.6°, 90° → 93.6–100°, 1° → 1.6° (one frame's turn), the
+  pitch likewise, diagonals together; past the pitch's limits what is
+  asked is dropped after 0.2 s. A flick beyond 90° is cut to 90° (0.75 s
+  of the camera's top speed).
+* No plain yaw angle was found in the heap (the camera seems to orbit by
+  its position), so turning it directly in memory is not done.
+
+### Cheats
+
+* **The record.** The game keeps what a save holds at `0x8153b530`, laid
+  out as `data0000.bin` (little-endian; Apollo's offsets fit): money at
+  `+0x1434`; from `+0x1444`, two characters 0x124 bytes apart (Zen, then
+  Kaede; New Game sets them in `0x811a128a`): level, ?, SP, stamina (the
+  health maximum), offence, defence, ? (28), zankoku. Ninja tools and
+  items from `+0x1bfb4`, the equipped ones from `+0x2a3b4`, 0xc0 bytes
+  each, a 16-bit id and a 16-bit count (board 12, shuriken 3, tool 6,
+  items 334–348 in the first mission). Both lists count down in a
+  mission. A second copy at `0x81576018` (the save buffer,
+  **hypothesis**).
+* **In a mission:** `*0x814688c8` is the player (set by `0x8104447c`,
+  cleared by the mission's teardown `0x810038dc`; `[+0x18]` is 1), and
+  `*0x81469994` the characters (count at `+0x810`, pointers 0x10 apart
+  from `+0x10`; 341 code references). A character's health is at `+0xc`
+  of `*(character + 0x8c)`, its maximum at `+0x10`, integers (the HUD's
+  `0x810d5cb8` divides them). The first mission: the player 50/50, six
+  guards at 22, the target at 100.
+* Checked: money and both characters' stats set; the player's health
+  written down to 10 came back to the maximum within a tick; the other
+  characters held at 1; a placed board kept its count. One-hit kills in a
+  real fight, and bosses, are for the owner's playtest.
+
+### Button prompts
+
+* `volume.dat`'s compressed kinds can't be read yet, so the textures were
+  collected as the game uploads them (`UTAKATA_TEXTURE_DUMP`, a
+  development switch in `shinobido2.exe`), on the title, menus, the hub,
+  a mission, the pause menu and Basic Controls, in each language.
+* **The game keeps its pictures upside down** (rows bottom to top). The
+  shared button labels gained `flip_y` for that.
+* With PlayStation buttons: the UI font's page of button glyphs (UBC3
+  128×512, the same in all three languages: ringed ○ × □ △ for the
+  prompts in text, the d-pad, the sticks, L and R, START and SELECT, among
+  digits and punctuation); the HUD atlas (UBC3 512×512: a ringed △, and
+  ○ × □ on discs of their own colour); the pause menu's Basic Controls
+  picture (UBC1 1024×1024, one per language, its red □ △ ○ × beside
+  "button"; the drawing of the Vita's buttons stays). All are white or
+  coloured strokes on a dark blot, ss-delta's picture style; the coloured
+  discs get white letters.
+* Not seen yet: the tutorial (the test saves are past it), the help
+  screens (SELECT on the mission board), context prompts in a mission.
+
 ## Open questions
 
 1. ~~Does update 1.02 change the eboot much?~~ No: +55 functions, two new

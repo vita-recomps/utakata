@@ -83,6 +83,18 @@ Compared with running the game in Vita3K:
   that locks on to an enemy, wherever it is on screen; the mouse is the
   touchscreens.
 * **Vita saves** imported and exported (`--import-save`, `--export-save`).
+* **Language:** the game's English, French or Spanish text, chosen in the
+  settings menu.
+* **Mouse camera** on a PC (Tab or a middle click captures the cursor),
+  turning the camera as far as the mouse moves.
+* **Xbox button prompts:** A, B, X, Y, LB, RB, Menu and View in the
+  game's prompts, its HUD and its controls page, or whichever the
+  connected gamepad has.
+* **Cheats** in the settings menu: infinite health and ninja tools,
+  one-hit kills, maximum money and stats. All off by default.
+* **Skip the intro logos** as an option; **rePatch mods**, beside the
+  game's own files; and a `recomplauncher.json` for
+  [RecompLauncher](https://recomplauncher.com).
 * **One program** per platform (`shinobido2.exe`, `shinobido2.x86_64`, the
   macOS app), without Vita3K's interface and offline, which builds itself
   from your own dump on its first start, in its own folder.

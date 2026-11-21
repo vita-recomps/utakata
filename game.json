@@ -20,5 +20,6 @@
   "dist_readme": "docs/dist-readme.txt",
   "dist_readme_linux": "docs/dist-readme-linux.txt",
   "dist_readme_macos": "docs/dist-readme-macos.txt",
-  "dist_files": {}
+  "dist_files": {},
+  "release_files": ["recomplauncher.json"]
 }

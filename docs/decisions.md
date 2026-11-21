@@ -342,3 +342,34 @@ and a few from missions. D2 kept every screenshot of the game out of git.
 
 **Rejected:** hosting the pictures outside the repository (release assets):
 the owner chose committing them.
+
+
+## D13 — RecompLauncher support: ss-delta's D24 (accepted, 2026-11-21)
+
+**Context:** the owner asked for feature parity with ss-delta (Phase 10).
+ss-delta ships a `recomplauncher.json` in every release (its D24), so
+[RecompLauncher](https://recomplauncher.com) can install the game from its
+GitHub release, build it from the player's dump, show its settings and
+back up its saves. D11 already made this game's release one folder with a
+command line for everything.
+
+**Decision:**
+
+* `recomplauncher.json` (repository root) ships at the top of every
+  release archive (`game.json` `release_files`, copied by the kit's
+  `make-setup.py`).
+* Setup: the game (folder, `.zip`, `.vpk`, or `.pkg` with its licence
+  beside it), and as optional inputs the 1.02 update (a decrypted dump may
+  hold it already), the Mirror Spirits add-on and a rePatch mod. The
+  launcher runs `shinobido2 --dump ... --build-only --progress`;
+  Microsoft's licence is a tick the player must accept on Windows.
+* The release workflow stamps the tag into `prepare.version`
+  (`tools/stamp-recomplauncher.py`, ss-delta's), so the launcher builds
+  again after every update.
+* Settings: the main keys of `shinobido2.ini` (display, volume, language,
+  intro logos, button prompts, mods, log detail). Saves:
+  `fs/ux0/user/00/savedata` and `shinobido2.ini`.
+
+**Rejected:** as in ss-delta's D24, an unchanging `prepare.version` and key
+bindings in the launcher.
+

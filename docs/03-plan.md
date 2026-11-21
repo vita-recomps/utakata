@@ -690,109 +690,95 @@ with all three setups ([D10](decisions.md)).
 **Exit:** with their own dump, a player on each of the three platforms
 gets from the 0.1.0 release to a mission on native code.
 
-## Phase 10 — ss-delta's 0.4.0 features on the desktop (M) ☐
+## Phase 10 — ss-delta's 0.4.0 features on the desktop (M) ◐
 
 The owner asked on 2026-11-21: feature parity with ss-delta, apart from
 multiplayer (this game has none). ss-delta's Phase 8 additions and the
 fork's front end since `bbca8b81` (28 commits on `games`, up to
 `36e098b3`; kit `fb2a5cb` → `dd07e72`). Most of the machinery is in the
 shared front end already; what is new here is each feature's game side
-(addresses, textures, the stick table) and its tests. Cheapest first.
+(addresses, textures, the camera) and its tests. Findings in
+[01-research](01-research.md#ss-deltas-040-features-phase-10-2026-11-21-local),
+tests in [02-baseline](02-baseline.md#ss-deltas-040-features-phase-10-2026-11-21).
 
-* ☐ **10a Today's fork and kit.** Submodules to fork `36e098b3` and kit
-  `dd07e72`; `shinobido2.exe` rebuilt, `to-mission.py` to the first
-  mission's field on native code, 0 native-to-JIT calls, and the day-57
-  hub save loads. What comes without game work:
+* ☑ **10a Today's fork and kit** (2026-11-21). Submodules to fork
+  `36e098b3` and kit `dd07e72` (then `f7f6f91`, ss-delta 0.4.1's
+  Windows setup fix); `shinobido2.exe` rebuilt, `to-mission.py` to the
+  first mission's field, every loaded module verified, 0 native-to-JIT
+  calls. What came without game work:
   * the settings menu's Exit page; the discrete-GPU exports (laptops with
     two GPUs, ss-delta issue #4);
-  * the settings menu over a system dialog (Vita3K's overlay input
-    queue): check it over this game's Load and Save dialogs;
-  * add-ons after the build (`--dump=<file>`, `setup.py` installs an
-    add-on alone without a rebuild), NoNpDrm dumps laid out as ux0, the
-    setup's `--progress` and `setup.log`;
-  * the input pipe's `memwrite:` and `mouse:` steps (front end, so
-    `shinobido2.exe` gets them; needed by 10e and 10f).
+  * add-ons and mods after the build (`--dump=<file>`): a mod alone
+    installed in 1 s from a release folder of this commit; NoNpDrm dumps
+    laid out as ux0; the setup's `--progress` and `setup.log`;
+  * the input pipe's `memdump:`, `memwrite:` and `mouse:` steps, used for
+    10e and 10f.
+  * ☐ Not checked here: the settings menu over this game's Load and Save
+    dialogs (Vita3K's overlay input queue, fixed in ss-delta).
 
-  Also, as ss-delta has it: `recomplauncher.json` in every release
-  (ss-delta D24; inputs: the game pkg with its `work.bin`, the 1.02 pkg,
-  the optional add-on), `CHANGELOG.md`, and release notes in
-  `.github/release-notes/<tag>.md` for the workflow's draft.
-* ☐ **10b Language** (ss-delta's fork `b403534e`). The eboot reads
-  `SCE_SYSTEM_PARAM_ID_LANG` once at boot (`0x8114ce96`): French (2)
-  becomes the game's language 3, Spanish (3) language 4, anything else
-  English (stored at `+0x1e0` of its object) [local, 2026-11-21]. So the
-  US game has three text languages; that the French and Spanish data is
-  really in the dump is a **hypothesis**. `[game] language` (`english`,
-  `french`, `spanish`), on the settings menu's Game page, restart needed;
-  system dialogs follow the same setting. Check the title, the options,
-  a mission briefing and the subtitles in each. (The other system read,
-  `SCE_SYSTEM_PARAM_ID_ENTER_BUTTON` at `0x8114da68`, only configures
-  the common dialogs.)
-* ☐ **10c rePatch mods** (fork `dda265d9`): `layout::repatch()` in the
-  profile, "Mods (rePatch)" in the settings menu. Generic and cheap; it
-  only overrides loose files (`RomImage/...`, the stream packs, the
-  movies), not members of `volume.dat`. No Shinobido 2 mod is known, so
-  the test is a hand-made one (a replaced movie or stream pack in a test
-  folder). An undub needs the JP release's voice packs at the US paths
-  (the eboot hard-codes `<NP>/US/Sound/*.stm`): see Later.
-* ☐ **10d Skip the intro logos** (ss-delta's `skip_intro`, its GitHub
-  issue #6). 1.02's logos take about 40 s before the title accepts
-  Start (1.00's less). They are `logo_acquire.mp4` and `logo_spike.mp4`
-  through SceMp4, plus whatever else precedes the title (a health
-  warning?): find the boot sequence's state in memory and step it past
-  the logos as data, so native code stays on, as ss-delta does. The
-  opening FMV (`S000_00_opening.mp4`) is story and stays. `[game]
-  skip_intro`, off by default. Check: no logo frame recorded
-  (`record:`), title → Continue → slot 1 → hub.
-* ☐ **10e Mouse camera** (fork `36e098b3`). The shared part is done;
-  the game gives `profile.stick_response`, its right stick's push → turn
-  speed table. Measure it as ss-delta did (steady pushes through the
-  pipe, the camera's yaw read from memory or from frames), in the field
-  and the hub. Check against the game's own Y/X-axis camera options
-  (their inversion applies on top of ours), the hook's aim (R + Circle,
-  left stick) and any first-person aim. The pitch's table: measure it
-  rather than assume the yaw's.
-* ☐ **10f Cheats** (ss-delta's `[cheats]`, its GitHub issue #7): a
-  Cheats page, all off, switched while the game runs; values set in
-  guest memory each frame through the game's own pointers, after checking
-  vtables and plausible values, so native code stays on. No VitaCheat or
-  CWCheat codes are known for this game (to check again); Apollo's save
-  patches give the save record's layout (private notes): money, level,
-  SP, stamina, offence, defence, zankoku, ninja tool counts. Find the
-  live copies with `memdump:` from a known money value. Candidates:
-  * Infinite health; Infinite ninja tools (counts kept up in a mission);
-  * Max money (9,999,999, as Apollo's patch); Max stats (level 99,
-    SP 255, stamina 200, offence, defence and zankoku 100);
-  * One-hit kills (bosses may cap a hit, as ss-delta's did);
-  * **hypotheses**, if the game keeps such a value: enemies never alert,
-    no mission timer.
-
-  Check each in a mission, through a save and reload, and whether the
-  mission rank or Zankoku records react.
-* ☐ **10g Xbox button labels** (fork `e6bc116c`, `0673577b`; ss-delta's
-  `[game] button_labels`, `auto`). The front end redraws textures as
-  they upload, found by a hash of their data. Research first:
-  * where the game draws PlayStation buttons: the HUD's prompts, the UI
-    textures (`<P>/US/UIPhyreTexture`), the pause menu's Controls page,
-    the tutorial's pictures, and in text (the `*.fgen.GXM.phyre` fonts,
-    if buttons are glyphs there);
-  * `volume.dat`'s kinds 2–5 can't be unpacked yet (Phase 2), so collect
-    the textures as the game uploads them (Vita3K's texture export, or a
-    hash log) on the screens above, rather than from the archive;
-  * the painting: ss-delta's is drawn for symbols as light strokes in a
-    dark ink blot. If this game's buttons look different, the shared
-    `button_labels.cpp` gets a second style, checked on ss-delta too
-    (D4, shared work).
-
-  Then the table (`games/shinobido2/button_atlases.inc`), the test command
-  on dumped textures for review, and a playtest by the owner (prompts,
-  Controls page, tutorial).
+  ☑ As ss-delta has it: `recomplauncher.json` in every release
+  ([D13](decisions.md); inputs: the game, the 1.02 update, the add-on and
+  a mod), stamped by the workflow (`tools/stamp-recomplauncher.py`);
+  `CHANGELOG.md`; release notes in `.github/release-notes/<tag>.md` when
+  there is one. A release folder laid out from this commit built from the
+  dump in 3.1 min and played to the mission natively.
+* ☑ **10b Language** (2026-11-21): `[game] language` (`english`,
+  `french`, `spanish`), on the settings menu's Game page, read at start.
+  The US data has French and Spanish text: menus, hub, briefings, the
+  Basic Controls picture and the system dialogs follow; mission names stay
+  English.
+* ☑ **10c rePatch mods** (2026-11-21): `[game] repatch`, "Mods
+  (rePatch)". A hand-made mod (Spike's logo movie as Acquire's) was read
+  in place of the game's file, installed both with `--install-content` and
+  through a release's `--dump=`. It only overrides loose files
+  (`RomImage/...`, the stream packs, the movies), not members of
+  `volume.dat`. No Shinobido 2 mod is known; an undub needs the JP
+  release's voice packs (see Later).
+* ☑ **10d Skip the intro logos** (2026-11-21): `[game] skip_intro`, off
+  by default. The opening scene's state machine is moved from the Bandai
+  Namco picture to the opening movie (data only): the four logos are
+  skipped, the movie starts at about 26 s instead of 46, and Start skips
+  it as on the Vita. The boot's loading screen (about 22 s) stays.
+* ☑ **10e Mouse camera** (2026-11-21): `[mouse]`, PC only. The game's
+  right stick is on or off (past 77 steps of 127: 120°/s left and right,
+  60°/s up and down) and speeds up over half a second, so a pulsed stick
+  hardly turned it. The shared mouse camera gained a second mode
+  (fork `75df4aa8`): the game gives its camera's angles (the world matrix
+  at application `+0xc0`) and the stick is held until the camera has
+  turned as far as the mouse asked. Through the pipe: turns of 1–90°
+  within about a frame's turn, both axes, diagonals, the pitch's limits.
+  * ☐ Played with a real mouse by the owner; the hook's aim (R + Circle)
+    and the game's own Y/X-axis camera options with it.
+* ☑ **10f Cheats** (2026-11-21): `[cheats]`, a Cheats page, all off,
+  switched while the game runs, data only: Infinite health, Infinite
+  ninja tools (tools and items given back), One-hit kills (every other
+  character's health kept at 1), Max money (9,999,999), Max stats (both
+  characters, Apollo's values). From the game's record at `0x8153b530`
+  (laid out as the save) and, in a mission, the player and the character
+  list, each checked before it is written. Checked through memory in the
+  first mission.
+  * ☐ Playtest by the owner: One-hit kills in fights and on a boss, a
+    whole mission with the others, a save and reload, the mission rank.
+  * ☐ Candidates not done: enemies never alert, no mission timer (whether
+    the game keeps such values is unknown).
+* ☑ **10g Xbox button labels** (2026-11-21): `[game] button_labels`
+  (`playstation`, `xbox`, `auto`). The textures were collected as the game
+  uploads them (`UTAKATA_TEXTURE_DUMP`, development); the game keeps its
+  pictures upside down, so the shared labels gained `flip_y`, and white
+  letters for symbols on discs of their own colour (fork `55248dcb`;
+  ss-delta's table unchanged). Redrawn: the UI font's page of button
+  glyphs (the prompts in text, START and SELECT, L and R), the HUD
+  atlas's symbols and the Basic Controls picture in all three languages.
+  * ☐ Not found yet: the tutorial's and help screens' pictures, and any
+    context prompt in a mission (a dump during the owner's play would
+    show them).
+  * ☐ Playtest by the owner (prompts, Controls page, `auto` with a pad).
 
 **Exit:** each feature above in the settings menu (rePatch, language,
 skip intro, button labels, mouse, cheats), checked on Windows and played
 by the owner; the Linux and macOS builds checked to a mission. No
 release before Phase 11: both ship together as v0.2.0 (the owner,
-2026-11-21).
+2026-11-21). Open: the owner's playtest, Linux and macOS.
 
 ## Phase 11 — Android, targeting the AYN Thor (L) ☐
 
