@@ -2,7 +2,7 @@
 
 <img src="docs/assets/banner.svg" alt="utakata: Shinobido 2: Revenge of Zen, recompiled to native code" width="100%">
 
-**A native port of Shinobido 2: Revenge of Zen (PS Vita) to Windows, Linux and the Steam Deck, and macOS, by static recompilation.**
+**A native port of Shinobido 2: Revenge of Zen (PS Vita) to Windows, Linux and the Steam Deck, macOS and Android, by static recompilation.**
 
 [![Release](https://img.shields.io/github/v/release/vita-recomps/utakata?style=flat-square&label=release)](https://github.com/vita-recomps/utakata/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/vita-recomps/utakata/total?style=flat-square)](https://github.com/vita-recomps/utakata/releases)
@@ -15,6 +15,7 @@
 ![Linux x64](https://img.shields.io/badge/Linux-x64-FCC624?style=flat-square&logo=linux&logoColor=black)
 ![Steam Deck](https://img.shields.io/badge/Steam%20Deck-Game%20Mode-1A9FFF?style=flat-square&logo=steamdeck&logoColor=white)
 ![macOS Apple Silicon](https://img.shields.io/badge/macOS-Apple%20Silicon-000000?style=flat-square&logo=apple&logoColor=white)
+![Android arm64](https://img.shields.io/badge/Android-arm64-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Vulkan](https://img.shields.io/badge/Vulkan-AC162C?style=flat-square&logo=vulkan&logoColor=white)
 ![Metal](https://img.shields.io/badge/Metal-MoltenVK-444444?style=flat-square&logo=apple&logoColor=white)
 
@@ -47,13 +48,16 @@ Mirror Spirits add-on's missions load and play; checked on AMD and NVIDIA
 GPUs ([compatibility](docs/06-compatibility.md)). Other endings and
 difficulties than the one played through are untested.
 
-Since 0.1.0 it runs on three platforms, each on native code:
+It runs on four platforms, each on native code:
 
 * **Windows** 10 or 11, x64;
 * **Linux** x64, the **Steam Deck** among them (desktop mode to set up,
   then Game Mode to play);
 * **macOS** 13.3 or newer on **Apple Silicon** (M1 and later, tested on an
-  M5).
+  M5);
+* **Android** 9 or newer on 64-bit ARM with Vulkan, made for Snapdragon
+  handhelds (tested on an AYN Thor, at 60 fps at 2× too), since 0.2.0. The
+  app builds the game on the device from your dump: no PC needed.
 
 ## Features
 
@@ -98,6 +102,13 @@ Compared with running the game in Vita3K:
 * **One program** per platform (`shinobido2.exe`, `shinobido2.x86_64`, the
   macOS app), without Vita3K's interface and offline, which builds itself
   from your own dump on its first start, in its own folder.
+* **Android:** an app that builds the game on the device (about 8 minutes
+  on a Snapdragon 8 Gen 2), or takes it from a PC that built it
+  (`--android`). The handheld's own buttons as a gamepad; on a phone, the
+  Vita's buttons and sticks on the touchscreen, with a crouch toggle and
+  the caution eyes by finger. A long press on the icon adds the add-on or
+  imports a Vita save. Turnip, the open-source Adreno driver, is offered on
+  Snapdragon devices.
 
 ## Download and play
 
@@ -110,18 +121,20 @@ It unpacks to the game's folder, `utakata`, with one program to start:
 | Windows 10/11, x64 | `utakata-<version>-windows.zip` | `shinobido2.exe` |
 | Linux x64, Steam Deck | `utakata-<version>-linux.tar.gz` | `shinobido2.x86_64` |
 | macOS 13.3+, Apple Silicon | `utakata-<version>-macos.tar.gz` | `Shinobido 2 - Revenge of Zen.app` |
+| Android 9+, 64-bit ARM | `utakata-<version>-android.apk` | **Shinobido 2** (install the APK) |
 
 The first start builds the game from your own dump of it (the US game with
 update 1.02; the Mirror Spirits add-on is optional): its importer asks for
 the dump, downloads the PS Vita firmware from Sony and a compiler, and
-compiles the game's code on your computer, in a few minutes. From then on
+compiles the game's code on your computer (or Android device), in a few
+minutes. From then on
 the program goes straight to the game. Everything stays in that folder
 ([D11](docs/decisions.md)), and the command line covers everything
 (`--help`).
 
 The **[installation guide](docs/INSTALLING.md)** has the details for each
 system: what dumps work, the Steam Deck's Game Mode, macOS's Gatekeeper,
-saves, files, command-line options and updating. To build it yourself, see
+Android, saves, files, command-line options and updating. To build it yourself, see
 **[BUILDING](docs/BUILDING.md)**.
 
 ## Documentation

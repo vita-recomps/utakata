@@ -33,10 +33,14 @@ scale 2, a gamepad; the last missions at 60 fps) and the test runs in
 | NVIDIA GPUs | ✓ | the owner on the RTX 4090 (2026-10-15): works, no issues seen |
 | Linux: Steam Deck (SteamOS 3.9, RADV) | ◐ | the setup from the pkgs, then the first mission natively at 30 and 60 fps (2026-11-18, over SSH); Game Mode, a long session and the touchscreen not tried yet |
 | macOS: Apple Silicon (M5, MoltenVK) | ◐ | the setup from the pkgs, then the first mission natively at 30 and 60 fps (2026-11-18); a long session not played yet |
-| Native code against the JIT | ✓ | 0 mismatches in ~79,000 sampled calls |
+| Android: AYN Thor (Snapdragon 8 Gen 2, Turnip T23 or Qualcomm's driver) | ◐ | built on the device from the pkgs; the first mission natively at 30 and 60 fps, 2× too; six saves' missions drawn as on Windows on both drivers; sound soak, saves import, the caution eye (2026-11-21/22); a long session and a phone without a gamepad not tried yet |
+| Native code against the JIT | ✓ | 0 mismatches in ~79,000 sampled calls on the PC, 28,144 on Android |
 
 ## Native code against the JIT
 
 Differential runs (the JIT re-running sampled native calls) in mission 1's
 combat with a restart: 35,790 calls at 30 fps and 43,062 at 60, **none
-mismatching** ([02-baseline](02-baseline.md), "Native against JIT").
+mismatching** ([02-baseline](02-baseline.md), "Native against JIT"). On
+Android (the Thor) 28,144 sampled calls, none mismatching; one function
+checked on every call differs in a dead stack slot only (a denormal's last
+bits), on arm64 only (02-baseline, "Android on the AYN Thor").

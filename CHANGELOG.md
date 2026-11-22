@@ -16,7 +16,8 @@ have ([plan](docs/03-plan.md), Phases 10 and 11).
   device from your dump, in about 8 minutes on a Snapdragon 8 Gen 2, or a
   PC that has built the game copies it over (`--android`). Turnip offered
   on Adreno; on-screen controls for phones, with a **CROUCH** button that
-  holds R.
+  holds R. **Import a Vita save** on the icon's long-press menu (a folder
+  or a .zip, through `--import-save`).
 * **Language:** the game's English, French or Spanish text, and the
   system dialogs with it (**Language** on the settings menu's Game page,
   `[game] language`). The game itself follows the console's language only.

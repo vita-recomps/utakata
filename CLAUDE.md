@@ -128,7 +128,13 @@ owner's machine-specific notes, kept in a private repo.
   The device's sound can't be recorded over adb: `adb shell setprop
   debug.vitarecomps.audio_levels 1` before the game starts logs each
   sound port's loudness every second to `vita3k.log`
-  (`VITA3K_AUDIO_LEVELS=1` does the same on PCs).
+  (`VITA3K_AUDIO_LEVELS=1` does the same on PCs). The PC's debug
+  environment (`SSD_AOT_DIFF`, `SSD_AOT_STATS`, ...) goes in
+  `debug.vitarecomps.env` (`adb shell setprop`, 91 characters at most)
+  or in `debug-env.txt` in the app's files folder, `NAME=value` pairs;
+  delete it afterwards. The kit's comparison tests run on the device as
+  ss-delta's 09-android describes (`recomp_tests` per module, built with
+  the NDK, under `guarded-test.sh`).
 - Guest memory the front end reads and writes (the record at `0x8153b530`,
   the player, the camera matrix, the opening scene) is in 01-research,
   "ss-delta's 0.4.0 features"; `memdump:`/`memwrite:` only in test folders.

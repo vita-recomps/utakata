@@ -130,6 +130,14 @@ uninstalling the app deletes them, saves included. Holding Select opens
 the settings menu, as on PCs (the game's own Select action opens under
 it: close both).
 
+**Vita saves.** Android keeps file managers out of the app's folder, so
+saves come in through the app: long-press the **Shinobido 2** icon,
+**Import a Vita save**, and pick the decrypted save's folder (`PCSE00015`
+from VitaShell or Apollo, or a PC's `fs/ux0/user/00/savedata/PCSE00015`)
+or a `.zip` of it. Each save goes to its own slot; the saves it replaces
+are kept in `shinobido2/save-backups/`. The same menu has **Add an
+add-on** for the Mirror Spirits add-on.
+
 **On-screen controls.** Without a gamepad (a phone), the game shows the
 Vita's buttons, D-pad and both sticks on the touchscreen, a **CROUCH**
 button beside R (tap it to crouch and keep crouching, tap again to stand:
