@@ -448,6 +448,9 @@ tools, 108 MB with them). Defaults: scale 1, 30 fps.
 | The same package updated (a new `versionCode`) | the setup came back without asking for the dump, rebuilt in **5.3 min**; the save stayed; the mission again |
 | On-screen controls switched on over the built-in gamepad (Controls page) | the Vita's buttons, sticks and menu button; **CROUCH** beside R; a tap holds R (the ninja crouches and stays down), the next tap lets go |
 | System dialogs' icons | the log's "Image resource file 'icons/cross.png' could not be opened" (the APK lacked Vita3K's `icons/`); packed since fork `14684f22` |
+| The release workflow's manual run (GitHub, `e1a0d14`, 2026-11-22) | all four jobs in 40 min (the APK 11 min); the APK verifies (v2) with the vita-recomps release certificate; the Windows archive's `setup/android/shinobido2.apk` is the same file |
+| Rendering sweep (11c, 2026-11-22): six saves (the day-1 hub, the owner's days 13, 26, 42 and 56, New Game+ with the add-on's missions), each loaded, the hub, the board's first mission, five pictures in the field while the camera turns; the Windows build of the same commit (scale 1, 30 fps) against the Thor with Qualcomm's driver and with Turnip T23 (native modules, scale 1, 30 fps) | **the same picture on all three** in every area reached (the town at night from two starting points, the forest at dusk, the castle grounds, the hub and its event pages): lighting, distant haze, falling leaves, the HUD; no black rectangles, no missing fog. Camera angles differ a little (the stick over adb lands at another moment), and the board's first mission changes between loads, so not every row is the same mission |
+| Field frame rate by driver (the day-1 mission, the camera turning) | Qualcomm's driver **30.0 fps**, Turnip **30.0 fps**, the longest frame 33.4 ms on both |
 
 Found on the way:
 
@@ -460,8 +463,10 @@ Found on the way:
   face buttons; a finger on an eye goes to the game (the shared rule for
   touch spots), so Circle's upper edge gives way to the eye there.
 * The Turnip offer's text (black rectangles in fog and smoke) is
-  ss-delta's finding; whether Qualcomm's driver draws anything of this
-  game wrong waits for the rendering sweep (Phase 11c).
+  ss-delta's finding. In this game's sweep Qualcomm's driver drew
+  everything as Turnip and Windows did, at the same frame rate: this game
+  doesn't need Turnip as far as the sweep reached. Not covered: smoke and
+  blood effects of the tools and combat, the story scenes and movies.
 
 ## How to re-run
 

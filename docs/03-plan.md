@@ -827,9 +827,15 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
 * ◐ **11c Rendering and sound on the Adreno**: Turnip T23 offered and
   used as on ss-delta. In the first mission's field Qualcomm's driver and
   Turnip draw the same picture.
-  * ☐ Phase 6's rendering pictures against Windows' (missions, hub,
-    DLC), on both drivers: does this game need Turnip at all? The offer's
-    text (black rectangles in fog) is ss-delta's.
+  * ☑ Rendering against Windows on both drivers (2026-11-22, 02-baseline):
+    six saves from the day-1 hub to New Game+, the hub and the board's
+    first mission in each (the town at night, the forest, the castle
+    grounds): the same picture on Windows, Qualcomm's driver and Turnip,
+    and 30 fps on both drivers. The game doesn't need Turnip as far as
+    the sweep reached (smoke and blood effects, story scenes and movies
+    not covered). The offer stays (ss-delta's text says fog draws black
+    rectangles: not so here); a text of this game's own is the owner's
+    call.
   * ☐ Frame rate at 60 and at scale 2.
   * ☐ `sfx-soak.py`'s mission restarts on the device (sound effects
     last).
