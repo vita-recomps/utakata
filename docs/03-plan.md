@@ -836,7 +836,11 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     not covered). The offer stays (ss-delta's text says fog draws black
     rectangles: not so here); a text of this game's own is the owner's
     call.
-  * ☐ Frame rate at 60 and at scale 2.
+  * ☑ Frame rate at 60 and at scale 2 (2026-11-22): 60 fps at scale 2
+    holds 59.9–60.0 in the town and the forest with Turnip, no frame over
+    16.7 ms, no throttling over a minute's play; scale 2 draws sharper,
+    with no artefacts. The defaults stay 30 fps and scale 1 (as on
+    ss-delta: battery). Battery draw per mode is 11f's.
   * ☐ `sfx-soak.py`'s mission restarts on the device (sound effects
     last).
 * ◐ **11d Input on a handheld and a phone** (2026-11-21): the on-screen
