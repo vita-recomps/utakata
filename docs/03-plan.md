@@ -854,10 +854,13 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
 * ◐ **11f Release**: the workflow's `android` job feeding every
   archive (`.github/workflows/release.yml`, as ss-delta's), signed with
   the vita-recomps release key.
-  * ☐ The release key's secrets on this repository (the owner:
-    `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`,
-    `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, as on ss-delta), then a
-    manual run on GitHub.
+  * ☑ The release key's secrets on this repository (set by the owner,
+    2026-11-22), then a manual run on GitHub (run 45028508098, `e1a0d14`:
+    all four jobs passed in 40 min, the APK 11 min). The APK verifies (v2)
+    with the release key's certificate (SHA-256 `80dcf71e…7a7e75`), as
+    `io.github.vitarecomps.shinobido2`, versionCode 9, with the build
+    tools inside; the Windows archive's `setup/android/shinobido2.apk` is
+    the same file.
   * ☐ INSTALLING's Android section and the README (drafted with this
     phase), battery and performance modes measured as ss-delta did.
   * ☐ The owner's playtest on the Thor (added to the list under
