@@ -907,12 +907,19 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     1× 2.54 W, 60 fps 2× 3.36 W; High Performance 60 fps 2× 3.32 W (the
     same: the GPU at 615 MHz instead of 401, less busy). Every mode at
     its full rate; the battery at 24–25 °C.
+  * ☑ The Thor on a release-signed app (2026-11-22): the debug apps
+    removed (their test saves kept on the PC), this commit's APK signed
+    with the vita-recomps key (versionCode 10: v0.2.0's 200 updates it in
+    place), the dump picked on the device, built in 5.2 min, the first
+    mission on NativeCPU at 30 fps. Left with no save, the add-on
+    installed, and the Turnip offer unanswered for the owner.
   * ☐ The owner's playtest on the Thor (added to the list under
     Phase 10).
 
 **Exit:** with a Thor and their own dump, and no PC, a player gets from
 the release's APK to a mission on native code (☑ with a debug APK,
-2026-11-21); with a PC, the `setup.py --android` route works too (☑).
+2026-11-21; ☑ with a release-signed one, 2026-11-22); with a PC, the
+`setup.py --android` route works too (☑).
 Then v0.2.0, with Phase 10.
 
 ## Later (deferred)
