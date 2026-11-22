@@ -125,6 +125,10 @@ owner's machine-specific notes, kept in a private repo.
   media scan before Android's file picker lists them. The kit's
   `setup.py --android` stops adb's server at the end: reconnect wireless
   adb afterwards. `uiautomator dump` fails on the Thor; tap by screenshot.
+  The device's sound can't be recorded over adb: `adb shell setprop
+  debug.vitarecomps.audio_levels 1` before the game starts logs each
+  sound port's loudness every second to `vita3k.log`
+  (`VITA3K_AUDIO_LEVELS=1` does the same on PCs).
 - Guest memory the front end reads and writes (the record at `0x8153b530`,
   the player, the camera matrix, the opening scene) is in 01-research,
   "ss-delta's 0.4.0 features"; `memdump:`/`memwrite:` only in test folders.

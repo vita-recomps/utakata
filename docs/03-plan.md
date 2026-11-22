@@ -824,7 +824,7 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
   copy); the first mission on NativeCPU with 0 native-to-JIT calls, 30
   fps, on Turnip T23.
   * ☐ The kit's differential and dynarmic tests on the device.
-* ◐ **11c Rendering and sound on the Adreno**: Turnip T23 offered and
+* ☑ **11c Rendering and sound on the Adreno**: Turnip T23 offered and
   used as on ss-delta. In the first mission's field Qualcomm's driver and
   Turnip draw the same picture.
   * ☑ Rendering against Windows on both drivers (2026-11-22, 02-baseline):
@@ -841,8 +841,12 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     16.7 ms, no throttling over a minute's play; scale 2 draws sharper,
     with no artefacts. The defaults stay 30 fps and scale 1 (as on
     ss-delta: battery). Battery draw per mode is 11f's.
-  * ☐ `sfx-soak.py`'s mission restarts on the device (sound effects
-    last).
+  * ☑ `sfx-soak.py`'s mission restarts on the device (2026-11-22): 12
+    cycles of combat and Restart Mission, the sound effects steady in
+    every cycle (−33.6 to −37.2 dB). A phone's sound can't be recorded
+    over adb, so the fork logs each port's loudness when asked
+    (`VITA3K_AUDIO_LEVELS=1`, on Android `adb shell setprop
+    debug.vitarecomps.audio_levels 1`; fork `8e8289ff`).
 * ◐ **11d Input on a handheld and a phone** (2026-11-21): the on-screen
   controls with a **CROUCH** latch beside R (R held: crouch, sneak, cling;
   the shared latch now sits beside the shoulder it holds), checked on the
