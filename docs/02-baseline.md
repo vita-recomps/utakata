@@ -420,6 +420,9 @@ native code throughout; findings in
 | A release folder from this commit (`make-setup.py`), `setup.py --install` game + 1.02 + add-on, downloads from the shared cache | built in 3.1 min; `recomplauncher.json` at the top with the stamped version |
 | `shinobido2.exe --dump=<mod folder> --build-only` with the game built | the mod alone installed in 1 s, no rebuild (v0.1.0's kit couldn't) |
 | That folder, `--import-save hub-day1`, `to-mission.py` | the mission natively, every loaded module verified, the mod read |
+| ss-delta's #13 setup fixes (fork `c43094b3`, kit `36a902e`, 2026-11-23), `install-game.py --no-recompile` with the game's pkg and licence only | stops with "eboot.bin is the game's version 1.00 ... its update wasn't installed over it" (`game.json` `eboot_sha256_other`) instead of a bare hash |
+| The same with game + 1.02 + add-on pkgs | eboot 1.02, the add-on in `addcont/PCSE00015/DLC001X000000000`, as before |
+| `dumpinfo.licence_kind` on the game's and add-on's `work.bin` | both `nonpdrm` (an account ID written over 0x08: `account`), so the new account-licence stop can't misfire on this dump |
 
 Seen once: a boot that stayed black with the window at 30 fps, its log
 ending 2 s after start (in the application's init). The next start, with

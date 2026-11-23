@@ -6,6 +6,9 @@
   "eboot_sha256": {
     "943a04c05234d1c8a0f1bdd694d3f715d01b643bc5361543366526909e8f4a7b": "1.02"
   },
+  "eboot_sha256_other": {
+    "27354474e5811ba2d539bebf34363bcaa1093c3ec872fa76bcf10ecaa20f31e7": "1.00"
+  },
   "modules": {
     "eboot": "eboot",
     "libc": "libc",

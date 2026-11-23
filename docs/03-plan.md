@@ -796,10 +796,11 @@ this phase:
 * ☐ The settings menu (Select held or F1) over the game's Load and Save
   dialogs: does it still respond?
 * ☐ Language (French, Spanish) and Skip intro logos, in normal play.
-* ☐ Android, on the Thor (Phase 11): the APK from the release (or a
+* ☑ Android, on the Thor (Phase 11): the APK from the release (or a
   test build), the setup screen from the dump, a mission with the
   built-in controls; the on-screen controls and CROUCH on the
-  touchscreen.
+  touchscreen. The owner, 2026-11-23, with the release-signed APK:
+  "tested it on the thor including the touch controls, all is good".
 
 ## Phase 11 — Android, targeting the AYN Thor (L) ◐
 
@@ -871,10 +872,12 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     solid eye in the forest mission, the log's `caution: eye at 896,
     258`, the camera turned to the guard; a finger held on the eye does
     the same. A translucent eye (fading) isn't matched, on any platform.
+  * ☑ The on-screen controls on the Thor's touchscreen, in the owner's
+    playtest (2026-11-23).
   * ☐ A phone without a gamepad, and a finger on an eye under the face
     buttons: the Thor's built-in pad hides the controls while it is
     connected, so this needs a phone.
-* ◐ **11e The setup on the device and from a PC** (2026-11-21): the
+* ☑ **11e The setup on the device and from a PC** (2026-11-21): the
   setup screen takes this game's pkgs with their licences (game,
   1.02, add-on) as they are; on the Thor, Build to Play in about 7½ min
   (5.4 to compile), the modules byte-identical to the PC's; an update
@@ -890,7 +893,7 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     `--import-save` as a front-end step; the saves it replaces go to
     `save-backups/`. On the Thor a .zip and a folder each imported into
     slot 7, and the save loaded (day 26 at the hub).
-* ◐ **11f Release**: the workflow's `android` job feeding every
+* ☑ **11f Release**: the workflow's `android` job feeding every
   archive (`.github/workflows/release.yml`, as ss-delta's), signed with
   the vita-recomps release key.
   * ☑ The release key's secrets on this repository (set by the owner,
@@ -913,8 +916,18 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     place), the dump picked on the device, built in 5.2 min, the first
     mission on NativeCPU at 30 fps. Left with no save, the add-on
     installed, and the Turnip offer unanswered for the owner.
-  * ☐ The owner's playtest on the Thor (added to the list under
-    Phase 10).
+  * ☑ The owner's playtest on the Thor (2026-11-23, the list under
+    Phase 10): all good, the touch controls too.
+  * ☑ ss-delta's setup fixes for its issue #13 (2026-11-23, fork
+    `c43094b3`, kit `36a902e`): a NoNpDrm folder's `app/` installs before
+    its `patch/` (Linux could list the update first, leaving the game at
+    1.00), a Vita's own account licence is named before the downloads and
+    a NoNpDrm `.rif` in `license/` replaces it. `game.json`
+    `eboot_sha256_other` names 1.00's eboot (`27354474…`), so the setup
+    says the update is missing. The fork's `SceKernelModel` change
+    (`sceKernelGetModel` now 0x10000) doesn't reach this game: neither the
+    eboot nor its firmware modules import `sceKernelGetModel` or
+    `...ForCDialog`.
 
 **Exit:** with a Thor and their own dump, and no PC, a player gets from
 the release's APK to a mission on native code (☑ with a debug APK,

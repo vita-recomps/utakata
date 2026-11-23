@@ -43,6 +43,24 @@ final one. Any of these forms works:
   (21 MB): `fetch-update.py` in [BUILDING](BUILDING.md#installing-your-game-into-a-build)
   fetches it.
 
+**From your own Vita** (a modded one, with the game installed on its
+memory card or SD2Vita): the folders on the Vita carry your PSN account's
+own licence, which works only on that Vita, so they can't be used as they
+are (the setup says so). Make a NoNpDrm dump:
+
+1. Install the NoNpDrm plugin and start the game once. It writes a
+   licence that works anywhere:
+   `ux0:nonpdrm/license/app/PCSE00015/6488b73b912a753a492e2714e9b38bc7.rif`.
+2. Copy `ux0:app/PCSE00015`, `ux0:patch/PCSE00015` (the 1.02 update) and
+   `ux0:nonpdrm/license` into one folder on the PC, as `app/PCSE00015`,
+   `patch/PCSE00015` and `license/`. Copy them as they are, not with
+   VitaShell's "Open decrypted".
+3. Give that folder as the **Game** (on Android, a `.zip` of it). Instead
+   of copying `license/`, the `.rif` can also be given as its **Licence**.
+
+The add-on from the Vita needs its NoNpDrm licence too
+(`ux0:nonpdrm/license/addcont/...`, in the same `license/` folder).
+
 The **Mirror Spirits** add-on (its `.pkg` and `work.bin`) is optional. Its
 missions are listed after an ending.
 
@@ -183,7 +201,8 @@ The importer's window asks for your dump:
    already holds the 1.02 update and the licence, it says so and doesn't ask
    for them.
 2. **Update**: the 1.02 update, if the game's dump doesn't hold it.
-3. **Licence** (for a `.pkg`): its `work.bin` or `.rif`, found beside it when
+3. **Licence** (for a `.pkg`, or a folder or `.zip` without a usable
+   licence inside): its `work.bin` or `.rif`, found beside a `.pkg` when
    it's there, or a zRIF typed in.
 4. **Add an add-on (DLC)...**: Mirror Spirits, if you have it, with its
    licence.
