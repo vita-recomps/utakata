@@ -972,7 +972,12 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     mouse_camera"). Its run to a mission was cut short: another session was
     driving `ss-delta.exe` through the same input pipe name
     (`v3kdrive`), so the drivers' presses went to whichever game held it.
-  * ☐ `v0.2.0` tagged again with these (the first draft and tag deleted).
+  * ☑ `v0.2.0` tagged again (`ee18310`, 2026-11-24; the first draft and tag
+    deleted): run 45449776954 passed (all four jobs, 61 min) and made the
+    draft with the same four downloads and sizes; the Windows zip carries
+    `setup/kit/game/overrides/eboot.json` and `game.json`'s
+    `recomp_overrides`, `recomplauncher.json` stamped `v0.2.0`. Ready for
+    the owner to publish.
 
 **Exit:** with a Thor and their own dump, and no PC, a player gets from
 the release's APK to a mission on native code (☑ with a debug APK,
