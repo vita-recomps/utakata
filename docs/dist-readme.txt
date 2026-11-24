@@ -3,11 +3,10 @@ utakata: Shinobido 2: Revenge of Zen (US, PCSE00015, 1.02) on PC.
 Start shinobido2.exe. The first time, it builds the game from your own dump: a
 window asks for it (a folder, .zip or .vpk of the game with its 1.02 update, or
 the PSN .pkg files with their licence; the Mirror Spirits add-on is optional),
-downloads the PS Vita firmware from Sony and a compiler (about 650 MB; accept
-Microsoft's licence for the C++ runtime and Windows SDK it uses), installs the
-game and compiles its code on this PC, which takes a few minutes. Play then
-starts the game, and from then on shinobido2.exe goes straight to it. Windows
-may warn the first time ("More info", "Run anyway"): shinobido2.exe isn't
+downloads the PS Vita firmware from Sony (about 180 MB; the compiler is in
+setup\toolchain), installs the game and compiles its code on this PC, which
+takes a few minutes. Play then starts the game, and from then on
+shinobido2.exe goes straight to it. Windows may warn the first time ("More info", "Run anyway"): shinobido2.exe isn't
 signed.
 
 Everything stays in this folder: the game (fs), its code compiled for this PC
@@ -17,7 +16,8 @@ game is gone. Nothing of the game leaves your PC.
 
 Command line (shinobido2.exe --help lists it all): --install opens the
 importer again (another dump, the add-on); --dump <file> builds without the
-window (add --accept-microsoft-license); --fullscreen or --windowed; --set
+window; --download-only <folder> keeps the downloads for a build without
+internet (--offline <folder>); --fullscreen or --windowed; --set
 section.key=value sets any setting of shinobido2.ini for one run; --game
 <folder> plays the game in another folder.
 
@@ -44,6 +44,9 @@ are there only); read when the game starts:
   (F, right trigger) touches the topmost caution eye in a mission, which
   turns the camera to that enemy. The mouse is the touchscreens: left
   button front, right button rear.
+- [mouse] hide_cursor: the cursor hides after 3 seconds without mouse
+  motion, or when a key or the gamepad is used (Hide idle cursor on the
+  menu's Mouse page).
 F12 saves a screenshot to shinobido2\screenshots.
 
 Saves (ten slots, 0-9) can be copied in and out, with the game closed:

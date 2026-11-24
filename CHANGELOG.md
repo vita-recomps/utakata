@@ -4,10 +4,11 @@ The changes in each release of utakata. The downloads and each release's
 full notes are on the [releases page](https://github.com/vita-recomps/utakata/releases);
 [INSTALLING](docs/INSTALLING.md#updating) explains how to update.
 
-## 0.2.0 (not released yet)
+## 0.2.0 (2026-11-24)
 
-What ss-delta 0.4 has, apart from multiplayer, which this game doesn't
-have ([plan](docs/03-plan.md), Phases 10 and 11).
+What ss-delta 0.4 and 0.5 have, apart from multiplayer, which this game
+doesn't have, and ss-delta's fixes to its own game
+([plan](docs/03-plan.md), Phases 10 and 11).
 
 ### New
 
@@ -38,10 +39,39 @@ have ([plan](docs/03-plan.md), Phases 10 and 11).
   place of its loose files (**Mods (rePatch)**). Add-ons and mods can be
   added after the build, in seconds, without building again.
 * **RecompLauncher:** each release carries a `recomplauncher.json`.
+* **Building without internet:** `--download-only <folder>` saves what the
+  first build downloads (the firmware; `--for` adds other platforms'
+  compilers and adb), and a build then takes it from that folder
+  (`--offline <folder>`, the importer's "Downloaded files" row, or a folder
+  named `offline` in the game's folder). Firmware PUPs you already have
+  work too, whatever their names. See
+  [INSTALLING](docs/INSTALLING.md#without-internet).
+* **The cursor hides by itself** when the mouse has been still for 3
+  seconds, and at once when you use a key or a gamepad; moving the mouse
+  shows it again (**Hide idle cursor** on the Mouse page, `[mouse]
+  hide_cursor`).
 * From ss-delta's front end and kit: an Exit page in the settings menu,
   laptops with two GPUs use the faster one, the setup's log in
   `shinobido2/setup.log`, decrypted dumps laid out as `ux0`, and the
   Windows setup works from a temp folder whose path has a space.
+
+### Changed
+
+From ss-delta 0.5.1's setup (its D32):
+
+* **The compiler comes with the release; no Microsoft licence.** The
+  game's code is compiled with zig on Windows too, as on Linux and macOS,
+  and each release carries it: the first build downloads only the PS Vita
+  firmware (about 180 MB; Windows downloaded 650 MB before), and there is
+  no licence to accept. `--accept-microsoft-license` is still accepted
+  and does nothing. The release download is about 90 MB larger.
+* **Fallback downloads:** when Sony's server (or ziglang.org) doesn't
+  answer, the setup takes the same files from the Wayback Machine's
+  copies, checked by SHA-256.
+* **RecompLauncher: no second build for nothing.** Run again with the same
+  release and the same dump, the setup ends at once ("Already built"); a
+  new release or another dump still builds, and `--rebuild` builds
+  anyway.
 
 ### Fixed
 

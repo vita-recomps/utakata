@@ -50,20 +50,12 @@
   "prepare": {
     "program": ["shinobido2.exe", "shinobido2.x86_64", "Shinobido 2 - Revenge of Zen.app/Contents/MacOS/shinobido2"],
     "args": ["--dump", "{input:game}", "--dump={input:update}", "--dump={input:addon}", "--dump={input:mod}", "--build-only", "--progress"],
-    "label": "Building the game from your dump: the PS Vita firmware from Sony and a compiler are downloaded, and the game's code is compiled on this PC",
-    "timeout": 3600,
-    "version": "v0.1.0",
-    "options": [
-      {
-        "id": "microsoft",
-        "label": "Accept Microsoft's licence for the compiler's C++ runtime and Windows SDK",
-        "note": "Downloaded from Microsoft to compile the game's code on this PC.",
-        "args": ["--accept-microsoft-license"],
-        "os": ["windows"],
-        "license": { "name": "Visual Studio Build Tools licence", "url": "https://go.microsoft.com/fwlink/?LinkId=2179911" },
-        "required": true
-      }
-    ]
+    "label": "Building the game from your dump: the PS Vita firmware is downloaded from Sony, and the game's code is compiled on this computer",
+    "done": [
+      "{install}/shinobido2/build.json"
+    ],
+    "version": "v0.2.0",
+    "options": []
   },
   "config": [
     {

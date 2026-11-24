@@ -6,9 +6,9 @@ terminal; on a Steam Deck in desktop mode the first time). The first time, it
 builds the game from your own dump: a window asks for it (a folder, .zip or
 .vpk of the game with its 1.02 update, or the PSN .pkg files with their
 licence; the Mirror Spirits add-on is optional), downloads the PS Vita
-firmware from Sony and a compiler (zig, about 240 MB in all), installs the
-game and compiles its code on this computer, which takes a few minutes (about
-20 on a Steam Deck). Play then starts the game, and from then on
+firmware from Sony (about 180 MB; the compiler is in setup/toolchain),
+installs the game and compiles its code on this computer, which takes a few
+minutes (about 20 on a Steam Deck). Play then starts the game, and from then on
 shinobido2.x86_64 goes straight to it. It needs Vulkan, glibc 2.30 or newer
 and nothing else from the system.
 

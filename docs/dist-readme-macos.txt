@@ -10,8 +10,8 @@ Revenge of Zen was blocked" and click Open Anyway (once).
 The first time, it builds the game from your own dump: a window asks for it (a
 folder, .zip or .vpk of the game with its 1.02 update, or the PSN .pkg files
 with their licence; the Mirror Spirits add-on is optional), downloads the PS
-Vita firmware from Sony and a compiler (zig, about 240 MB in all), installs
-the game and compiles its code on this Mac, which takes a few minutes. Play
+Vita firmware from Sony (about 180 MB; the compiler is in setup/toolchain),
+installs the game and compiles its code on this Mac, which takes a few minutes. Play
 then starts the game, and from then on the app goes straight to it.
 
 Everything stays in this folder: the game (fs), its code compiled for this Mac

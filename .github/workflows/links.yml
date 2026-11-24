@@ -1,0 +1,71 @@
+# Installer future-proofing F (docs/03-plan.md): every week, every URL the players' setup may
+# download from (vita-recomp-kit's lock files and fetch-firmware.py, with their mirrors) is asked
+# for its size with a HEAD request (offline.py --check-urls). A URL that stops answering 200 or
+# changes size opens an issue (or comments on the open one), so a dead link is found before players
+# report it. A failure is checked again 10 minutes later before it counts (servers have bad minutes).
+name: Download link check
+
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      # only the kit: the fork is large and not needed here
+      - name: The kit (third_party/recomp)
+        run: git submodule update --init --depth 1 third_party/recomp
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Check every pinned URL
+        id: check
+        run: |
+          if python -I third_party/recomp/tools/offline.py --check-urls > first.txt; then
+            cat first.txt
+            exit 0
+          fi
+          cat first.txt
+          echo "failures; checking again in 10 minutes"
+          sleep 600
+          if python -I third_party/recomp/tools/offline.py --check-urls > report.txt; then
+            cat report.txt
+            exit 0
+          fi
+          cat report.txt
+          echo "failed=1" >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the issue
+        if: steps.check.outputs.failed == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title='Download links: a pinned URL failed'
+          {
+            echo "The weekly check of the setup's downloads ([run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})) found URLs that no longer answer at the pinned size:"
+            echo
+            echo '```'
+            grep '^FAIL' report.txt
+            tail -1 report.txt
+            echo '```'
+            echo
+            echo "A dead primary URL with a working mirror still works for players (the setup tries the mirrors); a file with no working URL left needs a new mirror or a new pin (docs/03-plan.md, installer future-proofing)."
+          } > body.md
+          number=$(gh issue list --repo "${{ github.repository }}" --state open --search "in:title \"$title\"" --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --repo "${{ github.repository }}" --body-file body.md
+          else
+            gh issue create --repo "${{ github.repository }}" --title "$title" --body-file body.md
+          fi
+          exit 1

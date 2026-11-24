@@ -13,6 +13,7 @@ your computer from **your own dump** of it.
 * [macOS (Apple Silicon)](#macos-apple-silicon)
 * [Android](#android)
 * [The first start: building the game](#the-first-start-building-the-game)
+  ([without internet](#without-internet))
 * [Playing](#playing)
 * [Saves](#saves)
 * [Files and folders](#files-and-folders)
@@ -30,7 +31,7 @@ your computer from **your own dump** of it.
 | macOS | macOS 13.3 or newer on Apple Silicon (M1 and later) |
 | Android | Android 9 or newer, 64-bit ARM, Vulkan (made for Snapdragon handhelds; tested on an AYN Thor) |
 | Disk space | about 1.5 GB for the game's folder, and up to 2 GB more while it builds |
-| Internet | the first start downloads the PS Vita firmware from Sony and a compiler |
+| Internet | the first start downloads the PS Vita firmware from Sony, unless you kept it ([offline](#without-internet)) |
 
 **Your own copy of the game, US version (PCSE00015), at update 1.02**, the
 final one. Any of these forms works:
@@ -77,9 +78,6 @@ as `C:\Program Files`).
    (it isn't signed with a publisher's certificate): click "More info", then
    "Run anyway".
 3. The importer opens: see [the first start](#the-first-start-building-the-game).
-   On Windows, also tick that you accept Microsoft's licence for the C++
-   runtime and Windows SDK the compiler uses (it downloads them from
-   Microsoft).
 
 The importer can put a shortcut on the desktop.
 
@@ -209,9 +207,8 @@ The importer's window asks for your dump:
 
 Then **Build**. The importer:
 
-* downloads the PS Vita firmware from Sony and a compiler (Windows: about
-  650 MB, LLVM's clang with Microsoft's C++ runtime and SDK; Linux and
-  macOS: about 240 MB, zig);
+* downloads the PS Vita firmware from Sony (about 180 MB; the compiler,
+  zig, comes with the release);
 * installs the game into the folder, starts it once unseen to read its code,
   translates that code to C++ and compiles it on your computer;
 * deletes the downloads and its work files.
@@ -223,14 +220,38 @@ Without the window (for scripts and launchers), each part of the dump after
 `--dump`, in order (the game, the update, the add-on):
 
 ```
-shinobido2.exe --dump "<game>" --dump "<1.02 update>" --accept-microsoft-license   (Windows)
-./shinobido2.x86_64 --dump "<game>" --dump "<1.02 update>"                         (Linux)
+shinobido2.exe --dump "<game>" --dump "<1.02 update>"         (Windows)
+./shinobido2.x86_64 --dump "<game>" --dump "<1.02 update>"    (Linux)
 ```
 
 A `.pkg` takes its licence after it: `--dump "<game>.pkg" --license
 "<work.bin>"`. `--build-only` builds and quits instead of playing;
 `--progress` adds `progress <0-1> <text>` lines for a launcher's progress
-bar.
+bar. Run again with the same dump, after the game was built by this
+release, it says "Already built" and builds nothing (`--rebuild` builds
+anyway).
+
+### Without internet
+
+The downloads can be kept, so a later build needs no network (a new PC, a
+reinstall, or a time when a download link no longer works). Once, with
+internet:
+
+```
+shinobido2.exe --download-only "<folder>"           (Windows)
+./shinobido2.x86_64 --download-only "<folder>"      (Linux)
+```
+
+This saves the firmware in that folder (about 180 MB), with a list
+(`offline.json`), and builds nothing. `--for windows,linux,macos,android`
+(or `all`) saves what those platforms need too (their compiler, adb for
+Android). Then either put the folder in the game's folder as `offline`,
+choose it in the importer's "Downloaded files" row, or pass `--offline
+"<folder>"` with `--dump`. Files are recognised by their size and SHA-256,
+whatever their names, so a folder holding the firmware PUPs you already
+have (`PSVUPDAT.PUP`, `PSP2UPDAT.PUP`) works too; anything not found there
+is downloaded as usual. The firmware is under Sony's licence: keep the
+folder for yourself.
 
 **Add-ons and mods later.** Once the game is built, the Mirror Spirits
 add-on or a mod is added on its own, without building the game again (it
@@ -247,8 +268,9 @@ is known yet.
 [RecompLauncher](https://recomplauncher.com) can install the game, build
 it from the dump you pick (the same importer, without its window), show
 the main settings of `shinobido2.ini` on the game's page, and back up the
-saves. After an update it builds the game again from the same dump. Its
-setup also takes the update, the add-on and a mod (optional).
+saves. After an update it builds the game again from the same dump; when
+it runs the setup again with nothing new (the same release and dump), the
+setup says "Already built" at once. Its setup also takes the update, the add-on and a mod (optional).
 
 ## Playing
 
@@ -283,7 +305,10 @@ setup also takes the update, the add-on and a mod (optional).
   the mouse turns the camera; the same again or Esc lets it go. The
   game's camera turns at most 120°/s sideways and 60°/s up and down, so a
   fast flick takes a moment to finish. Sensitivity and inverted vertical
-  on the settings menu's Mouse page (`[mouse]`).
+  on the settings menu's Mouse page (`[mouse]`). The cursor hides after 3
+  seconds without mouse motion, or when you use a key or the gamepad, and
+  comes back when the mouse moves (**Hide idle cursor**, `[mouse]
+  hide_cursor`).
 * **Cheats:** the settings menu's Cheats page (`[cheats]`, all off):
   infinite health and ninja tools, one-hit kills, maximum money and
   stats. Money and stats are kept when the game saves; export your saves
@@ -340,11 +365,13 @@ game: don't share it.
 |---|---|
 | `--game <folder>` | play the game in that folder (default: the program's own) |
 | `--install` | open the importer again (another dump, the add-on), then play |
-| `--dump <file> [--license <work.bin\|.rif> \| --zrif <zRIF>]` | build from this dump without the window (repeat for the update and add-on), then play |
+| `--dump <file> [--license <work.bin\|.rif> \| --zrif <zRIF>]` | build from this dump without the window (repeat for the update and add-on), then play. The same dump the game was built from (by this release, unchanged): nothing to do |
+| `--rebuild` | with `--dump`: build again even from the same dump |
 | `--build-only` | build if needed (or with `--install` / `--dump`), then quit |
-| `--accept-microsoft-license` | Windows, with `--dump`: accept Microsoft's licence for the compiler's runtime and SDK |
 | `--shortcut`, `--steam` | with `--dump`: a desktop shortcut, menu entry or Applications copy; add the game to Steam (Linux) |
 | `--cache <folder>`, `--jobs <n>` | with `--dump`: keep the downloads there for next time; compile with n jobs |
+| `--offline <folder\|file>` | take the downloads from there first (any name, matched by size and SHA-256; repeatable). The game folder's `offline` is used unasked ([without internet](#without-internet)) |
+| `--download-only <folder> [--for <platforms>]` | save everything the importer downloads into that folder, then quit |
 | `--add-to-steam` | Linux, Steam Deck: add the game to Steam (Steam running), then quit |
 | `--set <section.key=value>` | a setting of `shinobido2.ini` for this run only |
 | `--fullscreen`, `--windowed` | the same as `--set display.fullscreen=true` / `false` |

@@ -373,6 +373,14 @@ command line for everything.
 **Rejected:** as in ss-delta's D24, an unchanging `prepare.version` and key
 bindings in the launcher.
 
+**Update (2026-11-24, ss-delta's D24 update and D32):** Microsoft's licence
+tick is gone (the compiler is zig on Windows too, carried in the release;
+`prepare.options` is empty), `prepare.timeout` is dropped (not a field of
+the launcher's schema), and `prepare.done` names
+`{install}/shinobido2/build.json`, the stamp the setup writes when a build
+finishes. A run with the same parts and this release's executable ends at
+once with `progress 1 Already built`; `--rebuild` builds anyway.
+
 
 ## D14 — Android: ss-delta's D25 and D27 for this game (accepted, 2026-11-21)
 
@@ -396,3 +404,24 @@ owner (2026-11-21): proceed with the Android build; v0.2.0 waits for it.
 
 **Not shipped:** the game's own icon (the dump's `icon0.png` is game data,
 D2); the app uses the system's default icon, as ss-delta's.
+
+## D15 — Players' compiler: zig on every platform, in the release (ss-delta's D32; accepted, 2026-11-24)
+
+**Context:** ss-delta's D32 (2026-11-23) moved the shared kit's Windows
+setup from llvm-mingw's clang-cl with Microsoft's C++ runtime and Windows
+SDK (which the player had to accept, and nobody may redistribute) to zig,
+carried in every release with mirrors for every download and a weekly
+check of the links. This game takes the kit and front end as they are
+(D4).
+
+**Decision:** as ss-delta's D32: this game's Windows modules are built
+with zig for `x86_64-windows-gnu`; every release carries its platform's
+pinned zig in `setup/toolchain`; the first build downloads only Sony's
+firmware (or takes it from `--offline`); `.github/workflows/links.yml`
+checks the kit's pinned URLs every week.
+
+**Checked (2026-11-24):** a Windows release folder of fork `1a78ad86` and
+kit `38cb384`, the firmware from `--offline` (the PUPs already on this
+PC), built the game, 1.02 and the add-on in 5.0 min with no download;
+the first mission then ran 100% native (5 modules verified against guest
+memory, 0 native-to-JIT calls).

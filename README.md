@@ -90,7 +90,8 @@ Compared with running the game in Vita3K:
 * **Language:** the game's English, French or Spanish text, chosen in the
   settings menu.
 * **Mouse camera** on a PC (Tab or a middle click captures the cursor),
-  turning the camera as far as the mouse moves.
+  turning the camera as far as the mouse moves. The cursor hides by
+  itself while you play with a gamepad or the keyboard.
 * **Xbox button prompts:** A, B, X, Y, LB, RB, Menu and View in the
   game's prompts, its HUD and its controls page, or whichever the
   connected gamepad has.
@@ -125,10 +126,10 @@ It unpacks to the game's folder, `utakata`, with one program to start:
 
 The first start builds the game from your own dump of it (the US game with
 update 1.02; the Mirror Spirits add-on is optional): its importer asks for
-the dump, downloads the PS Vita firmware from Sony and a compiler, and
-compiles the game's code on your computer (or Android device), in a few
-minutes. From then on
-the program goes straight to the game. Everything stays in that folder
+the dump, downloads the PS Vita firmware from Sony (the compiler comes
+with the release), and compiles the game's code on your computer (or
+Android device), in a few minutes. From then on the program goes straight
+to the game. Everything stays in that folder
 ([D11](docs/decisions.md)), and the command line covers everything
 (`--help`).
 

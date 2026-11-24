@@ -2,7 +2,7 @@
 # Linux builds shinobido2.x86_64 in the Steam Runtime (sniper) SDK, macOS builds shinobido2.arm64 with
 # Apple's clang, and vita-recomp-kit's make-setup.py lays out each one: the game's own folder, with
 # its importer in setup/. A release holds no game or firmware data: the first time it starts on the
-# player's computer, it downloads the firmware from Sony and a compiler, and builds the game from the
+# player's computer, it downloads the firmware from Sony (the compiler, zig, is in setup/toolchain: ss-delta D32), and builds the game from the
 # player's own dump, in its folder.
 # A tag v* makes a draft release with the three archives, their SHA-256 and build attestations; a
 # manual run only uploads them as workflow artifacts.

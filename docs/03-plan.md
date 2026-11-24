@@ -928,6 +928,24 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     (`sceKernelGetModel` now 0x10000) doesn't reach this game: neither the
     eboot nor its firmware modules import `sceKernelGetModel` or
     `...ForCDialog`.
+  * ☑ ss-delta 0.5.1's front end and setup (2026-11-24, fork `1a78ad86`,
+    kit `38cb384`; [D15](decisions.md)): zig on Windows too, carried in
+    the release (no Microsoft licence; the first build downloads only
+    the firmware); mirrors for every download and a weekly link check
+    (`links.yml`); `--offline`, `--download-only`, `--for`; "Already
+    built" for a re-run with the same parts and `--rebuild`
+    (`recomplauncher.json`: `prepare.done`, no `timeout`, no licence
+    option); the idle cursor hides (`[mouse] hide_cursor`, on the Mouse
+    page). The rest of the range is ss-delta's own game code (Spirits'
+    offerings, Sortiara, its eboot overrides) or a debugging switch
+    (`VITA3K_NO_ORDERED_FB_READS`). Checked in a Windows release folder:
+    built from the pkgs with the firmware from `--offline` in 5.0 min
+    with no download; the same run again "Already built" in 0.5 s (an
+    empty `--dump=` among the arguments ignored); then `--import-save`
+    and the first mission's field, 100% native, 0 native-to-JIT calls;
+    `--write-ini` has `hide_cursor`. Linux and macOS not run for this
+    range (ss-delta 0.5.1 checked the same kit and front end on the Deck
+    and the M5).
 
 **Exit:** with a Thor and their own dump, and no PC, a player gets from
 the release's APK to a mission on native code (☑ with a debug APK,
