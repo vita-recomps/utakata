@@ -791,7 +791,8 @@ this phase:
   and quickly down the camera keeps going up then stops then goes down".
   Fixed through the eboot's overrides ([D16](decisions.md)): the camera
   code takes the mouse itself, exact and unlimited, in the field and the
-  hook's aim (01-research, "Mouse camera"). ☐ The owner's feel of it.
+  hook's aim (01-research, "Mouse camera"). ☑ The owner, with the fixed
+  build: "much better and feels responsive now" (2026-11-24).
 * ☑ Cheats: One-hit kills in fights and on a boss; a whole mission with
   the others on; a save and reload; the mission rank with cheats on.
 * ☑ Xbox button prompts: `xbox`, and `auto` with a real pad (the
