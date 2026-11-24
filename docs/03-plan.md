@@ -946,6 +946,12 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     `--write-ini` has `hide_cursor`. Linux and macOS not run for this
     range (ss-delta 0.5.1 checked the same kit and front end on the Deck
     and the M5).
+  * ☑ Tag `v0.2.0` (`e84a178`, 2026-11-24): run 45404163515 passed (all
+    four jobs, 75 min) and made the draft release with its notes,
+    `utakata-v0.2.0-windows.zip` (234 MB), `-linux.tar.gz` (275 MB),
+    `-macos.tar.gz` (231 MB) and `-android.apk` (100 MB), their SHA-256
+    and build attestations. The PC archives carry the APK and zig. Held
+    as a draft for the owner's desktop playtest (Phase 10).
 
 **Exit:** with a Thor and their own dump, and no PC, a player gets from
 the release's APK to a mission on native code (☑ with a debug APK,
