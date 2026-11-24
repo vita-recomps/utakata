@@ -23,9 +23,11 @@ doesn't have, and ss-delta's fixes to its own game
   system dialogs with it (**Language** on the settings menu's Game page,
   `[game] language`). The game itself follows the console's language only.
 * **Mouse camera** on a PC: Tab or a middle click captures the cursor, and
-  the mouse turns the camera as far as it moves, up to the game's own
-  speed (120° a second sideways, 60 up and down). Sensitivity and inverted
-  vertical on the Mouse page.
+  the mouse turns the camera exactly as far and as fast as it moves, in
+  the field and in the hook's aim: the game's camera code takes the mouse
+  itself (in the recompiled code, [D16](docs/decisions.md)), not through
+  the stick's slow, speeding-up turn. Sensitivity and inverted vertical on
+  the Mouse page.
 * **Xbox button prompts:** A, B, X, Y, LB, RB, Menu and View instead of the
   PlayStation symbols in the game's prompts, its HUD and the pause menu's
   Basic Controls page (each language's), or whichever the connected
@@ -74,6 +76,11 @@ From ss-delta 0.5.1's setup (its D32):
   anyway.
 
 ### Fixed
+
+* **Skip intro logos at 60 fps hung on a black screen** before the title
+  (found during 0.2.0's testing): the skip could race the game's own step
+  past the first logo, so the opening movie never started. The skip now
+  checks that the movie started and starts it again if not.
 
 From ss-delta's setup
 ([ss-delta #13](https://github.com/vita-recomps/ss-delta/issues/13)):

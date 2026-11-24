@@ -425,3 +425,50 @@ kit `38cb384`, the firmware from `--offline` (the PUPs already on this
 PC), built the game, 1.02 and the add-on in 5.0 min with no download;
 the first mission then ran 100% native (5 modules verified against guest
 memory, 0 native-to-JIT calls).
+
+## D16 — The mouse camera through recompiler overrides (accepted, 2026-11-24)
+
+**Context:** the owner's playtest of 0.2.0's draft (2026-11-24): the mouse
+camera "feels very sluggish", and "after looking up and quickly down the
+camera keeps going up then stops then goes down". The mouse drove the
+right stick (Phase 10): this game's stick is on or off and speeds up over
+half a second (01-research, "Mouse camera"), so every motion started from
+a standstill, turns were capped at 120°/s and 60°/s, and up to 0.75 s of
+a flick queued behind a reversal.
+
+**Decision:**
+
+* The eboot's camera code takes the mouse itself, through recompiler
+  overrides (ss-delta's D30): `overrides/eboot.json` (`game.json`
+  `recomp_overrides`; feature `mouse_camera`) adds the mouse's motion to
+  the frame's yaw and pitch at six sites (the field camera, the hook's aim,
+  and the camera mode `0x8100b86e`), before the game's own limits, each
+  site on its own as each takes the stick on its own.
+* `shinobido2.exe` writes the mouse's running totals into the page left
+  over after the eboot's data (`0x819f6f00`), and the overrides count
+  their calls there. The shared `MouseCamera` gained a direct path
+  (`DirectTurn`, `GameProfile::mouse_turn`): while those calls go on, the
+  motion goes there, unlimited; otherwise (another camera mode, an eboot
+  without the overrides, the JIT) the stick as before.
+
+**Rejected:**
+
+* Dropping what is still asked on a reversal, in the stick path: it lost
+  most of a quick flick (01-research). The stick path stays as it was, in
+  ss-delta too.
+* Writing the camera's angles from the front end: the yaw has no plain
+  angle in memory, and a write from the front end's thread races the
+  game's frame.
+
+**Consequences:**
+
+* Players get it when the setup builds the game again (an update through
+  RecompLauncher, or `--install`); a game built before keeps the stick
+  path.
+* Camera modes not covered (other functions that build 2π/3, 01-research)
+  fall back to the stick by themselves.
+* v0.2.0 builds from the fork's branch `utakata-0.2` (`471fee41`: this
+  change on `1a78ad86`, the commit tested here), not from `games`, which
+  meanwhile gained ss-delta's renderer changes for its issue #17 (not yet
+  tested with this game, the Thor's Adreno among the GPUs they change).
+  The owner, 2026-11-24. The next update goes back to `games`.

@@ -19,6 +19,9 @@
     "libscemp4": "fw_libscemp4"
   },
   "load_bases": {},
+  "recomp_overrides": {
+    "eboot": "overrides/eboot.json"
+  },
   "dump_seconds": 45,
   "android_build_minutes": 8,
   "dist_readme": "docs/dist-readme.txt",

@@ -579,6 +579,18 @@ pipe's `memdump:`/`memwrite:` steps.
 * Moving the scene to state 8 while the first picture is up skips the
   four logos: the opening movie starts at about 26 s instead of 46, and
   Start then reaches the title.
+* **The skip at 60 fps hung on black** (found 2026-11-24, every boot with
+  `frame_rate = 60`): state 8's entry (`0x810044fa`) initialises and
+  starts the movie player (`*0x81512598`, init at vtable `+8`); its
+  per-frame part (`0x81004346`) only waits for the player's status (`+0xc`)
+  to reach 2. State 0's per-frame part moves to 1 at once, and state 1's
+  entry ends by clearing the entry byte (`0x8100413c`): the front end's
+  write landing in between left state 8 with its entry never run, the
+  player at status 0 and the scene waiting forever (Start did nothing).
+  The scene runs twice as often at 60 fps, so it hit every time there.
+  The skip now checks: in state 8, entry taken, player still at status 0
+  for a quarter of a second, it sets the entry byte again. Three boots at
+  60 fps (one re-entry each) and one at 30 (none) reached the mission.
 
 ### Mouse camera
 
@@ -603,6 +615,34 @@ sine of the pitch, looking down positive; row 3 the position).
   of the camera's top speed).
 * No plain yaw angle was found in the heap (the camera seems to orbit by
   its position), so turning it directly in memory is not done.
+* **The turn code** (2026-11-24, for [D16](decisions.md)): each camera
+  mode's update reads its stick from `+0x5b4`/`+0x5b8` of its controller
+  object (only the sign counts), moves a ramp toward ±1 by 2·dt a frame
+  (`+0x74` yaw, `+0x70` pitch; reset on reversal), and turns that frame by
+  ramp × 2π/3 × dt × the game's camera option (`+0x3c` X, 1; `+0x38` Y,
+  −1). The pitch is an angle at `+0x4c` (radians, positive looks down,
+  0.1745 at rest), clamped after; `+0x40` counts the seconds without a
+  turn (the auto-centring). Found by probe overrides counting calls: the
+  field camera is `0x810074d6` (yaw `0x810076e6`, pitch `0x81007776`),
+  crouching too; the hook's aim adds `0x81007406` (yaw) and `0x81007342`
+  (pitch), called by `0x8100cce6`, while the field camera keeps running.
+  `0x8100b86e` has the same shape (when it runs is not known). Eight more
+  functions in `0x8100a098`–`0x81014d18` build 2π/3 the same way, in other
+  shapes; not covered.
+* **The mouse through overrides** ([D16](decisions.md)): each of those six
+  sites adds what the mouse moved since its own last call, from a mailbox
+  in the page left over after the eboot's data (`0x819f6d14`–`0x819f7000`,
+  zero and never touched by the game): `+0` `UTMC`, `+4`/`+8` running yaw
+  and pitch totals in 1/1024°, `+12` a count of the sites' calls.
+  Measured (pipe `mouse:` steps, 30 and 60 fps): a 90° flick in 0.1 s turns
+  90.00° by its end; 30° back exactly; 10° down exactly; up 30 then down 30
+  at once ends where it began; in the aim, 90° right, 10° down, 30° left
+  and 10° up exact, and after it the camera keeps the aimed direction. The
+  stick is unchanged (500 ms right: 32°).
+* The stick fallback (an eboot without the overrides) can't follow quick
+  reversals: up 20° then down 20° at once ended at the −20° limit; dropping
+  what was still asked on a reversal instead lost most of a flick (right
+  90° then left 30° ended 26° left). Left as it was.
 
 ### Cheats
 

@@ -1,0 +1,78 @@
+{
+  "_comment": "Changes to the 1.02 eboot's code, applied by the recompiler (third_party/recomp/recomp/recompile.py --overrides; game.json recomp_overrides). The game's bytes stay as they are; the JIT runs the original code. docs/decisions.md D16, docs/01-research.md 'Mouse camera'.",
+  "features": ["mouse_camera"],
+  "prelude": [
+    "#include <chrono>",
+    "#include <cmath>",
+    "#include <cstdint>",
+    "namespace armrecomp {",
+    "// The mouse camera (utakata D16). shinobido2.exe keeps the mouse's running totals in the page left over",
+    "// after the eboot's data (0x819f6d14-0x819f7000, which the game never uses): +0 'UTMC' while it drives",
+    "// the camera, +4 yaw (right) and +8 pitch (down), in 1/1024 of a degree. +12 counts the calls below, so",
+    "// it can tell whether a camera that takes the mouse is running. Each place that turns the camera by the",
+    "// right stick (the field camera, the hook's aim, ...) adds what the mouse moved since its own last call",
+    "// to that frame's turn, before the game's own limits, as it takes the stick on its own. A place not",
+    "// called for a moment (another camera, a menu, a scene) drops what moved meanwhile.",
+    "constexpr uint32_t ut_mouse_box = 0x819f6f00u;",
+    "inline uint32_t ut_mouse_seen[8] = {};",
+    "inline std::chrono::steady_clock::time_point ut_mouse_at[8] = {};",
+    "// radians to add to this frame's turn at `site` (0-7) along `axis` (0 yaw, right; 1 pitch, down)",
+    "inline float ut_mouse_turn(int site, int axis) {",
+    "    wr32(ut_mouse_box + 12u, rd32(ut_mouse_box + 12u) + 1u);",
+    "    if (rd32(ut_mouse_box) != 0x434d5455u) {",
+    "        ut_mouse_at[site] = {};",
+    "        return 0.0f;",
+    "    }",
+    "    const uint32_t total = rd32(ut_mouse_box + 4u + 4u * static_cast<uint32_t>(axis));",
+    "    const auto now = std::chrono::steady_clock::now();",
+    "    const bool fresh = ut_mouse_at[site] != std::chrono::steady_clock::time_point{} && now - ut_mouse_at[site] < std::chrono::milliseconds(150);",
+    "    ut_mouse_at[site] = now;",
+    "    const int32_t moved = static_cast<int32_t>(total - ut_mouse_seen[site]);",
+    "    ut_mouse_seen[site] = total;",
+    "    if (!fresh || moved == 0)",
+    "        return 0.0f;",
+    "    // at most 90 degrees a frame",
+    "    const float degrees = std::fmax(-90.0f, std::fmin(90.0f, static_cast<float>(moved) / 1024.0f));",
+    "    return degrees * 0.017453292f;",
+    "}",
+    "}"
+  ],
+  "overrides": [
+    {
+      "address": "810076e6",
+      "insn": "vmul.f32 s9, s9, s3",
+      "code": ["ctx->vfp.f[9] = fp_mul(ctx->vfp.f[9], ctx->vfp.f[3]) - ut_mouse_turn(0, 0);"],
+      "why": "field camera (0x810074d6): this frame's yaw (radians, negative turns right), plus the mouse's"
+    },
+    {
+      "address": "81007776",
+      "insn": "vmul.f32 s3, s3, s5",
+      "code": ["ctx->vfp.f[3] = fp_mul(ctx->vfp.f[3], ctx->vfp.f[5]) + ut_mouse_turn(1, 1);"],
+      "why": "field camera (0x810074d6): this frame's pitch (radians, positive looks down), plus the mouse's"
+    },
+    {
+      "address": "81007478",
+      "insn": "vmul.f32 s0, s0, s2",
+      "code": ["ctx->vfp.f[0] = fp_mul(ctx->vfp.f[0], ctx->vfp.f[2]) - ut_mouse_turn(2, 0);"],
+      "why": "the hook's aim (0x81007406, called by 0x8100cce6): this frame's yaw, plus the mouse's"
+    },
+    {
+      "address": "810073b4",
+      "insn": "vmul.f32 s0, s0, s2",
+      "code": ["ctx->vfp.f[0] = fp_mul(ctx->vfp.f[0], ctx->vfp.f[2]) + ut_mouse_turn(3, 1);"],
+      "why": "the hook's aim (0x81007342, called by 0x8100cce6): this frame's pitch, plus the mouse's"
+    },
+    {
+      "address": "8100ba6c",
+      "insn": "vmul.f32 s16, s16, s4",
+      "code": ["ctx->vfp.f[16] = fp_mul(ctx->vfp.f[16], ctx->vfp.f[4]) - ut_mouse_turn(4, 0);"],
+      "why": "camera mode 0x8100b86e (the field camera's twin): this frame's yaw, plus the mouse's"
+    },
+    {
+      "address": "8100baf8",
+      "insn": "vmul.f32 s4, s4, s6",
+      "code": ["ctx->vfp.f[4] = fp_mul(ctx->vfp.f[4], ctx->vfp.f[6]) + ut_mouse_turn(5, 1);"],
+      "why": "camera mode 0x8100b86e: this frame's pitch, plus the mouse's"
+    }
+  ]
+}

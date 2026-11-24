@@ -302,9 +302,10 @@ setup says "Already built" at once. Its setup also takes the update, the add-on 
   (`[game] button_labels`), in the prompts, the HUD and the pause menu's
   Basic Controls page.
 * **Mouse camera** (PC): Tab or a middle click captures the cursor, and
-  the mouse turns the camera; the same again or Esc lets it go. The
-  game's camera turns at most 120°/s sideways and 60°/s up and down, so a
-  fast flick takes a moment to finish. Sensitivity and inverted vertical
+  the mouse turns the camera as far and as fast as it moves (in the field
+  and the hook's aim); the same again or Esc lets it go. A game built
+  before 0.2.0's final release turns it through the stick, slower: build
+  it again ([updating](#updating)). Sensitivity and inverted vertical
   on the settings menu's Mouse page (`[mouse]`). The cursor hides after 3
   seconds without mouse motion, or when you use a key or the gamepad, and
   comes back when the mouse moves (**Hide idle cursor**, `[mouse]

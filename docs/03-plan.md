@@ -784,18 +784,28 @@ release before Phase 11: both ship together as v0.2.0 (the owner,
 this later"; before v0.2.0 is tagged). On Windows, `shinobido2.exe` of
 this phase:
 
-* ☐ Mouse camera with a real mouse (Tab or a middle click): turning,
+* ☑ Mouse camera with a real mouse (Tab or a middle click): turning,
   looking up and down, the hook's aim (R + Circle), the game's own Y/X
-  camera options, the Mouse page's sensitivity and inversion.
-* ☐ Cheats: One-hit kills in fights and on a boss; a whole mission with
+  camera options, the Mouse page's sensitivity and inversion. The owner,
+  2026-11-24: it works but "feels very sluggish", and "after looking up
+  and quickly down the camera keeps going up then stops then goes down".
+  Fixed through the eboot's overrides ([D16](decisions.md)): the camera
+  code takes the mouse itself, exact and unlimited, in the field and the
+  hook's aim (01-research, "Mouse camera"). ☐ The owner's feel of it.
+* ☑ Cheats: One-hit kills in fights and on a boss; a whole mission with
   the others on; a save and reload; the mission rank with cheats on.
-* ☐ Xbox button prompts: `xbox`, and `auto` with a real pad (the
+* ☑ Xbox button prompts: `xbox`, and `auto` with a real pad (the
   prompts, START/SELECT, L/R, the HUD, the Basic Controls page); any
   picture still showing PlayStation symbols (the tutorial, help screens,
   mission prompts) noted, with `UTAKATA_TEXTURE_DUMP` set if possible.
-* ☐ The settings menu (Select held or F1) over the game's Load and Save
+* ☑ The settings menu (Select held or F1) over the game's Load and Save
   dialogs: does it still respond?
-* ☐ Language (French, Spanish) and Skip intro logos, in normal play.
+* ☑ Language (French, Spanish) and Skip intro logos, in normal play.
+  Everything above "works properly" (the owner, 2026-11-24), apart from
+  the mouse camera's feel. Found in testing the fix: Skip intro logos at
+  60 fps hung on black every boot (a race with the game's step past the
+  first logo, 01-research "Boot logos"); fixed, the skip checks that the
+  opening movie started.
 * ☑ Android, on the Thor (Phase 11): the APK from the release (or a
   test build), the setup screen from the dump, a mission with the
   built-in controls; the on-screen controls and CROUCH on the
@@ -952,6 +962,16 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     `-macos.tar.gz` (231 MB) and `-android.apk` (100 MB), their SHA-256
     and build attestations. The PC archives carry the APK and zig. Held
     as a draft for the owner's desktop playtest (Phase 10).
+  * ☑ The playtest's mouse camera fixed ([D16](decisions.md), fork `471fee41` on the
+    fork's branch `utakata-0.2` (on `1a78ad86`; the same change is on `games` as
+    `8d839f4b`, after ss-delta's untested renderer commits), `overrides/eboot.json`)
+    and Skip intro logos
+    at 60 fps (2026-11-24). A release folder of this commit built the game
+    with zig from the pkgs, the overrides applied (the log: "eboot feature
+    mouse_camera"). Its run to a mission was cut short: another session was
+    driving `ss-delta.exe` through the same input pipe name
+    (`v3kdrive`), so the drivers' presses went to whichever game held it.
+  * ☐ `v0.2.0` tagged again with these (the first draft and tag deleted).
 
 **Exit:** with a Thor and their own dump, and no PC, a player gets from
 the release's APK to a mission on native code (☑ with a debug APK,
