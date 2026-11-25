@@ -1001,6 +1001,19 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     device** either (ss-delta's APK has the same gap: its game.json names
     `overrides/eboot.json` too). Kit `7a72d44` packs them beside
     game.json; draft and tag deleted, `v0.2.1` tagged again.
+    Run 45574014695's APK built the game on the Thor (5.1 min, the
+    overrides in), then **the game stopped at the title**: `ssd_aot_eboot.so`
+    didn't load (`cannot locate symbol _ZNSt3__16chrono12steady_clock3nowEv`),
+    so NativeCPU had no eboot. D16's prelude took its clock from libc++,
+    which Android's front end doesn't export: 0.2.0's Android game was
+    broken by every route since D16. The prelude now uses
+    `GetTickCount64`/`clock_gettime` ([D16](decisions.md)). Checked: the
+    release folder's `--android` from Windows (6.0 min, `-fPIC` fine; the
+    module's only undefined symbols `abort`, `clock_gettime`,
+    `sched_yield`) → the Thor to the first mission's field, NativeCPU, "has
+    the project's fixes: mouse_camera"; the Windows build of the same
+    overrides (zig, 5.6 min): 90° right then 30° left with the pipe's
+    `mouse:` steps, as 0.2.0. Tagged a third time.
 
 **Exit:** with a Thor and their own dump, and no PC, a player gets from
 the release's APK to a mission on native code (☑ with a debug APK,

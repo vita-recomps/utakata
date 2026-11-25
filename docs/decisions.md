@@ -472,3 +472,12 @@ a flick queued behind a reversal.
   meanwhile gained ss-delta's renderer changes for its issue #17 (not yet
   tested with this game, the Thor's Adreno among the GPUs they change).
   The owner, 2026-11-24. The next update goes back to `games`.
+* The overrides' code is compiled into every platform's eboot module,
+  Android's too, so it may use only what the system C library has: 0.2.0's
+  prelude took its clock from libc++ (`std::chrono::steady_clock`), which
+  Android's front end links statically and doesn't export, so Android's
+  eboot module wouldn't load (dlopen: `cannot locate symbol
+  _ZNSt3__16chrono12steady_clock3nowEv`) and the game stopped at the
+  title. v0.2.1 takes milliseconds from `GetTickCount64` (Windows) or
+  `clock_gettime(CLOCK_MONOTONIC)` (2026-11-25). The APK's build tools
+  also have to carry the overrides (kit `7a72d44`).
