@@ -4,6 +4,36 @@ The changes in each release of utakata. The downloads and each release's
 full notes are on the [releases page](https://github.com/vita-recomps/utakata/releases);
 [INSTALLING](docs/INSTALLING.md#updating) explains how to update.
 
+## 0.2.1 (2026-11-25)
+
+ss-delta 0.5.2's fixes to the front end and the setup.
+
+### Fixed
+
+* **Android: the game's files wouldn't install on some phones**
+  ([ss-delta #23](https://github.com/vita-recomps/ss-delta/issues/23)),
+  such as a Galaxy S25: the setup stopped at "Failed to load archive
+  file". The app now reads the files you pick through the access Android's
+  file picker gives it, instead of opening them again by name, which those
+  phones refuse to an app without storage permission.
+* **Building the Android app's game from a Windows PC** (`--android`)
+  stopped with `relocation R_AARCH64_ABS64 cannot be used against symbol
+  ...; recompile with -fPIC` in 0.2.0.
+* **Graphics cards whose driver has neither shader interlock nor
+  raster-order attachment access** (the log's `Framebuffer reads:` line
+  says "no, no": Qualcomm's own Adreno driver, older AMD Radeon such as
+  the R5 APUs) leave effects that blend with the picture to the card's
+  own blender, or read a copy of the picture, as ss-delta 0.5.2 does
+  against blocks in its smoke and fog
+  ([ss-delta #17](https://github.com/vita-recomps/ss-delta/issues/17)).
+  Other cards draw exactly as before. `[debug] shader_blend` turns it off.
+
+### New
+
+* **The log lists every graphics card** Vulkan offers the game, and
+  `[debug] gpu` picks one by its number there (for a laptop that starts
+  on the wrong one).
+
 ## 0.2.0 (2026-11-24)
 
 What ss-delta 0.4 and 0.5 have, apart from multiplayer, which this game

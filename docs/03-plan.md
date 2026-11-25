@@ -978,6 +978,19 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     `setup/kit/game/overrides/eboot.json` and `game.json`'s
     `recomp_overrides`, `recomplauncher.json` stamped `v0.2.0`. Ready for
     the owner to publish.
+  * ☑ v0.2.0 published (2026-11-24).
+  * ◐ v0.2.1 (2026-11-25): ss-delta 0.5.2's fixes, fork `b70141dd` (back
+    on `games`, which carries D16's change as `8d839f4b`), kit `6a38912`:
+    the Android setup reads picked files through the picker's descriptor
+    (ss-delta #23, a Galaxy S25 refused reopening them), `--android` from
+    Windows links again (`-fPIC`, lost in kit `da0477e`, so 0.2.0 had it
+    broken), ss-delta #17's framebuffer-read changes for drivers with
+    neither interlock nor raster-order access (Qualcomm's driver, old
+    Radeons; the 760M has interlock, so the PC draws as before), every
+    Vulkan device in the log and `[debug] gpu`. The range's Ad Hoc and
+    settings-menu typing are ss-delta's (this game has no multiplayer).
+    Checked on Windows: 0.2.0's release folder with this exe, to the first
+    mission's field, native, the mouse override on, 30 fps.
 
 **Exit:** with a Thor and their own dump, and no PC, a player gets from
 the release's APK to a mission on native code (☑ with a debug APK,
