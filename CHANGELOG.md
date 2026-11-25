@@ -10,6 +10,10 @@ ss-delta 0.5.2's fixes to the front end and the setup.
 
 ### Fixed
 
+* **Android: building the game on the device stopped at "Recompiling
+  eboot"** in 0.2.0 (`FileNotFoundError: ... overrides/eboot.json`): the
+  APK didn't carry the mouse camera's fixes to the game's code, which the
+  build needs. Building from a PC (`--android`) wasn't affected by this.
 * **Android: the game's files wouldn't install on some phones**
   ([ss-delta #23](https://github.com/vita-recomps/ss-delta/issues/23)),
   such as a Galaxy S25: the setup stopped at "Failed to load archive

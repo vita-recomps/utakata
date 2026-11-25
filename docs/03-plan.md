@@ -991,6 +991,16 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     settings-menu typing are ss-delta's (this game has no multiplayer).
     Checked on Windows: 0.2.0's release folder with this exe, to the first
     mission's field, native, the mouse override on, 30 fps.
+    Tag `v0.2.1` (`2df1ba7`): run 45568462921 passed and made the draft.
+    Its APK over the Thor's 0.2.0-dev (versionCode 10 → 201): the setup
+    asked to build again, the 1.02 pkg picked from `Download/` (21 MB,
+    read through the descriptor) installed ("exit 0"), the module dump
+    ran, then **recompiling eboot failed**: `buildtools/overrides/
+    eboot.json` missing. `android-build-tools.py` packed game.json but not
+    the overrides it names (D16's), so **0.2.0's APK can't build on a
+    device** either (ss-delta's APK has the same gap: its game.json names
+    `overrides/eboot.json` too). Kit `7a72d44` packs them beside
+    game.json; draft and tag deleted, `v0.2.1` tagged again.
 
 **Exit:** with a Thor and their own dump, and no PC, a player gets from
 the release's APK to a mission on native code (☑ with a debug APK,
