@@ -107,6 +107,36 @@ with Python 3.12). Pushing a tag `v*` runs `.github/workflows/release.yml`,
 which builds all three archives on GitHub, with their SHA-256 and build
 attestations, into a draft release.
 
+### Before publishing a draft
+
+The tag makes a draft; publish it only after these pass **on the draft's
+own downloads**, whenever the kit, the fork or `overrides/` changed since
+the last release. On 2026-11-25 three Android faults reached players
+through releases checked on Windows alone: the APK lacked
+`overrides/eboot.json`, utakata's overrides used a libc++ clock that
+Android's modules can't load, and `--android` from Windows lost `-fPIC`.
+
+1. **Windows:** unpack the zip, build from the pkgs (`shinobido2.exe --dump <game>
+   --dump=<update> --offline <the PUPs> --build-only`), then the first mission's field (`tools/to-mission.py`):
+   NativeCPU, 0 native-to-JIT calls, the log's "has the project's fixes".
+2. **The APK on the Thor**, installed over the previous release (as a
+   player updates): its setup builds again; then a mission, NativeCPU, no
+   "cannot load" in `vita3k.log`. For a first setup, pick the dump from
+   `Download/` (the file picker path).
+3. **`--android` from the Windows folder** onto the Thor, then a mission.
+4. A fix after the tag: delete the draft and the tag, tag again, and run
+   1-3 on the new draft.
+
+Driving the Thor: tap the main display after the game starts (`adb shell
+input -d 0 tap 960 60`), or the gamepad's presses go to the second
+screen's launcher.
+
+Checks that run by themselves: `check-overrides.py` (in `make-setup.py` and
+`android-build-tools.py`: an override that needs libc++ stops the
+release), the read-back of the APK's `buildtools.zip`, the symbol check of
+every Android module (`toolchain.py`), and the front end's message when a
+module doesn't load under NativeCPU.
+
 ## Toolchain
 
 The Vita3K fork and the recompiler are git submodules, repositories of their

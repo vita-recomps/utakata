@@ -979,7 +979,7 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     `recomp_overrides`, `recomplauncher.json` stamped `v0.2.0`. Ready for
     the owner to publish.
   * ☑ v0.2.0 published (2026-11-24).
-  * ◐ v0.2.1 (2026-11-25): ss-delta 0.5.2's fixes, fork `b70141dd` (back
+  * ☑ v0.2.1 (2026-11-25): ss-delta 0.5.2's fixes, fork `b70141dd` (back
     on `games`, which carries D16's change as `8d839f4b`), kit `6a38912`:
     the Android setup reads picked files through the picker's descriptor
     (ss-delta #23, a Galaxy S25 refused reopening them), `--android` from
@@ -1013,7 +1013,27 @@ in [02-baseline](02-baseline.md#android-on-the-ayn-thor-phase-11-2026-11-21).
     `sched_yield`) → the Thor to the first mission's field, NativeCPU, "has
     the project's fixes: mouse_camera"; the Windows build of the same
     overrides (zig, 5.6 min): 90° right then 30° left with the pipe's
-    `mouse:` steps, as 0.2.0. Tagged a third time.
+    `mouse:` steps, as 0.2.0. Tagged a third time (`b966bcb`): run
+    45594195053 (its Android job re-run once: Google's Maven didn't serve
+    the Android Gradle plugin). The draft's APK over the Thor's app with an
+    older `android-build.json`, as a player's update: the setup built again
+    from the installed game in 6.1 min, then the sweep to the first
+    mission's field: NativeCPU, "has the project's fixes: mouse_camera",
+    `eboot.elf matches guest memory`. **Published** the same day, with
+    ss-delta 0.5.3 (its kit-only hotfix, checked on the Thor from a picked
+    3.3 GB dump: built in 15.5 min, the eboot with its overrides verified).
+  * ☑ Guards so this doesn't reach a release again (2026-11-25; kit
+    `afb4724`, fork `361182f7`): `check-overrides.py` (an override that
+    needs libc++ stops `make-setup.py` and `android-build-tools.py`), one
+    list of build files for both packagers, `buildtools.zip` read back,
+    every Android module's symbols checked after linking, the front end's
+    message and exit when a module doesn't load on NativeCPU (instead of a
+    title that never answers), the notification question asked as the
+    Android setup screen opens (asked at Build, it held up the setup). The
+    checklist before publishing a draft is in [BUILDING](BUILDING.md).
+    The fork range also brings re-nova's commits and three upstream gxm
+    display-queue fixes: checked here to the first mission on Windows
+    (30 fps), not yet on the Thor.
 
 **Exit:** with a Thor and their own dump, and no PC, a player gets from
 the release's APK to a mission on native code (☑ with a debug APK,
